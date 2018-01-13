@@ -49,7 +49,6 @@ void init(rack::Plugin *p) {
 	p->manual = "https://github.com/VCVRack/Tutorial/blob/master/README.md";
 
 	// For each module, specify the ModuleWidget subclass, manufacturer slug (for saving in patches), manufacturer human-readable name, module slug, and module name
-	p->addModel(createModel<MyModuleWidget>("Tutorial", "MyModule", "My Module", OSCILLATOR_TAG));
 	p->addModel(createModel<DACWidget>("Tutorial", "DAC", "DAC", OSCILLATOR_TAG));
     p->addModel(createModel<PrometheusWidget>("Tutorial", "Prometheus", "Prometheus", OSCILLATOR_TAG));
 

@@ -27,9 +27,6 @@ struct DAC : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL
 	};
 
-	float phase = 0.0;
-	float blinkPhase = 0.0;
-
     SchmittTrigger bitTrigger[BITL];
 
     Label* valLabel;
@@ -46,12 +43,14 @@ struct DAC : Module {
 
 void DAC::step() {
 	// Implement a simple sine oscillator
-	float deltaTime = 1.0 / engineGetSampleRate();
+	//float deltaTime = 1.0 / engineGetSampleRate();
 
 	// Compute the frequency from the pitch parameter and input
+
     int depth = params[DEPTH_PARAM].value;
 
     int binVal = 0;
+
     for(int i = 0; i < BITL; ++i)
     {
         int bitVal;
@@ -78,7 +77,9 @@ void DAC::step() {
     outputs[DEPTH_OUTPUT].value = depth_to_cv(depth);
     char temp[256];
     sprintf(temp, "0x%04x\n%i", binVal, binVal);
-    valLabel->text = temp;
+    if(valLabel)
+        valLabel->text = "test";
+
 }
 
 
@@ -99,7 +100,6 @@ DACWidget::DACWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-
     float r;
     float insx = 30;
     float insy = 60;
@@ -113,14 +113,11 @@ DACWidget::DACWidget() {
 
     addParam(depth);
 
-    auto* label = new Label();
+    Label* label = new Label();
     label->box.pos=Vec(90, insy-15);
     label->text = "TESTTESTESTESTETETSDASDASDA";
-//    center(label, 0, 1);
     addChild(label); 
     module->valLabel = label;
-
-
 
     auto *depthOut = createOutput<PJ301MPort>(
         Vec(depth->box.pos.x+depth->box.size.x+4, insy), module, DAC::DEPTH_OUTPUT
