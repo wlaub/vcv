@@ -1,0 +1,217 @@
+#include "Tutorial.hpp"
+#define BITL 16
+
+struct DAC : Module {
+	enum ParamIds {
+		PITCH_PARAM,
+        DEPTH_PARAM,
+        GATE_INPUT,
+        BITS_PARAM,
+		NUM_PARAMS=BITS_PARAM+BITL
+	};
+	enum InputIds {
+		PITCH_INPUT,
+        BITS_INPUT, 
+		NUM_INPUTS=BITS_INPUT+BITL
+	};
+	enum OutputIds {
+		ANLG_OUTPUT,
+        DIGI_OUTPUT,
+        DEPTH_OUTPUT,
+		NUM_OUTPUTS
+	};
+	enum LightIds {
+		BLINK_LIGHT,
+        BITIND_LIGHT,
+        BIT_LIGHT=BITIND_LIGHT+BITL,
+		NUM_LIGHTS=BIT_LIGHT+BITL
+	};
+
+	float phase = 0.0;
+	float blinkPhase = 0.0;
+
+    SchmittTrigger bitTrigger[BITL];
+
+    Label* valLabel;
+
+	DAC() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	void step() override;
+
+	// For more advanced Module features, read Rack's engine.hpp header file
+	// - toJson, fromJson: serialization of internal data
+	// - onSampleRateChange: event triggered by a change of sample rate
+	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
+};
+
+
+void DAC::step() {
+	// Implement a simple sine oscillator
+	float deltaTime = 1.0 / engineGetSampleRate();
+
+	// Compute the frequency from the pitch parameter and input
+    int depth = params[DEPTH_PARAM].value;
+
+    int binVal = 0;
+    for(int i = 0; i < BITL; ++i)
+    {
+        int prev;
+        int bitVal;
+        float switchVal = params[BITS_PARAM+i].value;
+        int nval = (switchVal > .5) ? 1 : 0;
+        bitVal = nval;
+
+
+        if(inputs[BITS_INPUT+i].active)
+        {
+            bitTrigger[i].process(inputs[BITS_INPUT+i].value);
+            nval = bitTrigger[i].isHigh() ? 1:0;
+            bitVal = nval;
+        }
+
+        lights[BIT_LIGHT+i].value = (i < depth) ? 1 : 0;
+        lights[BITIND_LIGHT+i].value = bitVal;
+        if(i < depth)
+            binVal |= ((bitVal&1)<<i);
+    }
+
+    outputs[DIGI_OUTPUT].value = binVal;
+    outputs[ANLG_OUTPUT].value = float(binVal) / powf(2, depth);
+    outputs[DEPTH_OUTPUT].value = depth;
+    char temp[256];
+    sprintf(temp, "0x%04x\n%i", binVal, binVal);
+    valLabel->text = temp;
+}
+
+
+Vec radius(float x, float y, float r, float i, int N)
+{
+/*
+Returns a position along a circle of radius r centered at x,y
+*/
+    float a = 6.28*i/N;
+    return Vec(x + r*cos(a), y+r*sin(a));
+}
+
+void center(Widget* thing, int x = 1, int y = 1)
+{
+    float w = thing->box.size.x;
+    float h = thing->box.size.y;
+    thing->box.pos.x -= x*w/2;
+    thing->box.pos.y -= y*h/2;
+}
+
+
+DACWidget::DACWidget() {
+	DAC *module = new DAC();
+	setModule(module);
+	box.size = Vec(16 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+
+	{
+		SVGPanel *panel = new SVGPanel();
+		panel->box.size = box.size;
+		panel->setBackground(SVG::load(assetPlugin(plugin, "res/DAC.svg")));
+		addChild(panel);
+	}
+
+	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+
+
+    float x, y, r;
+
+    float insx = 30;
+    float insy = 60;
+    float gap;    
+
+    auto* depth = createParam<RoundSmallBlackSnapKnob>(
+        Vec(insx,insy), module, DAC::DEPTH_PARAM,
+        1, 16, 8
+        );
+    center(depth);
+
+    addParam(depth);
+
+    auto* label = new Label();
+    label->box.pos=Vec(90, insy-15);
+    label->text = "TESTTESTESTESTETETSDASDASDA";
+//    center(label, 0, 1);
+    addChild(label); 
+    module->valLabel = label;
+
+
+
+    auto *depthOut = createOutput<PJ301MPort>(
+        Vec(depth->box.pos.x+depth->box.size.x+4, insy), module, DAC::DEPTH_OUTPUT
+        );
+    center(depthOut,0,1);
+    addOutput(depthOut);
+
+    insx = 200;
+    gap = 4;
+    auto *anlgOut = createOutput<PJ301MPort>(
+        Vec(insx-gap/2, insy), module, DAC::ANLG_OUTPUT
+        );
+    center(anlgOut,2,1);
+
+    auto *digiOut = createOutput<PJ301MPort>(
+        Vec(insx+gap/2, insy), module, DAC::DIGI_OUTPUT
+        );
+
+    center(digiOut, 0, 1);
+
+    
+
+    addOutput(digiOut);
+    addOutput(anlgOut);
+
+    r = 60;
+    insx = 20;
+    insy = 120;
+
+    gap = 4;
+
+    for(int x = 0; x < 4; ++x)
+    {
+        for(int y = 0; y < 4; ++y)
+        {
+            int i = x+y*4;
+            float xoff = insx+x*r;
+            float yoff = insy+y*r;
+
+            auto* jack = createInput<PJ301MPort>(
+                Vec(xoff, yoff), module, DAC::BITS_INPUT+i
+                );
+
+            center(jack);
+
+            auto* button = createParam<CKSS>(
+                Vec(xoff+jack->box.size.x/2+gap, yoff), module, DAC::BITS_PARAM+i,
+                0,1,0
+                );
+
+            center(button, 0);
+
+            auto* light = createLight<MediumLight<BlueLight>>(
+                Vec(xoff, yoff+jack->box.size.y/2+gap), module, DAC::BIT_LIGHT+i
+                );
+            
+            center(light, 1, 0);
+            addChild(light);
+
+            light = createLight<MediumLight<GreenLight>>(
+                Vec(button->box.pos.x+button->box.size.x/2, yoff+jack->box.size.y/2+gap), module, DAC::BITIND_LIGHT+i
+                );
+            
+            center(light, 1, 0);
+            addChild(light);
+
+
+            addInput(jack);
+            addParam(button);
+
+        }
+    }
+
+}
