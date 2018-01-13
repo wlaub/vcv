@@ -128,12 +128,12 @@ DACWidget::DACWidget() {
     insx = 200;
     gap = 4;
     auto *anlgOut = createOutput<PJ301MPort>(
-        Vec(insx-gap/2, insy), module, DAC::ANLG_OUTPUT
+        Vec(insx-gap/2, insy), module, DAC::DIGI_OUTPUT
         );
     center(anlgOut,2,1);
 
     auto *digiOut = createOutput<PJ301MPort>(
-        Vec(insx+gap/2, insy), module, DAC::DIGI_OUTPUT
+        Vec(insx+gap/2, insy), module, DAC::ANLG_OUTPUT
         );
 
     center(digiOut, 0, 1);
