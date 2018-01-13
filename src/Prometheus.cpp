@@ -49,7 +49,7 @@ unsigned char reverse(unsigned char input)
 
 void Prometheus::step() {
 	// Implement a simple sine oscillator
-	float deltaTime = 1.0 / engineGetSampleRate();
+	//float deltaTime = 1.0 / engineGetSampleRate();
 
 	// Compute the frequency from the pitch parameter and input
     int depth;
@@ -58,31 +58,22 @@ void Prometheus::step() {
     else
         depth = params[DEPTH_PARAM].value;
 
-    int taps = cv_to_num(inputs[TAPS_INPUT].value, depth);
-
-//    taps = (reverse(taps&0xff)<<8) | reverse(taps >> 8);
-//    taps >>= 16-depth;    
-
-//    char tstr[256];
-//    sprintf(tstr, "0x%04x", taps);
-//    testLabel->text = tstr;
-
-
-
-    int mask = 0;
-    for(int i = 0; i < depth; ++i)
-    {
-        mask<<=1;
-        mask|=1;
-    }
-
-    buffer &= mask;
-    taps &= mask;
-
-    int inv = params[MODE_PARAM].value;
-
     if(gateTrigger.process(inputs[GATE_INPUT].value))
     {
+        int taps = cv_to_num(inputs[TAPS_INPUT].value, depth);
+
+        int mask = 0;
+        for(int i = 0; i < depth; ++i)
+        {
+            mask<<=1;
+            mask|=1;
+        }
+
+        buffer &= mask;
+        taps &= mask;
+
+        int inv = params[MODE_PARAM].value;
+
         int lsb = buffer &1;
         lsb ^= inv;
         buffer >>=1;
@@ -90,21 +81,18 @@ void Prometheus::step() {
         {
             buffer ^= taps;
         }
+    
 
+        int temp = buffer;
+        for(int i = 0; i < BITL; ++i)
+        {
+            lights[BIT_LIGHT+i].value = (i < depth) ? (temp&1) : 0;
+            temp >>=1;
+        }
 
-        //Tick lfsr
+        outputs[DIGI_OUTPUT].value = buffer;
+        outputs[ANLG_OUTPUT].value = buffer&1;  
     }
-
-    int temp = buffer;
-    for(int i = 0; i < BITL; ++i)
-    {
-        lights[BIT_LIGHT+i].value = (i < depth) ? (temp&1) : 0;
-        temp >>=1;
-    }
-
-    outputs[DIGI_OUTPUT].value = buffer;
-    outputs[ANLG_OUTPUT].value = buffer&1;  
-//    outputs[ANLG_OUTPUT].value = float(buffer) / powf(2, depth);
 }
 
 
