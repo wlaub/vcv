@@ -54,7 +54,6 @@ void DAC::step() {
     int binVal = 0;
     for(int i = 0; i < BITL; ++i)
     {
-        int prev;
         int bitVal;
         float switchVal = params[BITS_PARAM+i].value;
         int nval = (switchVal > .5) ? 1 : 0;
@@ -75,8 +74,8 @@ void DAC::step() {
     }
 
     outputs[DIGI_OUTPUT].value = binVal;
-    outputs[ANLG_OUTPUT].value = float(binVal) / powf(2, depth);
-    outputs[DEPTH_OUTPUT].value = depth;
+    outputs[ANLG_OUTPUT].value = num_to_cv(binVal, depth);
+    outputs[DEPTH_OUTPUT].value = depth_to_cv(depth);
     char temp[256];
     sprintf(temp, "0x%04x\n%i", binVal, binVal);
     valLabel->text = temp;
@@ -101,8 +100,7 @@ DACWidget::DACWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    float x, y, r;
-
+    float r;
     float insx = 30;
     float insy = 60;
     float gap;    

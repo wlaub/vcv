@@ -8,6 +8,30 @@ void center(Widget* thing, int x, int y)
     thing->box.pos.y -= y*h/2;
 }
 
+//Using 0-10V CV's per https://vcvrack.com/manual/VoltageStandards.html
+int cv_to_depth(float cv, int max)
+{
+    return 1+round((max-1)*cv/10);
+}
+
+int cv_to_num(float cv, int depth)
+{
+    int max = pow(2,depth)-1;
+    return round(max*cv/10);
+
+}
+
+float depth_to_cv(int depth, int max)
+{
+    return 10*float(depth-1)/(max-1);
+}
+
+float num_to_cv(int num, int depth)
+{
+    int max = pow(2,depth)-1;
+    return 10*float(num)/max;
+}
+
 
 
 // The plugin-wide instance of the Plugin class

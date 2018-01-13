@@ -54,11 +54,11 @@ void Prometheus::step() {
 	// Compute the frequency from the pitch parameter and input
     int depth;
     if(inputs[DEPTH_INPUT].active)
-        depth = inputs[DEPTH_INPUT].value;
+        depth = cv_to_depth(inputs[DEPTH_INPUT].value);
     else
         depth = params[DEPTH_PARAM].value;
 
-    int taps = inputs[TAPS_INPUT].value;
+    int taps = cv_to_num(inputs[TAPS_INPUT].value, depth);
 
 //    taps = (reverse(taps&0xff)<<8) | reverse(taps >> 8);
 //    taps >>= 16-depth;    
