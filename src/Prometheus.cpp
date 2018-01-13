@@ -1,34 +1,36 @@
 #include "Tutorial.hpp"
 #define BITL 16
+#define NLFSR 3
 
 struct Prometheus : Module {
 	enum ParamIds {
         DEPTH_PARAM,
-        MODE_PARAM,
 		NUM_PARAMS
 	};
 	enum InputIds {
 		DEPTH_INPUT,
         TAPS_INPUT, 
-        GATE_INPUT,
-		NUM_INPUTS
+        GATE_INPUT=TAPS_INPUT+NLFSR,
+        INT_INPUT=GATE_INPUT+NLFSR,
+		NUM_INPUTS=INT_INPUT+NLFSR
 	};
 	enum OutputIds {
         DIGI_OUTPUT,
-        ANLG_OUTPUT,
-		NUM_OUTPUTS
+        ANLG_OUTPUT=DIGI_OUTPUT+NLFSR,
+		NUM_OUTPUTS=ANLG_OUTPUT+NLFSR
 	};
 	enum LightIds {
         BIT_LIGHT,
-		NUM_LIGHTS=BIT_LIGHT+BITL
+		NUM_LIGHTS=BIT_LIGHT+BITL*NLFSR
 	};
 
 
-    SchmittTrigger gateTrigger;
+    SchmittTrigger gateTrigger[NLFSR];
+    
 
     Label* testLabel;
 
-    int buffer = 0;
+    unsigned short buffer[NLFSR];
 
 	Prometheus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -48,58 +50,65 @@ unsigned char reverse(unsigned char input)
 }
 
 void Prometheus::step() {
-	// Implement a simple sine oscillator
 	//float deltaTime = 1.0 / engineGetSampleRate();
 
-	// Compute the frequency from the pitch parameter and input
     int depth;
     if(inputs[DEPTH_INPUT].active)
         depth = cv_to_depth(inputs[DEPTH_INPUT].value);
     else
         depth = params[DEPTH_PARAM].value;
 
-    if(gateTrigger.process(inputs[GATE_INPUT].value))
-    {
-        int taps = cv_to_num(inputs[TAPS_INPUT].value, depth);
-
-        int mask = 0;
-        for(int i = 0; i < depth; ++i)
+    for(int j = 0; j < NLFSR; ++j)
+    { 
+        if(gateTrigger[j].process(inputs[GATE_INPUT+j].value))
         {
-            mask<<=1;
-            mask|=1;
+            int taps = 0;
+
+            if(inputs[TAPS_INPUT+j].active)
+                taps = cv_to_num(inputs[TAPS_INPUT+j].value, depth);
+
+            if(inputs[INT_INPUT+j].active)
+                taps ^= cv_to_num(inputs[INT_INPUT+j].value, depth);
+
+            int mask = 0;
+            for(int i = 0; i < depth; ++i)
+            {
+                mask<<=1;
+                mask|=1;
+            }
+
+            taps &= mask;
+
+            int lsb = buffer[j]&1;
+            lsb ^= 1;
+            buffer[j] >>=1;
+            if(lsb)
+            {
+                buffer[j] ^= taps;
+            }
+        
+            buffer[j] &= mask;
+
+            int temp = buffer[j];
+            for(int i = 0; i < BITL; ++i)
+            {
+                lights[BIT_LIGHT+i+j*BITL].value = temp&1;
+                temp >>=1;
+            }
+
+            outputs[DIGI_OUTPUT+j].value = buffer[j];
+            outputs[ANLG_OUTPUT+j].value = buffer[j]&1; 
+
         }
-
-        buffer &= mask;
-        taps &= mask;
-
-        int inv = params[MODE_PARAM].value;
-
-        int lsb = buffer &1;
-        lsb ^= inv;
-        buffer >>=1;
-        if(lsb)
-        {
-            buffer ^= taps;
-        }
-    
-
-        int temp = buffer;
-        for(int i = 0; i < BITL; ++i)
-        {
-            lights[BIT_LIGHT+i].value = (i < depth) ? (temp&1) : 0;
-            temp >>=1;
-        }
-
-        outputs[DIGI_OUTPUT].value = buffer;
-        outputs[ANLG_OUTPUT].value = buffer&1;  
     }
+
 }
 
 
 PrometheusWidget::PrometheusWidget() {
 	Prometheus *module = new Prometheus();
 	setModule(module);
-	box.size = Vec(6 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -123,44 +132,47 @@ PrometheusWidget::PrometheusWidget() {
         Vec(17.5, 52.5), module, Prometheus::DEPTH_INPUT
         ));
 
-    addInput(createInput<PJ301MPort>(
-        Vec(17.5, 112.5), module, Prometheus::TAPS_INPUT
-        ));
 
-    addInput(createInput<PJ301MPort>(
-        Vec(17.5, 142.5), module, Prometheus::GATE_INPUT
-        ));
-
-    addParam(createParam<CKSS>(
-        Vec(22.5, 175), module, Prometheus::MODE_PARAM,
-        0,1,1
-        ));
-
-
-    for(int i = 0; i < 8; ++i)
+    for(int j = 0; j < NLFSR; ++j)
     {
+        float xoff = 90*j;
 
-        auto* llight = createLight<MediumLight<BlueLight>>(
-            Vec(30, 207.5+15*i), module, Prometheus::BIT_LIGHT+i
-            );
-        center(llight);
-        addChild(llight);
+        addInput(createInput<PJ301MPort>(
+            Vec(17.5+xoff, 112.5), module, Prometheus::TAPS_INPUT+j
+            ));
 
-        auto* rlight = createLight<MediumLight<BlueLight>>(
-            Vec(60, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+8
-            );
-        center(rlight);
-        addChild(rlight);
+        addInput(createInput<PJ301MPort>(
+            Vec(17.5+xoff, 142.5), module, Prometheus::INT_INPUT+j
+            ));
+
+        addInput(createInput<PJ301MPort>(
+            Vec(17.5+xoff, 172.5), module, Prometheus::GATE_INPUT+j
+            ));
+
+        for(int i = 0; i < 8; ++i)
+        {
+
+            auto* llight = createLight<MediumLight<BlueLight>>(
+                Vec(30+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+j*BITL
+                );
+            center(llight);
+            addChild(llight);
+
+            auto* rlight = createLight<MediumLight<BlueLight>>(
+                Vec(60+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+8+j*BITL
+                );
+            center(rlight);
+            addChild(rlight);
+        }
+     
+        addOutput(createOutput<PJ301MPort>(
+            Vec(17.5+xoff, 322.5), module, Prometheus::DIGI_OUTPUT+j
+            ));
+
+        addOutput(createOutput<PJ301MPort>(
+            Vec(47.5+xoff, 322.5), module, Prometheus::ANLG_OUTPUT+j
+            ));
     }
- 
-    addOutput(createOutput<PJ301MPort>(
-        Vec(17.5, 322.5), module, Prometheus::DIGI_OUTPUT
-        ));
-
-    addOutput(createOutput<PJ301MPort>(
-        Vec(47.5, 322.5), module, Prometheus::ANLG_OUTPUT
-        ));
-
 
     auto* label = new Label();
     label->box.pos=Vec(0, 30);
