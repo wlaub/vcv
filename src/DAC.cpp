@@ -78,7 +78,7 @@ void DAC::step() {
     char temp[256];
     sprintf(temp, "0x%04x\n%i", binVal, binVal);
     if(valLabel)
-        valLabel->text = "test";
+        valLabel->text = temp;
 
 }
 
