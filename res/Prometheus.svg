@@ -30,7 +30,7 @@
      inkscape:cy="190"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="true"
+     showgrid="false"
      units="px"
      inkscape:snap-bbox="true"
      inkscape:snap-page="true"
@@ -53,7 +53,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -68,14 +68,38 @@
        id="rect817"
        inkscape:connector-curvature="0" />
     <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-6"
+       width="15.875002"
+       height="11.906252"
+       x="51.858337"
+       y="281.125"
+       ry="1" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3"
+       width="15.875002"
+       height="11.906252"
+       x="27.781252"
+       y="281.125"
+       ry="1" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787"
+       width="15.875002"
+       height="11.906252"
+       x="3.9687502"
+       y="281.125"
+       ry="1" />
+    <rect
        style="fill:#c0c0c0;fill-opacity:1"
        id="rect3379-1"
        width="71.437508"
        height="5.2916675"
        x="0"
-       y="200.42706" />
+       y="201.08852" />
     <g
-       transform="matrix(1.0000017,0,0,0.99999831,24.077086,0)"
+       transform="matrix(1.0000017,0,0,0.99999831,24.077086,0.66145622)"
        style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:3.30729222px;line-height:125%;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif Medium';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text3375">
       <path
@@ -133,19 +157,20 @@
        style="fill:#c0c0c0;fill-opacity:1"
        id="path4198"
        cx="15.875002"
-       cy="213.65622"
+       cy="214.31769"
        rx="3.9687505"
        ry="3.9687507" />
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
        id="path4198-8"
        cx="7.937501"
-       cy="213.65622"
+       cy="214.31769"
        rx="3.307292"
        ry="3.3072922" />
     <g
        style="font-style:normal;font-weight:normal;font-size:6.61458445px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="text4219">
+       id="text4219"
+       transform="translate(0,0.66146513)">
       <path
          d="m 8.3648001,219.32803 0,-0.93502 0.2971395,0 0,2.51277 -0.2971395,0 0,-0.2277 q -0.074285,0.13403 -0.1986313,0.20509 -0.1227315,0.0694 -0.2842204,0.0694 -0.3278224,0 -0.5167644,-0.25354 -0.1873271,-0.25515 -0.1873271,-0.70248 0,-0.44086 0.188942,-0.69117 0.188942,-0.25192 0.5151495,-0.25192 0.1631038,0 0.2874502,0.071 0.1243464,0.0694 0.1954015,0.20348 z m -0.8736548,0.67502 q 0,0.34559 0.1098125,0.52161 0.1098124,0.17603 0.3245926,0.17603 0.2147802,0 0.3262075,-0.17764 0.1130422,-0.17764 0.1130422,-0.52 0,-0.34397 -0.1130422,-0.51999 -0.1114273,-0.17764 -0.3262075,-0.17764 -0.2147802,0 -0.3245926,0.17603 -0.1098125,0.17602 -0.1098125,0.5216 z"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.30729198px;font-family:monospace;-inkscape-font-specification:monospace"
@@ -211,13 +236,6 @@
          style="font-size:3.30729175px"
          id="path4420" />
     </g>
-    <rect
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="rect4277"
-       width="3.9687505"
-       height="5.8208342"
-       x="5.9531255"
-       y="242.49583" />
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
        id="path4283"
@@ -338,27 +356,31 @@
        rx="3.307292"
        ry="3.3072922" />
     <ellipse
-       style="fill:#c0c0c0;fill-opacity:1"
+       style="fill:#c0c0c0;fill-opacity:1;image-rendering:auto"
        id="path4198-8-7-7-6-1"
        cx="15.875002"
        cy="285.09375"
        rx="3.307292"
        ry="3.3072922" />
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="text4478">
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="text4478"
+       transform="translate(0,-0.39687529)">
       <path
          inkscape:connector-curvature="0"
          d="m 15.875001,290.28012 -0.442479,1.19986 0.886574,0 -0.444095,-1.19986 z m -0.184097,-0.32137 0.36981,0 0.918871,2.41103 -0.339126,0 -0.219625,-0.6185 -1.08682,0 -0.219625,0.6185 -0.343971,0 0.920486,-2.41103 z"
-         id="path4490" />
+         id="path4490"
+         style="fill:#ffffff" />
     </g>
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="text4482">
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="text4482"
+       transform="translate(0,-0.39687529)">
       <path
          inkscape:connector-curvature="0"
          d="m 7.3561873,290.22682 0,1.87489 0.3940329,0 q 0.4990006,0 0.7299297,-0.22608 0.232544,-0.22609 0.232544,-0.71379 0,-0.48446 -0.232544,-0.70893 -0.2309291,-0.22609 -0.7299297,-0.22609 l -0.3940329,0 z m -0.3262075,-0.26807 0.6701788,0 q 0.7008617,0 1.0286842,0.2923 0.3278224,0.29068 0.3278224,0.91079 0,0.62335 -0.3294373,0.91565 -0.3294373,0.29229 -1.0270693,0.29229 l -0.6701788,0 0,-2.41103 z"
-         id="path4487" />
+         id="path4487"
+         style="fill:#ffffff" />
     </g>
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
@@ -399,13 +421,6 @@
          id="path4420-0"
          inkscape:connector-curvature="0" />
     </g>
-    <rect
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="rect4277-9"
-       width="3.9687505"
-       height="5.8208342"
-       x="29.765627"
-       y="242.49583" />
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
        id="path4283-26"
@@ -533,22 +548,24 @@
        rx="3.307292"
        ry="3.3072922" />
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4478-1"
-       transform="translate(23.812502,-2.2097157e-7)">
+       transform="translate(23.812502,-0.39687551)">
       <path
          d="m 15.875001,290.28012 -0.442479,1.19986 0.886574,0 -0.444095,-1.19986 z m -0.184097,-0.32137 0.36981,0 0.918871,2.41103 -0.339126,0 -0.219625,-0.6185 -1.08682,0 -0.219625,0.6185 -0.343971,0 0.920486,-2.41103 z"
          id="path4490-2"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
     </g>
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4482-9"
-       transform="translate(23.812502,-2.2097157e-7)">
+       transform="translate(23.812502,-0.39687551)">
       <path
          d="m 7.3561873,290.22682 0,1.87489 0.3940329,0 q 0.4990006,0 0.7299297,-0.22608 0.232544,-0.22609 0.232544,-0.71379 0,-0.48446 -0.232544,-0.70893 -0.2309291,-0.22609 -0.7299297,-0.22609 l -0.3940329,0 z m -0.3262075,-0.26807 0.6701788,0 q 0.7008617,0 1.0286842,0.2923 0.3278224,0.29068 0.3278224,0.91079 0,0.62335 -0.3294373,0.91565 -0.3294373,0.29229 -1.0270693,0.29229 l -0.6701788,0 0,-2.41103 z"
          id="path4487-3"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
     </g>
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
@@ -589,13 +606,6 @@
          id="path4420-04"
          inkscape:connector-curvature="0" />
     </g>
-    <rect
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="rect4277-8"
-       width="3.9687505"
-       height="5.8208342"
-       x="53.578129"
-       y="242.49583" />
     <ellipse
        style="fill:#c0c0c0;fill-opacity:1"
        id="path4283-7"
@@ -723,22 +733,24 @@
        rx="3.307292"
        ry="3.3072922" />
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4478-9"
-       transform="translate(47.625005,-2.2097169e-7)">
+       transform="translate(47.625005,-0.39687551)">
       <path
          d="m 15.875001,290.28012 -0.442479,1.19986 0.886574,0 -0.444095,-1.19986 z m -0.184097,-0.32137 0.36981,0 0.918871,2.41103 -0.339126,0 -0.219625,-0.6185 -1.08682,0 -0.219625,0.6185 -0.343971,0 0.920486,-2.41103 z"
          id="path4490-7"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
     </g>
     <g
-       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4482-7"
-       transform="translate(47.625005,-2.2097169e-7)">
+       transform="translate(47.625005,-0.39687551)">
       <path
          d="m 7.3561873,290.22682 0,1.87489 0.3940329,0 q 0.4990006,0 0.7299297,-0.22608 0.232544,-0.22609 0.232544,-0.71379 0,-0.48446 -0.232544,-0.70893 -0.2309291,-0.22609 -0.7299297,-0.22609 l -0.3940329,0 z m -0.3262075,-0.26807 0.6701788,0 q 0.7008617,0 1.0286842,0.2923 0.3278224,0.29068 0.3278224,0.91079 0,0.62335 -0.3294373,0.91565 -0.3294373,0.29229 -1.0270693,0.29229 l -0.6701788,0 0,-2.41103 z"
          id="path4487-6"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
     </g>
     <g
        style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"

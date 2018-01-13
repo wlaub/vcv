@@ -124,12 +124,12 @@ PrometheusWidget::PrometheusWidget() {
 
 
     addParam(createParam<RoundSmallBlackSnapKnob>(
-        Vec(46, 51), module, Prometheus::DEPTH_PARAM,
+        Vec(46, 53.5), module, Prometheus::DEPTH_PARAM,
         1, 16, 12
         ));
 
     addInput(createInput<PJ301MPort>(
-        Vec(17.5, 52.5), module, Prometheus::DEPTH_INPUT
+        Vec(17.5, 55), module, Prometheus::DEPTH_INPUT
         ));
 
 
