@@ -9,7 +9,7 @@ Mostly relating to reconfigurable LFSRs
 
 * Depth knob/input: Bit depth from 1 to 16
 * Taps inputs: Tap configuration as 0 ~ 10V CV, quantized to the selected bit depth
-  * tap1 and tap2 are xor'd together if present
+  * taps1 and taps2 are xor'd together if present
 * Gate input: Ticks the LFSR on a rising edge
 * Lights: displays the state of the LFSR register
 * D output: The internal register value scaled to 0 ~ 10V

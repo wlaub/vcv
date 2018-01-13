@@ -1,5 +1,5 @@
-SLUG = Template
-VERSION = 0.5.0
+SLUG = TechTechTechnologies
+VERSION = 0.4.0
 
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS +=
