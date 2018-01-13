@@ -96,8 +96,8 @@ void Prometheus::step() {
                 temp >>=1;
             }
 
-            outputs[DIGI_OUTPUT+j].value = buffer[j];
-            outputs[ANLG_OUTPUT+j].value = buffer[j]&1; 
+            outputs[DIGI_OUTPUT+j].value = num_to_cv(buffer[j], depth);
+            outputs[ANLG_OUTPUT+j].value = 10*(buffer[j]&1)-5; 
 
         }
     }
