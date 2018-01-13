@@ -83,24 +83,6 @@ void DAC::step() {
 }
 
 
-Vec radius(float x, float y, float r, float i, int N)
-{
-/*
-Returns a position along a circle of radius r centered at x,y
-*/
-    float a = 6.28*i/N;
-    return Vec(x + r*cos(a), y+r*sin(a));
-}
-
-void center(Widget* thing, int x = 1, int y = 1)
-{
-    float w = thing->box.size.x;
-    float h = thing->box.size.y;
-    thing->box.pos.x -= x*w/2;
-    thing->box.pos.y -= y*h/2;
-}
-
-
 DACWidget::DACWidget() {
 	DAC *module = new DAC();
 	setModule(module);

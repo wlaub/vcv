@@ -1,5 +1,14 @@
 #include "Tutorial.hpp"
 
+void center(Widget* thing, int x, int y)
+{
+    float w = thing->box.size.x;
+    float h = thing->box.size.y;
+    thing->box.pos.x -= x*w/2;
+    thing->box.pos.y -= y*h/2;
+}
+
+
 
 // The plugin-wide instance of the Plugin class
 Plugin *plugin;
@@ -18,6 +27,7 @@ void init(rack::Plugin *p) {
 	// For each module, specify the ModuleWidget subclass, manufacturer slug (for saving in patches), manufacturer human-readable name, module slug, and module name
 	p->addModel(createModel<MyModuleWidget>("Tutorial", "MyModule", "My Module", OSCILLATOR_TAG));
 	p->addModel(createModel<DACWidget>("Tutorial", "DAC", "DAC", OSCILLATOR_TAG));
+    p->addModel(createModel<PrometheusWidget>("Tutorial", "Prometheus", "Prometheus", OSCILLATOR_TAG));
 
 	// Any other plugin initialization may go here.
 	// As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.
