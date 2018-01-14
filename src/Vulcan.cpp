@@ -2,7 +2,7 @@
 #define BITL 16
 #define NLFSR 3
 
-struct Prometheus : Module {
+struct Vulcan : Module {
 	enum ParamIds {
         DEPTH_PARAM,
 		NUM_PARAMS
@@ -15,7 +15,6 @@ struct Prometheus : Module {
 		NUM_INPUTS=INT_INPUT+NLFSR
 	};
 	enum OutputIds {
-        DEPTH_OUTPUT,
         DIGI_OUTPUT,
         ANLG_OUTPUT=DIGI_OUTPUT+NLFSR,
 		NUM_OUTPUTS=ANLG_OUTPUT+NLFSR
@@ -33,7 +32,7 @@ struct Prometheus : Module {
 
     unsigned short buffer[NLFSR];
 
-	Prometheus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Vulcan() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -42,18 +41,14 @@ struct Prometheus : Module {
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
-
-unsigned char reverse(unsigned char input)
-{
-    static unsigned char lookup[16] = {0,8,4,12,2,10,6,14,1,9,5,13,2,11,7,15};
-    return (lookup[input&0xf]<<4)|lookup[input >>4];
-
-}
-
-void Prometheus::step() {
+void Vulcan::step() {
 	//float deltaTime = 1.0 / engineGetSampleRate();
 
-    DEPTH_STEP
+    int depth;
+    if(inputs[DEPTH_INPUT].active)
+        depth = cv_to_depth(inputs[DEPTH_INPUT].value);
+    else
+        depth = params[DEPTH_PARAM].value;
 
     for(int j = 0; j < NLFSR; ++j)
     { 
@@ -102,15 +97,15 @@ void Prometheus::step() {
 }
 
 
-PrometheusWidget::PrometheusWidget() {
-	Prometheus *module = new Prometheus();
+VulcanWidget::VulcanWidget() {
+	Vulcan *module = new Vulcan();
 	setModule(module);
 	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
 		panel->box.size = box.size;
-		panel->setBackground(SVG::load(assetPlugin(plugin, "res/Prometheus.svg")));
+		panel->setBackground(SVG::load(assetPlugin(plugin, "res/Vulcan.svg")));
 		addChild(panel);
 	}
 
@@ -120,7 +115,14 @@ PrometheusWidget::PrometheusWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    DEPTH_WIDGETS(17.5, 55, Prometheus) 
+    addParam(createParam<RoundSmallBlackSnapKnob>(
+        Vec(46, 53.5), module, Vulcan::DEPTH_PARAM,
+        1, 16, 12
+        ));
+
+    addInput(createInput<PJ301MPort>(
+        Vec(17.5, 55), module, Vulcan::DEPTH_INPUT
+        ));
 
 
     for(int j = 0; j < NLFSR; ++j)
@@ -128,39 +130,39 @@ PrometheusWidget::PrometheusWidget() {
         float xoff = 90*j;
 
         addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 112.5), module, Prometheus::TAPS_INPUT+j
+            Vec(17.5+xoff, 112.5), module, Vulcan::TAPS_INPUT+j
             ));
 
         addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 142.5), module, Prometheus::INT_INPUT+j
+            Vec(17.5+xoff, 142.5), module, Vulcan::INT_INPUT+j
             ));
 
         addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 172.5), module, Prometheus::GATE_INPUT+j
+            Vec(17.5+xoff, 172.5), module, Vulcan::GATE_INPUT+j
             ));
 
         for(int i = 0; i < 8; ++i)
         {
 
             auto* llight = createLight<MediumLight<BlueLight>>(
-                Vec(30+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+j*BITL
+                Vec(30+xoff, 207.5+15*i), module, Vulcan::BIT_LIGHT+i+j*BITL
                 );
             center(llight);
             addChild(llight);
 
             auto* rlight = createLight<MediumLight<BlueLight>>(
-                Vec(60+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+8+j*BITL
+                Vec(60+xoff, 207.5+15*i), module, Vulcan::BIT_LIGHT+i+8+j*BITL
                 );
             center(rlight);
             addChild(rlight);
         }
      
         addOutput(createOutput<PJ301MPort>(
-            Vec(17.5+xoff, 322.5), module, Prometheus::DIGI_OUTPUT+j
+            Vec(17.5+xoff, 322.5), module, Vulcan::DIGI_OUTPUT+j
             ));
 
         addOutput(createOutput<PJ301MPort>(
-            Vec(47.5+xoff, 322.5), module, Prometheus::ANLG_OUTPUT+j
+            Vec(47.5+xoff, 322.5), module, Vulcan::ANLG_OUTPUT+j
             ));
     }
 

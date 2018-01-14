@@ -1,5 +1,7 @@
 #include "TechTechTechnologies.hpp"
 
+
+
 void center(Widget* thing, int x, int y)
 {
     float w = thing->box.size.x;
@@ -61,6 +63,11 @@ void init(rack::Plugin *p) {
         "TechTech Technologies", "Prometheus", "Prometheus", 
         DIGITAL_TAG,LOGIC_TAG,NOISE_TAG,OSCILLATOR_TAG,SEQUENCER_TAG
         ));
+    p->addModel(createModel<VulcanWidget>(
+        "TechTech Technologies", "Vulcan", "Vulcan", 
+        DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
+        ));
+
 
 	// Any other plugin initialization may go here.
 	// As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.

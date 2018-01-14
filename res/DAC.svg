@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -108,28 +108,6 @@
          style=""
          id="path3747" />
     </g>
-    <ellipse
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="path4198"
-       cx="7.937501"
-       cy="212.33331"
-       rx="3.9687505"
-       ry="3.9687507" />
-    <rect
-       style="fill:#333333;fill-opacity:1"
-       id="rect3787-3"
-       width="7.937501"
-       height="8.5989599"
-       x="12.038543"
-       y="208.09998"
-       ry="0.72222221" />
-    <ellipse
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="path4198-8"
-       cx="16.007292"
-       cy="212.33331"
-       rx="3.307292"
-       ry="3.3072922" />
     <g
        id="g3869">
       <ellipse
@@ -716,5 +694,43 @@
          id="path4377"
          inkscape:connector-curvature="0" />
     </g>
+    <g
+       id="g4573"
+       transform="translate(5.1593754,3.0427133)">
+      <rect
+         ry="0.66666663"
+         y="205.71872"
+         x="12.038543"
+         height="7.9375014"
+         width="7.937501"
+         id="rect3787-3-7"
+         style="fill:#333333;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="209.68747"
+         cx="16.007294"
+         id="path4198-8-5"
+         style="fill:#c0c0c0;fill-opacity:1" />
+    </g>
+    <g
+       id="g4573-6"
+       transform="translate(-10.715627,3.0427183)">
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="209.68747"
+         cx="16.007294"
+         id="path4198-8-9"
+         style="fill:#c0c0c0;fill-opacity:1" />
+    </g>
+    <rect
+       style="fill:#000000;fill-opacity:1"
+       id="rect4604"
+       width="15.875002"
+       height="0.26458338"
+       x="5.2916675"
+       y="212.46565"
+       ry="0.011265561" />
   </g>
 </svg>

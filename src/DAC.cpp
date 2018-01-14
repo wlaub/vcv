@@ -10,6 +10,7 @@ struct DAC : Module {
 		NUM_PARAMS=BITS_PARAM+BITL
 	};
 	enum InputIds {
+        DEPTH_INPUT,
 		PITCH_INPUT,
         BITS_INPUT, 
 		NUM_INPUTS=BITS_INPUT+BITL
@@ -47,7 +48,7 @@ void DAC::step() {
 
 	// Compute the frequency from the pitch parameter and input
 
-    int depth = params[DEPTH_PARAM].value;
+    DEPTH_STEP
 
     int binVal = 0;
 
@@ -105,25 +106,13 @@ DACWidget::DACWidget() {
     float insy = 60;
     float gap;    
 
-    auto* depth = createParam<RoundSmallBlackSnapKnob>(
-        Vec(insx,insy), module, DAC::DEPTH_PARAM,
-        1, 16, 8
-        );
-    center(depth);
-
-    addParam(depth);
+    DEPTH_WIDGETS(7.5, 46.5, DAC)
 
     Label* label = new Label();
     label->box.pos=Vec(90, insy-15);
     label->text = "TESTTESTESTESTETETSDASDASDA";
     addChild(label); 
     module->valLabel = label;
-
-    auto *depthOut = createOutput<PJ301MPort>(
-        Vec(depth->box.pos.x+depth->box.size.x+4, insy), module, DAC::DEPTH_OUTPUT
-        );
-    center(depthOut,0,1);
-    addOutput(depthOut);
 
     insx = 200;
     gap = 4;

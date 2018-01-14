@@ -81,13 +81,7 @@ void mDAC::step() {
 
 	// Compute the frequency from the pitch parameter and input
 
-    int depth;
-    if(inputs[DEPTH_INPUT].active)
-        depth = cv_to_depth(inputs[DEPTH_INPUT].value);
-    else
-        depth = params[DEPTH_PARAM].value;
-
-
+    DEPTH_STEP
 
     for(int i = 0; i < NOUT; ++i)
     {
@@ -139,20 +133,7 @@ mDACWidget::mDACWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    addInput(createInput<PJ301MPort>(
-        Vec(17.5, 37.5), module, mDAC::DEPTH_INPUT
-        ));
-
-
-    addParam(createParam<RoundSmallBlackSnapKnob>(
-        Vec(45, 35), module, mDAC::DEPTH_PARAM,
-        1, 16, 8
-        ));
-
-    addOutput(createOutput<PJ301MPort>(
-        Vec(77.5, 37.5), module, mDAC::DEPTH_OUTPUT
-        ));
-
+    DEPTH_WIDGETS(17.5, 37.5, mDAC) 
 
     for(int i = 0; i < NOUT; ++i)
     {

@@ -153,20 +153,6 @@
          id="path4461"
          inkscape:connector-curvature="0" />
     </g>
-    <ellipse
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="path4198"
-       cx="15.875002"
-       cy="214.31769"
-       rx="3.9687505"
-       ry="3.9687507" />
-    <ellipse
-       style="fill:#c0c0c0;fill-opacity:1"
-       id="path4198-8"
-       cx="7.937501"
-       cy="214.31769"
-       rx="3.307292"
-       ry="3.3072922" />
     <g
        style="font-style:normal;font-weight:normal;font-size:6.61458445px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4219"
@@ -902,5 +888,43 @@
          id="path4030-5-8"
          inkscape:connector-curvature="0" />
     </g>
+    <g
+       id="g4573"
+       transform="translate(7.8052081,5.291672)">
+      <rect
+         ry="0.66666663"
+         y="205.71872"
+         x="12.038543"
+         height="7.9375014"
+         width="7.937501"
+         id="rect3787-3-3"
+         style="fill:#333333;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="209.68747"
+         cx="16.007294"
+         id="path4198-8-6"
+         style="fill:#c0c0c0;fill-opacity:1" />
+    </g>
+    <g
+       id="g4573-6"
+       transform="translate(-8.0697929,5.291678)">
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="209.68747"
+         cx="16.007294"
+         id="path4198-8-9"
+         style="fill:#c0c0c0;fill-opacity:1" />
+    </g>
+    <rect
+       style="fill:#000000;fill-opacity:1"
+       id="rect4604"
+       width="15.875002"
+       height="0.26458338"
+       x="7.937499"
+       y="214.7146"
+       ry="0.011265561" />
   </g>
 </svg>
