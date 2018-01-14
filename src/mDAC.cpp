@@ -31,6 +31,47 @@ struct mDAC : Module {
 	// - toJson, fromJson: serialization of internal data
 	// - onSampleRateChange: event triggered by a change of sample rate
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
+    void jsontag(char* result, int i)
+    {
+
+        sprintf(result, "text%i", i);
+    }
+
+
+    json_t* toJson() override
+    {
+        json_t *rootJ = json_object();
+
+        char tstr[256];
+
+        for(int i = 0; i < NOUT; ++i)
+        {
+            jsontag(tstr, i);
+            json_object_set_new(rootJ, tstr,
+                json_string(infields[i].text.c_str())
+                );
+        }
+
+        return rootJ;
+    }
+
+
+    void fromJson(json_t *rootJ) override
+    {
+        char tstr[256];
+
+        for(int i = 0; i < NOUT; ++i)
+        {
+            jsontag(tstr, i);
+            infields[i].text = json_string_value(
+                json_object_get(rootJ, tstr)
+                );
+        }
+
+    }
+
+
+
 };
 
 
@@ -134,6 +175,6 @@ mDACWidget::mDACWidget() {
     label->text = "";
     addChild(label); 
     module->testLabel = label;
-
-
 }
+
+
