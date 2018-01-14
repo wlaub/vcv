@@ -15,6 +15,7 @@ struct Vulcan : Module {
 		NUM_INPUTS=INT_INPUT+NLFSR
 	};
 	enum OutputIds {
+        DEPTH_OUTPUT,
         DIGI_OUTPUT,
         ANLG_OUTPUT=DIGI_OUTPUT+NLFSR,
 		NUM_OUTPUTS=ANLG_OUTPUT+NLFSR
@@ -24,6 +25,7 @@ struct Vulcan : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL*NLFSR
 	};
 
+    int ready = 0;
 
     SchmittTrigger gateTrigger[NLFSR];
     
@@ -44,11 +46,9 @@ struct Vulcan : Module {
 void Vulcan::step() {
 	//float deltaTime = 1.0 / engineGetSampleRate();
 
-    int depth;
-    if(inputs[DEPTH_INPUT].active)
-        depth = cv_to_depth(inputs[DEPTH_INPUT].value);
-    else
-        depth = params[DEPTH_PARAM].value;
+    if(ready == 0) return;
+
+    DEPTH_STEP
 
     for(int j = 0; j < NLFSR; ++j)
     { 
@@ -172,6 +172,6 @@ VulcanWidget::VulcanWidget() {
     addChild(label); 
     module->testLabel = label;
 
-
+    module->ready = 1;
 
 }

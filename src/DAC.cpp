@@ -28,6 +28,8 @@ struct DAC : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL
 	};
 
+    int ready = 0;
+
     SchmittTrigger bitTrigger[BITL];
 
     Label* valLabel;
@@ -47,6 +49,8 @@ void DAC::step() {
 	//float deltaTime = 1.0 / engineGetSampleRate();
 
 	// Compute the frequency from the pitch parameter and input
+
+    if(ready == 0) return;
 
     DEPTH_STEP
 
@@ -179,5 +183,7 @@ DACWidget::DACWidget() {
 
         }
     }
+
+    module->ready = 1;
 
 }

@@ -25,6 +25,7 @@ struct Prometheus : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL*NLFSR
 	};
 
+    int ready = 0;
 
     SchmittTrigger gateTrigger[NLFSR];
     
@@ -52,6 +53,8 @@ unsigned char reverse(unsigned char input)
 
 void Prometheus::step() {
 	//float deltaTime = 1.0 / engineGetSampleRate();
+
+    if(ready == 0) return;
 
     DEPTH_STEP
 
@@ -170,6 +173,6 @@ PrometheusWidget::PrometheusWidget() {
     addChild(label); 
     module->testLabel = label;
 
-
+    module->ready = 1;
 
 }

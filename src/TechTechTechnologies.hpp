@@ -41,7 +41,6 @@ int cv_to_depth(float cv, int max = 16);
 int cv_to_num(float cv, int depth);
 float depth_to_cv(int depth, int max=16);
 float num_to_cv(int num, int depth);
-void createDepth(float x, float y, Module* module, int input, int param, int output);
 
 ////////////////////
 // module widgets
@@ -56,7 +55,11 @@ struct DACWidget : ModuleWidget
 };
 struct mDACWidget : ModuleWidget
 {
+    TextField** infields;
     mDACWidget();
+    void jsontag(char* result, int i);
+    json_t *toJson() override;
+    void fromJson(json_t *rootJ) override;
 };
 struct PrometheusWidget : ModuleWidget
 {

@@ -22,7 +22,9 @@ struct mDAC : Module {
 
     Label* testLabel;
 
-    TextField infields[NOUT];
+    TextField** infields;
+
+    int ready = 0;
 
 	mDAC() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -31,46 +33,6 @@ struct mDAC : Module {
 	// - toJson, fromJson: serialization of internal data
 	// - onSampleRateChange: event triggered by a change of sample rate
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
-    void jsontag(char* result, int i)
-    {
-
-        sprintf(result, "text%i", i);
-    }
-
-
-    json_t* toJson() override
-    {
-        json_t *rootJ = json_object();
-
-        char tstr[256];
-
-        for(int i = 0; i < NOUT; ++i)
-        {
-            jsontag(tstr, i);
-            json_object_set_new(rootJ, tstr,
-                json_string(infields[i].text.c_str())
-                );
-        }
-
-        return rootJ;
-    }
-
-
-    void fromJson(json_t *rootJ) override
-    {
-        char tstr[256];
-
-        for(int i = 0; i < NOUT; ++i)
-        {
-            jsontag(tstr, i);
-            infields[i].text = json_string_value(
-                json_object_get(rootJ, tstr)
-                );
-        }
-
-    }
-
-
 
 };
 
@@ -81,13 +43,15 @@ void mDAC::step() {
 
 	// Compute the frequency from the pitch parameter and input
 
+    if(ready == 0) return;
+
     DEPTH_STEP
 
     for(int i = 0; i < NOUT; ++i)
     {
         int val;
         int res;
-        const char* str = infields[i].text.c_str();
+        const char* str = infields[i]->text.c_str();
         res = sscanf(str, "0x%x", &val);
         if(res == 0)
             res = sscanf(str, "%i", &val);
@@ -135,6 +99,11 @@ mDACWidget::mDACWidget() {
 
     DEPTH_WIDGETS(17.5, 37.5, mDAC) 
 
+
+    infields = new TextField*[NOUT];
+
+    module->infields = infields;
+
     for(int i = 0; i < NOUT; ++i)
     {
 
@@ -142,20 +111,62 @@ mDACWidget::mDACWidget() {
         addOutput(createOutput<PJ301MPort>(
             Vec(77.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
             ));
-        
-        TextField* text = &(module->infields[i]);
+
+        infields[i] = new TextField();
+        TextField* text = infields[i];
         text->box.pos = Vec(15, yoff+5);
         text->box.size = Vec(50, 20);
         addChild(text);
 
     }
 
-
     Label* label = new Label();
     label->box.pos=Vec(30, 0);
     label->text = "";
     addChild(label); 
     module->testLabel = label;
+
+    module -> ready = 1;
+
 }
 
+void mDACWidget::jsontag(char* result, int i)
+{
+
+    sprintf(result, "text%i", i);
+}
+
+
+json_t* mDACWidget::toJson()
+{
+    json_t *rootJ = ModuleWidget::toJson();
+
+    char tstr[256];
+
+    for(int i = 0; i < NOUT; ++i)
+    {
+        jsontag(tstr, i);
+        json_object_set_new(rootJ, tstr,
+            json_string(infields[i]->text.c_str())
+            );
+    }
+
+    return rootJ;
+}
+
+
+void mDACWidget::fromJson(json_t *rootJ)
+{
+    char tstr[256];
+    ModuleWidget::fromJson(rootJ);
+
+    for(int i = 0; i < NOUT; ++i)
+    {
+        jsontag(tstr, i);
+        infields[i]->text = json_string_value(
+            json_object_get(rootJ, tstr)
+            );
+    }
+
+}
 
