@@ -30,5 +30,10 @@ Utility module for generating digital values
 
 Route the depth output to the Prometheus depth input, and the A output to a taps input.
 
+### mDAC
 
+Utility module providing 8 digital outputs generated from text boxes. Numbers may be either base 10 or 16.
+
+* Depth knob/input/output: Same as DAC and Prometheus
+* 8x outputs: 8x analog outputs that behave the same way as the DAC A output
 
