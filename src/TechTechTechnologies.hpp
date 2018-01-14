@@ -26,6 +26,10 @@ struct DACWidget : ModuleWidget
 {
     DACWidget();
 };
+struct mDACWidget : ModuleWidget
+{
+    mDACWidget();
+};
 struct PrometheusWidget : ModuleWidget
 {
     PrometheusWidget();
