@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="90"
+   width="120"
    height="380"
-   viewBox="0 0 23.812502 100.54167"
+   viewBox="0 0 31.750002 100.54167"
    version="1.1"
    id="svg8"
    inkscape:version="0.91 r13725"
@@ -27,7 +27,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
      inkscape:cx="78.206527"
-     inkscape:cy="191.44807"
+     inkscape:cy="252.05722"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -41,7 +41,8 @@
      inkscape:window-x="0"
      inkscape:window-y="18"
      inkscape:window-maximized="0"
-     inkscape:snap-global="false">
+     inkscape:snap-global="false"
+     borderlayer="true">
     <inkscape:grid
        type="xygrid"
        id="grid4411" />
@@ -66,11 +67,11 @@
     <path
        inkscape:connector-curvature="0"
        id="rect817"
-       d="m 0,196.45831 23.812501,0 0,100.54168 -23.812501,0 z"
+       d="m 0,196.45831 31.750003,0 0,100.54168 -31.750003,0 z"
        style="opacity:1;fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.48607069;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
     <g
        id="g4569"
-       transform="translate(2.6458338,-1.3229171)">
+       transform="translate(7.9374997,-1.3229171)">
       <rect
          ry="0.66666663"
          y="220.27081"
@@ -88,7 +89,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,7.9374977)"
+       transform="translate(7.9374997,7.9374977)"
        id="g4455-7">
       <rect
          ry="0.66666663"
@@ -107,7 +108,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,17.197919)"
+       transform="translate(7.9374997,17.197919)"
        id="g4455-3">
       <rect
          ry="0.66666663"
@@ -126,7 +127,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,26.458334)"
+       transform="translate(7.9374997,26.458334)"
        id="g4455-7-8">
       <rect
          ry="0.66666663"
@@ -145,7 +146,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,35.718755)"
+       transform="translate(7.9374997,35.718755)"
        id="g4455-8">
       <rect
          ry="0.66666663"
@@ -164,7 +165,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,44.97917)"
+       transform="translate(7.9374997,44.97917)"
        id="g4455-7-4">
       <rect
          ry="0.66666663"
@@ -183,7 +184,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,54.239592)"
+       transform="translate(7.9374997,54.239592)"
        id="g4455-0">
       <rect
          ry="0.66666663"
@@ -202,7 +203,7 @@
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
-       transform="translate(2.6458338,63.500007)"
+       transform="translate(7.9374997,63.500007)"
        id="g4455-7-9">
       <rect
          ry="0.66666663"
@@ -233,7 +234,7 @@
          y="246.3524" /></text>
     <g
        id="g4573"
-       transform="translate(1.3229168,0)">
+       transform="translate(7.805208,0)">
       <rect
          ry="0.66666663"
          y="205.71872"
@@ -246,14 +247,14 @@
          ry="3.3072922"
          rx="3.307292"
          cy="209.68747"
-         cx="15.875002"
+         cx="16.007294"
          id="path4198-8"
          style="fill:#c0c0c0;fill-opacity:1" />
     </g>
     <g
        style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4364"
-       transform="translate(29.800555,-2.688414)">
+       transform="translate(33.112049,-2.688414)">
       <path
          d="m -20.547893,218.0913 0,-0.97862 0.297139,0 0,2.51276 -0.297139,0 0,-0.2713 q -0.09366,0.16149 -0.237389,0.24062 -0.14211,0.0775 -0.342356,0.0775 -0.327823,0 -0.534529,-0.26161 -0.20509,-0.26161 -0.20509,-0.68794 0,-0.42633 0.20509,-0.68794 0.206706,-0.26161 0.534529,-0.26161 0.200246,0 0.342356,0.0791 0.143725,0.0775 0.237389,0.23901 z m -1.012536,0.63142 q 0,0.32782 0.134036,0.51515 0.135651,0.18571 0.371425,0.18571 0.235773,0 0.371424,-0.18571 0.135651,-0.18733 0.135651,-0.51515 0,-0.32782 -0.135651,-0.51353 -0.135651,-0.18733 -0.371424,-0.18733 -0.235774,0 -0.371425,0.18733 -0.134036,0.18571 -0.134036,0.51353 z"
          id="path4369"
@@ -278,7 +279,7 @@
     <g
        style="font-style:normal;font-weight:normal;font-size:4.04177046px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text3738"
-       transform="translate(0,2.6458337)">
+       transform="translate(3.9687573,1.3229201)">
       <g
          style="font-style:normal;font-weight:normal;font-size:3.96875048px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          id="text4398"
@@ -305,5 +306,24 @@
            inkscape:connector-curvature="0" />
       </g>
     </g>
+    <g
+       id="g4573-6"
+       transform="translate(-8.0697926,6.3602366e-6)">
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="209.68747"
+         cx="16.007294"
+         id="path4198-8-9"
+         style="fill:#c0c0c0;fill-opacity:1" />
+    </g>
+    <rect
+       style="fill:#000000;fill-opacity:1"
+       id="rect4604"
+       width="15.875001"
+       height="0.26458335"
+       x="7.9375005"
+       y="209.4229"
+       ry="0.01126556" />
   </g>
 </svg>

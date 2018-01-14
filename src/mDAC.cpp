@@ -8,6 +8,7 @@ struct mDAC : Module {
 		NUM_PARAMS
 	};
 	enum InputIds {
+        DEPTH_INPUT,
 		NUM_INPUTS
 	};
 	enum OutputIds {
@@ -21,7 +22,7 @@ struct mDAC : Module {
 
     Label* testLabel;
 
-    TextField inputs[NOUT];
+    TextField infields[NOUT];
 
 	mDAC() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -39,14 +40,35 @@ void mDAC::step() {
 
 	// Compute the frequency from the pitch parameter and input
 
-    int depth = params[DEPTH_PARAM].value;
+    int depth;
+    if(inputs[DEPTH_INPUT].active)
+        depth = cv_to_depth(inputs[DEPTH_INPUT].value);
+    else
+        depth = params[DEPTH_PARAM].value;
 
-    int binVal = 0;
+
 
     for(int i = 0; i < NOUT; ++i)
     {
-//        outputs[ANLG_OUTPUT+i].value = num_to_cv(binVal, depth);
-//        outputs[DEPTH_OUTPUT].value = depth_to_cv(depth);
+        int val;
+        int res;
+        const char* str = infields[i].text.c_str();
+        res = sscanf(str, "0x%x", &val);
+        if(res == 0)
+            res = sscanf(str, "%i", &val);
+
+        if(res != 0)
+        {
+            int mask = 0;
+            for(int i = 0; i < depth; ++i)
+            {
+                mask<<=1;
+                mask|=1;
+            }
+            val &= mask;
+
+            outputs[ANLG_OUTPUT+i].value = num_to_cv(val, depth);
+        }
  
     }
 
@@ -61,7 +83,7 @@ void mDAC::step() {
 mDACWidget::mDACWidget() {
 	mDAC *module = new mDAC();
 	setModule(module);
-	box.size = Vec(6 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(8 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -75,13 +97,19 @@ mDACWidget::mDACWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
+
+    addInput(createInput<PJ301MPort>(
+        Vec(17.5, 37.5), module, mDAC::DEPTH_INPUT
+        ));
+
+
     addParam(createParam<RoundSmallBlackSnapKnob>(
-        Vec(12.5, 35), module, mDAC::DEPTH_PARAM,
+        Vec(45, 35), module, mDAC::DEPTH_PARAM,
         1, 16, 8
         ));
 
     addOutput(createOutput<PJ301MPort>(
-        Vec(52.5, 37.5), module, mDAC::DEPTH_OUTPUT
+        Vec(77.5, 37.5), module, mDAC::DEPTH_OUTPUT
         ));
 
 
@@ -90,11 +118,11 @@ mDACWidget::mDACWidget() {
 
         float yoff = i*35+85;
         addOutput(createOutput<PJ301MPort>(
-            Vec(57.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
+            Vec(77.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
             ));
         
-        TextField* text = &(module->inputs[i]);
-        text->box.pos = Vec(5, yoff+5);
+        TextField* text = &(module->infields[i]);
+        text->box.pos = Vec(15, yoff+5);
         text->box.size = Vec(50, 20);
         addChild(text);
 
