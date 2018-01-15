@@ -1,38 +1,49 @@
 #include "TechTechTechnologies.hpp"
 #define BITL 16
-#define NLFSR 3
+#define NSEQ 2
 
 struct Vulcan : Module {
 	enum ParamIds {
         DEPTH_PARAM,
-		NUM_PARAMS
+        CLOCK_PARAM,
+        POS_PARAM = CLOCK_PARAM+NSEQ,
+        WIDTH_PARAM=POS_PARAM + NSEQ,
+        RATE_PARAM =WIDTH_PARAM+NSEQ,
+        MODE_PARAM =RATE_PARAM +NSEQ,
+		NUM_PARAMS = MODE_PARAM+NSEQ
 	};
 	enum InputIds {
 		DEPTH_INPUT,
-        TAPS_INPUT, 
-        GATE_INPUT=TAPS_INPUT+NLFSR,
-        INT_INPUT=GATE_INPUT+NLFSR,
-		NUM_INPUTS=INT_INPUT+NLFSR
+        CLOCK_INPUT,
+	    POS_INPUT = CLOCK_INPUT+NSEQ,
+        WIDTH_INPUT=POS_INPUT + NSEQ,
+        RATE_INPUT =WIDTH_INPUT+NSEQ,
+        MODE_INPUT =RATE_INPUT +NSEQ,
+		NUM_INPUTS = MODE_INPUT+NSEQ
 	};
 	enum OutputIds {
         DEPTH_OUTPUT,
-        DIGI_OUTPUT,
-        ANLG_OUTPUT=DIGI_OUTPUT+NLFSR,
-		NUM_OUTPUTS=ANLG_OUTPUT+NLFSR
+        POS_OUTPUT,
+        TRIG_OUTPUT=POS_OUTPUT+NSEQ,
+        XOR_OUTPUT=TRIG_OUTPUT+NSEQ,
+        AND_OUTPUT,
+        OR_OUTPUT,
+		NUM_OUTPUTS
 	};
 	enum LightIds {
-        BIT_LIGHT,
-		NUM_LIGHTS=BIT_LIGHT+BITL*NLFSR
+		NUM_LIGHTS
 	};
 
     int ready = 0;
 
-    SchmittTrigger gateTrigger[NLFSR];
-    
+    SchmittTrigger clockTrigger[NSEQ];
+    SchmittTrigger modeTrigger[NSEQ];
 
     Label* testLabel;
 
-    unsigned short buffer[NLFSR];
+    unsigned short pos[NSEQ] = {0};
+
+    float phase = 0;
 
 	Vulcan() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -44,52 +55,16 @@ struct Vulcan : Module {
 };
 
 void Vulcan::step() {
-	//float deltaTime = 1.0 / engineGetSampleRate();
+	float deltaTime = 1.0 / engineGetSampleRate();
 
     if(ready == 0) return;
 
     DEPTH_STEP
 
-    for(int j = 0; j < NLFSR; ++j)
+    for(int j = 0; j < NSEQ; ++j)
     { 
-        if(gateTrigger[j].process(inputs[GATE_INPUT+j].value))
+        if(clockTrigger[j].process(inputs[CLOCK_INPUT+j].value))
         {
-            int taps = 0;
-
-            if(inputs[TAPS_INPUT+j].active)
-                taps = cv_to_num(inputs[TAPS_INPUT+j].value, depth);
-
-            if(inputs[INT_INPUT+j].active)
-                taps ^= cv_to_num(inputs[INT_INPUT+j].value, depth);
-
-            int mask = 0;
-            for(int i = 0; i < depth; ++i)
-            {
-                mask<<=1;
-                mask|=1;
-            }
-
-            taps &= mask;
-
-            int lsb = buffer[j]&1;
-            lsb ^= 1;
-            buffer[j] >>=1;
-            if(lsb)
-            {
-                buffer[j] ^= taps;
-            }
-        
-            buffer[j] &= mask;
-
-            int temp = buffer[j];
-            for(int i = 0; i < BITL; ++i)
-            {
-                lights[BIT_LIGHT+i+j*BITL].value = temp&1;
-                temp >>=1;
-            }
-
-            outputs[DIGI_OUTPUT+j].value = num_to_cv(buffer[j], depth);
-            outputs[ANLG_OUTPUT+j].value = 10*(buffer[j]&1)-5; 
 
         }
     }
@@ -100,7 +75,7 @@ void Vulcan::step() {
 VulcanWidget::VulcanWidget() {
 	Vulcan *module = new Vulcan();
 	setModule(module);
-	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -115,56 +90,68 @@ VulcanWidget::VulcanWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    addParam(createParam<RoundSmallBlackSnapKnob>(
-        Vec(46, 53.5), module, Vulcan::DEPTH_PARAM,
-        1, 16, 12
+    DEPTH_WIDGETS(17.5, 50, Vulcan)
+
+    float xoff, yoff, gap;
+
+    xoff = 165;
+    yoff = 380-285-45;
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff+2.5, yoff+2.5), module, Vulcan::AND_OUTPUT
+        ));
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff+32.5, yoff+2.5), module, Vulcan::XOR_OUTPUT
+        ));
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff+62.5, yoff+2.5), module, Vulcan::OR_OUTPUT
         ));
 
-    addInput(createInput<PJ301MPort>(
-        Vec(17.5, 55), module, Vulcan::DEPTH_INPUT
-        ));
 
 
-    for(int j = 0; j < NLFSR; ++j)
+
+
+    for(int j = 0; j < NSEQ; ++j)
     {
-        float xoff = 90*j;
+        xoff = 15+135*j;
+        yoff = 380-232.5-30;
+        gap = 37.5;
+
+        PARAM_PAIR(xoff, yoff, Vulcan::CLOCK, 5, j)
+        
+        PARAM_PAIR(xoff, yoff+gap, Vulcan::POS, 0, j)
+
+        PARAM_PAIR(xoff, yoff+gap*2, Vulcan::WIDTH, 10, j)
 
         addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 112.5), module, Vulcan::TAPS_INPUT+j
+            Vec(xoff+2.5, yoff+2.5+gap*3), module, Vulcan::RATE_INPUT+j
             ));
+        addParam(createParam<RoundSmallBlackSnapKnob>(
+            Vec(xoff+31, yoff+1+gap*3), module, Vulcan::RATE_PARAM+j,
+            0, 16, 1
+            ));
+
 
         addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 142.5), module, Vulcan::INT_INPUT+j
+            Vec(xoff+2.5, yoff+2.5+gap*3+35), module, Vulcan::MODE_INPUT+j
             ));
-
-        addInput(createInput<PJ301MPort>(
-            Vec(17.5+xoff, 172.5), module, Vulcan::GATE_INPUT+j
+        addParam(createParam<CKSS>(
+            Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j,
+            0, 1, 1
             ));
+    
 
-        for(int i = 0; i < 8; ++i)
-        {
-
-            auto* llight = createLight<MediumLight<BlueLight>>(
-                Vec(30+xoff, 207.5+15*i), module, Vulcan::BIT_LIGHT+i+j*BITL
-                );
-            center(llight);
-            addChild(llight);
-
-            auto* rlight = createLight<MediumLight<BlueLight>>(
-                Vec(60+xoff, 207.5+15*i), module, Vulcan::BIT_LIGHT+i+8+j*BITL
-                );
-            center(rlight);
-            addChild(rlight);
-        }
-     
-        addOutput(createOutput<PJ301MPort>(
-            Vec(17.5+xoff, 322.5), module, Vulcan::DIGI_OUTPUT+j
-            ));
+        yoff = 380-30-45;
 
         addOutput(createOutput<PJ301MPort>(
-            Vec(47.5+xoff, 322.5), module, Vulcan::ANLG_OUTPUT+j
+            Vec(xoff+2.5, yoff+2.5), module, Vulcan::POS_OUTPUT+j
             ));
+
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff+32.5, yoff+2.5), module, Vulcan::TRIG_OUTPUT+j
+            ));
+
     }
+
 
     auto* label = new Label();
     label->box.pos=Vec(0, 30);

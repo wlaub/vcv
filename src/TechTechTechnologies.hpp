@@ -8,7 +8,7 @@
 \
 \
     addParam(createParam<RoundSmallBlackSnapKnob>(\
-        Vec(x+27.5, y), module, modname::DEPTH_PARAM,\
+        Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
         1, 16, 8\
         ));\
 \
@@ -25,6 +25,17 @@
         depth = params[DEPTH_PARAM].value;\
 \
     outputs[DEPTH_OUTPUT].value = depth_to_cv(depth);\
+\
+
+
+#define PARAM_PAIR(xoff, yoff, name, def, idx)\
+    addInput(createInput<PJ301MPort>(\
+        Vec(xoff+2.5, yoff+2.5), module, name ## _INPUT+idx\
+        ));\
+    addParam(createParam<RoundSmallBlackKnob>(\
+        Vec(xoff+31, yoff+1), module, name ## _PARAM+idx,\
+        0, 10, def\
+        ));\
 \
 
 
