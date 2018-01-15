@@ -35,6 +35,26 @@ float num_to_cv(int num, int depth)
 }
 
 
+void NumField::onTextChange() 
+{
+    if (text.size() > 0) 
+    {
+        try 
+        {
+            int num = std::stoi(text, 0,0);
+            outNum = num;
+        }
+        catch (...) 
+        {
+            outNum -= 1;
+        }
+    }
+    else
+    {
+        outNum = 0;
+    }
+}
+
 
 // The plugin-wide instance of the Plugin class
 Plugin *plugin;

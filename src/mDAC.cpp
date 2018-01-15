@@ -22,7 +22,7 @@ struct mDAC : Module {
 
     Label* testLabel;
 
-    TextField** infields;
+    NumField** infields;
 
     int ready = 0;
 
@@ -49,26 +49,8 @@ void mDAC::step() {
 
     for(int i = 0; i < NOUT; ++i)
     {
-        int val;
-        int res;
-        const char* str = infields[i]->text.c_str();
-        res = sscanf(str, "0x%x", &val);
-        if(res == 0)
-            res = sscanf(str, "%i", &val);
-
-        if(res != 0)
-        {
-            int mask = 0;
-            for(int i = 0; i < depth; ++i)
-            {
-                mask<<=1;
-                mask|=1;
-            }
-            val &= mask;
-
-            outputs[ANLG_OUTPUT+i].value = num_to_cv(val, depth);
-        }
- 
+        int val = infields[i]->outNum;
+        outputs[ANLG_OUTPUT+i].value = num_to_cv(val, depth);
     }
 
 //    char tstr[256];
@@ -100,7 +82,7 @@ mDACWidget::mDACWidget() {
     DEPTH_WIDGETS(17.5, 37.5, mDAC) 
 
 
-    infields = new TextField*[NOUT];
+    infields = new NumField*[NOUT];
 
     module->infields = infields;
 
@@ -112,8 +94,8 @@ mDACWidget::mDACWidget() {
             Vec(77.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
             ));
 
-        infields[i] = new TextField();
-        TextField* text = infields[i];
+        infields[i] = new NumField();
+        NumField* text = infields[i];
         text->box.pos = Vec(15, yoff+5);
         text->box.size = Vec(50, 20);
         addChild(text);
@@ -166,6 +148,7 @@ void mDACWidget::fromJson(json_t *rootJ)
         infields[i]->text = json_string_value(
             json_object_get(rootJ, tstr)
             );
+        infields[i]->onTextChange();
     }
 
 }

@@ -64,6 +64,14 @@ int cv_to_num(float cv, int depth);
 float depth_to_cv(int depth, int max=16);
 float num_to_cv(int num, int depth);
 
+struct NumField : TextField {
+    void onTextChange() override;
+
+    int outNum = 0;
+};
+
+
+
 ////////////////////
 // module widgets
 ////////////////////
@@ -77,7 +85,7 @@ struct DACWidget : ModuleWidget
 };
 struct mDACWidget : ModuleWidget
 {
-    TextField** infields;
+    NumField** infields;
     mDACWidget();
     void jsontag(char* result, int i);
     json_t *toJson() override;
