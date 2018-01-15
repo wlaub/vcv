@@ -6,6 +6,7 @@ struct Vulcan : Module {
 	enum ParamIds {
         DEPTH_PARAM,
         CLOCK_PARAM,
+        ROUTE_PARAM,
         POS_PARAM = CLOCK_PARAM+NSEQ,
         WIDTH_PARAM=POS_PARAM + NSEQ,
         RATE_PARAM =WIDTH_PARAM+NSEQ,
@@ -104,6 +105,13 @@ VulcanWidget::VulcanWidget() {
         ));
     addOutput(createOutput<PJ301MPort>(
         Vec(xoff+62.5, yoff+2.5), module, Vulcan::OR_OUTPUT
+        ));
+
+
+
+    addParam(createParam<CKSS>(
+        Vec(128, 380-162.18-20.641), module, Vulcan::ROUTE_PARAM,
+        0, 1, 1
         ));
 
 
