@@ -5,7 +5,8 @@ Mostly relating to reconfigurable LFSRs
 
 ### Depth
 
-These modules deal with digital numbers passes around as 0-10V CV's. The module bit depth is selected by the depth input at the top left. The knob selects bit depth from 1 to 16. The input selects the same range from a 0-10V CV. The output passes through the bit depth selected by either the knob or the input. A bit depth of N will map a CV as follows:
+These modules deal with digital numbers passes around as 0-10V CV's. The module bit depth is selected by the depth input at the top left. The knob selects bit depth from 1 to 16. The input selects the same range from a 0-10V CV. The output passes through the bit depth selected by either the knob or the input. A bit depth of N will map a 0-10V CV to the entire range of an N-bit number:
+
 0 ~ 10V -> 0 ~ 2^N-1
 
 ### Prometheus
