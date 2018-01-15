@@ -40,11 +40,14 @@ struct Vulcan : Module {
     SchmittTrigger clockTrigger[NSEQ];
     SchmittTrigger modeTrigger[NSEQ];
 
+    PulseGenerator trigPulse[NSEQ];
+
     Label* testLabel;
 
-    unsigned short pos[NSEQ] = {0};
+    int pos[NSEQ] = {0};
 
-    float phase = 0;
+    float phase[2] = {0};
+    int dir[2] = {1};
 
 	Vulcan() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -62,13 +65,137 @@ void Vulcan::step() {
 
     DEPTH_STEP
 
+    int clockRoute = params[ROUTE_PARAM].value;
+
+
     for(int j = 0; j < NSEQ; ++j)
     { 
-        if(clockTrigger[j].process(inputs[CLOCK_INPUT+j].value))
-        {
 
+        //Run trigger output one-shot
+        float trigOut = 0;
+        if(trigPulse[j].process(deltaTime))
+        {
+            trigOut = 10;
+        }
+
+        //Check mode
+        int mode = 0;
+        if(inputs[MODE_INPUT+j].active)
+        {
+            modeTrigger[j].process(inputs[MODE_INPUT+j].value);
+            if(modeTrigger[j].isHigh())
+            {
+                mode = 1;
+            }
+        }
+        else
+        {
+            mode = params[MODE_PARAM+j].value;
+        }
+
+        int tickp = 0;
+
+        //Run internal clock
+        float freq = powf(2,params[CLOCK_PARAM+j].value); //1 to 1024, default 32
+        phase[j] += freq*deltaTime;
+        if(phase[j] >= 32) //Default 1Hz at 32
+        {
+            phase[j] -= 32;
+            //Actually tick from internal clock only if no external clock
+            if(inputs[CLOCK_INPUT+j].active || (clockRoute && j==1))
+            {
+            }
+            else
+            {
+                tickp = 1;
+            }
+        }        
+
+        //Replace external clock w/ routed clock if necessary
+        float clockVal;
+        if (clockRoute && j == 1)
+        {
+            clockVal = outputs[TRIG_OUTPUT].value;
+        }
+        else
+        {
+            clockVal = inputs[CLOCK_INPUT+j].value;
+        }
+        
+        //Do tick if there's a tick
+        if(tickp == 1 || clockTrigger[j].process(clockVal))
+        {
+            int rate;
+            float spos;
+            float width;
+        
+            //determin positions
+            PARAM_SEL(spos, POS, j)
+            PARAM_SEL(width, WIDTH, j)
+
+            int start = cv_to_num(spos, depth);
+            int w = cv_to_num(width, depth);
+
+            //determine rate
+            if(inputs[RATE_INPUT].active)
+            {
+                rate = cv_to_num(inputs[RATE_INPUT].value, depth);
+            }
+            else
+            {
+                rate = round(params[RATE_PARAM].value);
+            } 
+
+            if(mode == 1)//Loop mode always goes forward
+            {
+                dir[j] = 1;
+            }
+
+            pos[j] += rate*dir[j];
+
+            //handle pos looping
+            //valid positions are 0 ~ w-1
+            if(pos[j] >= start+w || pos[j] < start) 
+            {
+                if(w == 0) //If w = 0, nothing should be changing
+                {
+                    pos[j] = start;
+                }
+                else
+                {
+                    pos[j] -= start;
+                    if(mode == 0) //bounce mode
+                    {
+                        int extra;
+                        if(dir[j] == 1) //bounce back from end
+                        {               //if pos = w, new pos should be (w-1)-1
+                            extra = pos[j] - w + 2;
+                        }
+                        else //bounce forward from start
+                        {    //if pos = -1, npos should be 2
+                           extra = pos[j] -1;
+                        }
+                        pos[j] -= extra;
+                        dir[j] *= -1;
+                    }
+                    else // loop mode
+                    {
+                        pos[j] = (pos[j]%w);
+                    }
+                    pos[j] +=start;
+                }
+                trigPulse[j].trigger(.001); 
+                trigOut = 10;
+            }
+            outputs[TRIG_OUTPUT+j].value = trigOut;
+
+            outputs[POS_OUTPUT+j].value = num_to_cv(pos[j], depth);
         }
     }
+
+    outputs[AND_OUTPUT].value = num_to_cv(pos[0]&pos[1], depth);
+    outputs[XOR_OUTPUT].value = num_to_cv(pos[0]^pos[1], depth);
+    outputs[OR_OUTPUT].value = num_to_cv(pos[0]|pos[1], depth);
 
 }
 

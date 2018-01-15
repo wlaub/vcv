@@ -39,6 +39,17 @@
 \
 
 
+#define PARAM_SEL(VAR, NAME, IDX)\
+            if(inputs[NAME ## _INPUT+IDX].active)\
+            {\
+                VAR = inputs[NAME ## _INPUT+IDX].value;\
+            }\
+            else\
+            {\
+                VAR = params[NAME ## _PARAM+IDX].value;\
+            } \
+ \
+
 
 using namespace rack;
 
