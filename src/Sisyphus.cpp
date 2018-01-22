@@ -6,7 +6,7 @@ struct Sisyphus : Module {
 	enum ParamIds {
         LENGTH_PARAM,
         RATE_PARAM = LENGTH_PARAM+N,
-        MODE_PARAM = RATE_PARAM+N
+        MODE_PARAM = RATE_PARAM+N,
 		NUM_PARAMS = MODE_PARAM+N
 	};
 	enum InputIds {
@@ -14,7 +14,7 @@ struct Sisyphus : Module {
         GATE_INPUT = SIGNAL_INPUT+N,
         LENGTH_INPUT = GATE_INPUT+N,
         RATE_INPUT = LENGTH_INPUT+N,
-        MODE_INPUT = RATE_INPUT+N
+        MODE_INPUT = RATE_INPUT+N,
 		NUM_INPUTS = MODE_INPUT+N
 	};
 	enum OutputIds {
