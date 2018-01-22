@@ -1,5 +1,5 @@
 #include "TechTechTechnologies.hpp"
-#define BITL 16
+#define BITL 20
 #define N 4
 
 struct Sisyphus : Module {
@@ -60,7 +60,7 @@ void Sisyphus::step() {
 SisyphusWidget::SisyphusWidget() {
 	Sisyphus *module = new Sisyphus();
 	setModule(module);
-	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -75,74 +75,76 @@ SisyphusWidget::SisyphusWidget() {
 	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    float xoff, yoff, gap;
-
-/*
-    xoff = 165;
-    yoff = 380-285-45;
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+2.5, yoff+2.5), module, Sisyphus::AND_OUTPUT
-        ));
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+32.5, yoff+2.5), module, Sisyphus::XOR_OUTPUT
-        ));
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+62.5, yoff+2.5), module, Sisyphus::OR_OUTPUT
-        ));
+    float xoff, yoff;
 
 
-
-    addParam(createParam<CKSS>(
-        Vec(128, 380-162.18-20.641), module, Sisyphus::ROUTE_PARAM,
-        0, 1, 1
-        ));
-
-
-
-
-
-    for(int j = 0; j < NSEQ; ++j)
+    for(int j = 0; j < N; ++j)
     {
-        xoff = 15+135*j;
-        yoff = 380-232.5-30;
-        gap = 37.5;
-
-        PARAM_PAIR(xoff, yoff, Sisyphus::CLOCK, 5, j)
-        
-        PARAM_PAIR(xoff, yoff+gap, Sisyphus::POS, 0, j)
-
-        PARAM_PAIR(xoff, yoff+gap*2, Sisyphus::WIDTH, 10, j)
+        xoff = 47.5;
+        yoff = 380-287.5-25+j*75;
 
         addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3), module, Sisyphus::RATE_INPUT+j
+            Vec(xoff, yoff), module, Sisyphus::SIGNAL_INPUT+j
             ));
+        addInput(createInput<PJ301MPort>(
+            Vec(xoff, yoff+30), module, Sisyphus::GATE_INPUT+j
+            ));
+
+
+        xoff = 90;
+        addParam(createParam<RoundSmallBlackKnob>(
+            Vec(xoff+1, yoff-1.5), module, Sisyphus::LENGTH_PARAM+j,
+            0,10,10
+            ));
+        addInput(createInput<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), module, Sisyphus::LENGTH_INPUT+j
+            ));
+
+        xoff += 45;
+        addParam(createParam<RoundSmallBlackKnob>(
+            Vec(xoff+1, yoff-1.5), module, Sisyphus::RATE_PARAM+j,
+            0,10,5
+            ));
+        addInput(createInput<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), module, Sisyphus::RATE_INPUT+j
+            ));
+
+        xoff += 45;
         addParam(createParam<RoundSmallBlackSnapKnob>(
-            Vec(xoff+31, yoff+1+gap*3), module, Sisyphus::RATE_PARAM+j,
-            0, 16, 1
+            Vec(xoff+1, yoff-1.5), module, Sisyphus::MODE_PARAM+j,
+            0,1,0
             ));
-
-
         addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3+35), module, Sisyphus::MODE_INPUT+j
+            Vec(xoff+2.5, yoff+30), module, Sisyphus::MODE_INPUT+j
             ));
-        addParam(createParam<CKSS>(
-            Vec(xoff+38, yoff+4.68+gap*3+35), module, Sisyphus::MODE_PARAM+j,
-            0, 1, 1
-            ));
-    
 
-        yoff = 380-30-45;
 
+        xoff+=45;
         addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5), module, Sisyphus::POS_OUTPUT+j
+            Vec(xoff+2.5, yoff), module, Sisyphus::SIGNAL_OUTPUT+j
+            ));
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), module, Sisyphus::TRIG_OUTPUT+j
             ));
 
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+32.5, yoff+2.5), module, Sisyphus::TRIG_OUTPUT+j
-            ));
+        float l = 14*15;
+        float w = 7.5;
+        float gap = (l-w)/(BITL-1);
+
+        xoff = 45;
+        
+        for(int i = 0; i < BITL; ++i)
+        {
+            addChild(createLight<SmallLight<GreenLight>>(
+                Vec(xoff, yoff+57.5+7.5/2), module, Sisyphus::LOOP_LIGHTS+j*BITL+i
+                ));
+
+            xoff+= gap;
+           
+        }
+
 
     }
-*/
 
     auto* label = new Label();
     label->box.pos=Vec(0, 30);
