@@ -96,7 +96,8 @@ void Vulcan::step() {
         int tickp = 0;
 
         //Run internal clock
-/*        float freq = powf(2,params[CLOCK_PARAM+j].value); //1 to 1024, default 32
+/*
+        float freq = powf(2,params[CLOCK_PARAM+j].value); //1 to 1024, default 32
         phase[j] += freq*deltaTime;
         if(phase[j] >= 32) //Default 1Hz at 32
         {
@@ -109,7 +110,8 @@ void Vulcan::step() {
             {
                 tickp = 1;
             }
-        }        */
+        }        
+*/
 
         //Replace external clock w/ routed clock if necessary
         float clockVal;

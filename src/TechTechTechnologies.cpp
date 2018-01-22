@@ -88,6 +88,13 @@ void init(rack::Plugin *p) {
         DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
         ));
 
+    p->addModel(createModel<SisyphusWidget>(
+        "TechTech Technologies", "Sisyphus", "Sisyphus", 
+        SAMPLER_TAG, UTILITY_TAG
+        ));
+
+
+
 
 	// Any other plugin initialization may go here.
 	// As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.

@@ -99,3 +99,10 @@ struct VulcanWidget : ModuleWidget
 {
     VulcanWidget();
 };
+struct SisyphusWidget : ModuleWidget
+{
+    SisyphusWidget();
+};
+
+
+
