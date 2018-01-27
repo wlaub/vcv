@@ -1,6 +1,15 @@
 #include "TechTechTechnologies.hpp"
 #define BITL 20
 #define N 4
+#define BUFL (10*48000)
+
+typedef struct
+{
+    float data[BUFL];
+    int head;
+    int tail;
+    float loc;
+} cbuf;
 
 struct Sisyphus : Module {
 	enum ParamIds {
@@ -24,7 +33,7 @@ struct Sisyphus : Module {
 	};
 	enum LightIds {
         LOOP_LIGHTS,
-		NUM_LIGHTS = LOOP_LIGHTS + N*BITL
+		NUM_LIGHTS = LOOP_LIGHTS + N*BITL*3
 	};
 
     int ready = 0;
@@ -35,6 +44,8 @@ struct Sisyphus : Module {
     PulseGenerator trigPulse[N];
 
     Label* testLabel;
+
+    cbuf buffer[N];
 
 	Sisyphus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -52,6 +63,103 @@ void Sisyphus::step() {
 
     for(int j = 0; j < N; ++j)
     { 
+        gateTrigger[j].process(inputs[GATE_INPUT+j].value);
+
+
+        //set rate base on rate inputs
+
+        float rate;
+
+        if(inputs[RATE_INPUT+j].active)
+        {
+            rate = inputs[RATE_INPUT+j].value;
+        } 
+        else
+        {
+            rate = params[RATE_PARAM+j].value; //0-2
+        }
+
+        rate = rate/5;
+
+        float lenval;
+        if(inputs[LENGTH_INPUT+j].active)
+        {
+            lenval = inputs[LENGTH_INPUT+j].value;
+        } 
+        else
+        {
+            lenval = params[LENGTH_PARAM+j].value; //0-2
+        }
+
+        //set buffer tail based on length inputs
+        int length = (BUFL-1)*lenval/10;
+        if(length > buffer[j].head)
+        {
+            buffer[j].tail = BUFL-1-(length-buffer[j].head);
+        }
+        else
+        {
+            buffer[j].tail = buffer[j].head-length;
+        }
+
+        if(gateTrigger[j].isHigh())
+        {
+            outputs[SIGNAL_OUTPUT+j].value = buffer[j].data[int(round(buffer[j].loc))];
+
+            float prev = buffer[j].loc;           
+            buffer[j].loc +=rate; //Change to rate
+
+            if(buffer[j].loc > buffer[j].head && prev <= buffer[j].head)
+            { //Loc crosses head
+                buffer[j].loc = buffer[j].tail+(buffer[j].loc-buffer[j].head);
+                trigPulse[j].trigger(.001);
+            }
+            if(buffer[j].loc >=BUFL)
+            { //Loc is past buffer end
+                buffer[j].loc -=BUFL;
+            }
+        }
+        else
+        {
+            buffer[j].data[buffer[j].head] = inputs[SIGNAL_INPUT+j].value;
+            outputs[SIGNAL_OUTPUT+j].value = buffer[j].data[buffer[j].head];
+
+            buffer[j].head +=1;
+            if(buffer[j].head >=BUFL)
+                buffer[j].head = 0;
+            buffer[j].loc = buffer[j].head;
+        }
+
+
+
+        if(trigPulse[j].process(deltaTime))
+        {
+            outputs[TRIG_OUTPUT+j].value = 10;
+        }
+        else
+        {
+            outputs[TRIG_OUTPUT+j].value = 0;
+        }
+
+
+        int lightidx;
+
+        for(int i = 0; i < BITL; ++i)
+        {
+            for(int k = 0; k < 3; ++ k)
+            {
+                lights[LOOP_LIGHTS+3*(j*BITL+i)+k].value = 0;
+            }
+        }
+        lightidx = 3*floor(j*BITL+buffer[j].head*((BITL-1.0)/BUFL));
+        lights[LOOP_LIGHTS+lightidx].value = 1;
+
+        lightidx = 3*floor(j*BITL+buffer[j].tail*((BITL-1.0)/BUFL));
+        lights[LOOP_LIGHTS+lightidx+1].value = 1;
+
+        lightidx = 3*floor(j*BITL+buffer[j].loc*((BITL-1.0)/BUFL));
+        lights[LOOP_LIGHTS+lightidx+2].value = 1;
+ 
     }
 
 }
@@ -135,8 +243,8 @@ SisyphusWidget::SisyphusWidget() {
         
         for(int i = 0; i < BITL; ++i)
         {
-            addChild(createLight<SmallLight<GreenLight>>(
-                Vec(xoff, yoff+57.5+7.5/2), module, Sisyphus::LOOP_LIGHTS+j*BITL+i
+            addChild(createLight<SmallLight<RedGreenBlueLight>>(
+                Vec(xoff, yoff+57.5+7.5/2), module, Sisyphus::LOOP_LIGHTS+3*(j*BITL+i)
                 ));
 
             xoff+= gap;
