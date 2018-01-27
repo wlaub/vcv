@@ -38,6 +38,22 @@ These modules deal with digital numbers passes around as 0-10V CV's. The module 
 
 The original intent of this module was to produce a 2-dimensional point defined by the two axes and have it step horizontally and then vertically over a rectangular area. The 3 logic outputs combine the two axes to generate a single non-linear sequence.
 
+### Sisyphus
+
+4 circular buffers with length and rate control
+
+* Gate input: Controls buffer I/O
+  * Low value records input to buffer
+  * High value loops through buffer
+* Length control: Sets buffer length from 0-10s
+* Rate control: Sets buffer playback rate from 0x to 2x
+* Mode control: Currently does nothing
+* Trig output: generates a pulse when the buffer loops
+* Lights: Display buffer information
+  * Red: buffer end location
+  * Green: buffer start location
+  * Blue: buffer playback location
+
 ### DAC
 
 Utility module for generating digital values
