@@ -54,6 +54,14 @@ The original intent of this module was to produce a 2-dimensional point defined 
   * Green: buffer start location
   * Blue: buffer playback location
 
+### Polyphemus
+
+6-pole IIR filter
+
+* 3 pole pairs defined by radius and angle
+  * radius input from -1 to 1 with CV input. Clips to (-1,1).
+  * angle input from 0 to 3.14 with CV input. Clips to (0,6.28)
+
 ### DAC
 
 Utility module for generating digital values
