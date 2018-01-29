@@ -71,6 +71,13 @@ struct NumField : TextField {
 };
 
 
+struct RoundTinyBlackKnob : RoundBlackKnob {
+    RoundTinyBlackKnob() {
+        box.size = Vec(20, 20);
+    }
+};
+ 
+
 
 ////////////////////
 // module widgets
@@ -102,6 +109,10 @@ struct VulcanWidget : ModuleWidget
 struct SisyphusWidget : ModuleWidget
 {
     SisyphusWidget();
+};
+struct PolyphemusWidget : ModuleWidget
+{
+    PolyphemusWidget();
 };
 
 

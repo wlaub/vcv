@@ -87,11 +87,15 @@ void init(rack::Plugin *p) {
         "TechTech Technologies", "Vulcan", "Vulcan", 
         DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
         ));
-
     p->addModel(createModel<SisyphusWidget>(
         "TechTech Technologies", "Sisyphus", "Sisyphus", 
         SAMPLER_TAG, UTILITY_TAG
         ));
+    p->addModel(createModel<PolyphemusWidget>(
+        "TechTech Technologies", "Polyphemus", "Polyphemus", 
+        FILTER_TAG
+        ));
+
 
 
 
