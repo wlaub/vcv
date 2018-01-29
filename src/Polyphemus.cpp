@@ -76,16 +76,28 @@ void Polyphemus::step() {
         //retrieve pole params from inputs
         //radius is -1 ~ 1, angle is 0 ~ 3.14
         //inputs are 0 ~ 10 w/ attenuverters
-        r = params[RADIUS_PARAM].value + params[RADCV_PARAM].value*inputs[RADIUS_INPUT].value/10;
-        a = params[ANGLE_PARAM].value + params[ANGCV_PARAM].value*inputs[ANGLE_INPUT].value*3.14/10;
+        r = params[RADIUS_PARAM+j].value
+          + params[RADCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value/10;
+        a = params[ANGLE_PARAM+j].value
+          + params[ANGCV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
 
         //clip to +/- 1
         r = CLIP(-1, r, 1);
         a = CLIP(0, a, 6.28);
 
+/*
+        if(j == 1)
+        {
+            char tstr[256];
+            sprintf(tstr, "%f, %f", r, a);
+            if(testLabel)
+                testLabel->text = tstr;
+        }
+*/
+
         //Set filter params from inputs
 
-        filters[j].a = 2*r*cos(a);
+        filters[j].a = -2*r*cos(a);
         filters[j].b = r*r;
 
         //apply filter to value
@@ -174,13 +186,13 @@ PolyphemusWidget::PolyphemusWidget() {
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
-            Vec(xoff+34, yoff+2.5+28), module, Polyphemus::RADCV_PARAM+j,
+            Vec(xoff+34, yoff+2.5+28), module, Polyphemus::ANGCV_PARAM+j,
             -1,1,0
             ));
  
         addParam(createParam<RoundBlackKnob>(
             Vec(xoff+62.5, yoff-14+43), module, Polyphemus::ANGLE_PARAM+j,
-            -1,1,0
+            0,3.14,0
             ));
 
 
