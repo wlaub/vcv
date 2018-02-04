@@ -51,6 +51,22 @@
  \
 
 
+#define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
+    addInput(createInput<PJ301MPort>(\
+        Vec(xoff, yoff), module, name ## _INPUT+idx\
+        ));\
+\
+    addParam(createParam<RoundTinyBlackKnob>(\
+        Vec(xoff+34, yoff+2.5), module, name ## CV_PARAM+idx,\
+        -1,1,0\
+        ));\
+\
+    addParam(createParam<RoundBlackKnob>(\
+        Vec(xoff+62.5, yoff-6.5), module, name ## _PARAM+idx,\
+        min,max,def\
+        ));\
+
+
 using namespace rack;
 
 

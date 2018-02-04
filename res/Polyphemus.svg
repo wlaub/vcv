@@ -58,7 +58,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,13 +69,13 @@
      transform="translate(0,-196.45831)">
     <path
        style="opacity:1;fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.48607069;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-       d="m 0,196.45831 35.718754,0 0,100.54168 -35.718754,0 z"
+       d="m 0,196.45831 71.437507,0 0,100.54168 -71.437507,0 z"
        id="rect817"
        inkscape:connector-curvature="0" />
     <rect
        style="fill:#c0c0c0;fill-opacity:1"
        id="rect3379-1"
-       width="35.718754"
+       width="71.437508"
        height="5.2916675"
        x="0"
        y="201.08852" />
@@ -534,5 +534,27 @@
        id="path5311"
        style="font-style:normal;font-weight:normal;font-size:medium;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 16.645545,290.06746 0,0.14534 -1.366196,0 q 0.01938,0.30683 0.184097,0.46832 0.166334,0.15987 0.461859,0.15987 0.171178,0 0.331052,-0.042 0.161489,-0.042 0.319748,-0.12596 l 0,0.28099 q -0.159874,0.0678 -0.327823,0.10336 -0.167948,0.0355 -0.340741,0.0355 -0.43279,0 -0.686328,-0.25192 -0.251923,-0.25192 -0.251923,-0.68148 0,-0.4441 0.239004,-0.70409 0.240618,-0.26162 0.64757,-0.26162 0.364965,0 0.576516,0.23578 0.213165,0.23416 0.213165,0.63788 z m -0.29714,-0.0872 q -0.0032,-0.24384 -0.137265,-0.38918 -0.132421,-0.14534 -0.352046,-0.14534 -0.248693,0 -0.398877,0.14049 -0.14857,0.1405 -0.171179,0.39565 l 1.059367,-0.002 z" />
+    <ellipse
+       style="fill:#c0c0c0;fill-opacity:1;image-rendering:auto"
+       id="path4198-8-7-7-6-1-9-2-5-1-5-1-9-3-36"
+       cx="43.656254"
+       cy="213.65622"
+       rx="3.307292"
+       ry="3.3072922" />
+    <ellipse
+       style="fill:#c0c0c0;fill-opacity:1;image-rendering:auto"
+       id="path4198-8-7-7-6-1-9-2-5-1-5-1-9-3-6-7"
+       cx="51.990631"
+       cy="213.65622"
+       rx="2.6458335"
+       ry="2.6458337" />
+    <ellipse
+       style="fill:#c0c0c0;fill-opacity:1"
+       id="path4198-8-7-7-21-9-7-7-6-6-1-7-53"
+       cx="213.65622"
+       cy="-61.912506"
+       transform="matrix(0,1,-1,0,0,0)"
+       rx="5.0270844"
+       ry="5.0270839" />
   </g>
 </svg>

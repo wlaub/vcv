@@ -18,14 +18,17 @@ typedef struct
 
 struct Polyphemus : Module {
 	enum ParamIds {
+        NORM_PARAM,
+        NORMCV_PARAM,
         GAIN_PARAM,
         RADIUS_PARAM = GAIN_PARAM+N,
         ANGLE_PARAM = RADIUS_PARAM+N,
-        RADCV_PARAM = ANGLE_PARAM+N,
-        ANGCV_PARAM = RADCV_PARAM+N,
-		NUM_PARAMS = ANGCV_PARAM+N
+        RADIUSCV_PARAM = ANGLE_PARAM+N,
+        ANGLECV_PARAM = RADIUSCV_PARAM+N,
+		NUM_PARAMS = ANGLECV_PARAM+N
 	};
 	enum InputIds {
+        NORM_INPUT,
 		SIGNAL_INPUT,
         RADIUS_INPUT = SIGNAL_INPUT+N,
         ANGLE_INPUT = RADIUS_INPUT+N,
@@ -81,9 +84,9 @@ void Polyphemus::step() {
         //radius is -1 ~ 1, angle is 0 ~ 3.14
         //inputs are 0 ~ 10 w/ attenuverters
         r = params[RADIUS_PARAM+j].value
-          + params[RADCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value/10;
+          + params[RADIUSCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value/10;
         a = params[ANGLE_PARAM+j].value
-          + params[ANGCV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
+          + params[ANGLECV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
 
         //clip to +/- 1
         r = CLIP(-1, r, 1);
@@ -160,7 +163,7 @@ void Polyphemus::step() {
 PolyphemusWidget::PolyphemusWidget() {
 	Polyphemus *module = new Polyphemus();
 	setModule(module);
-	box.size = Vec(9* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -210,7 +213,7 @@ PolyphemusWidget::PolyphemusWidget() {
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
-            Vec(xoff+34, yoff+2.5), module, Polyphemus::RADCV_PARAM+j,
+            Vec(xoff+34, yoff+2.5), module, Polyphemus::RADIUSCV_PARAM+j,
             -1,1,0
             ));
  
@@ -225,7 +228,7 @@ PolyphemusWidget::PolyphemusWidget() {
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
-            Vec(xoff+34, yoff+2.5+28), module, Polyphemus::ANGCV_PARAM+j,
+            Vec(xoff+34, yoff+2.5+28), module, Polyphemus::ANGLECV_PARAM+j,
             -1,1,0
             ));
  
@@ -237,6 +240,28 @@ PolyphemusWidget::PolyphemusWidget() {
 
 
     }
+
+    xoff = 152.5;
+    yoff = 380-302.5-25;
+
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::NORM, 0,1,0,0)
+
+/*
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff, yoff), module, Polyphemus::RADIUS_INPUT+j
+        ));
+
+    addParam(createParam<RoundTinyBlackKnob>(
+        Vec(xoff+34, yoff+9), module, Polyphemus::RADIUSCV_PARAM+j,
+        -1,1,0
+        ));
+
+    addParam(createParam<RoundBlackKnob>(
+        Vec(xoff+62.5, yoff+6.5), module, Polyphemus::RADIUS_PARAM+j,
+        -1,1,0
+        ));
+*/
+
 
     auto* label = new Label();
     label->box.pos=Vec(0, 30);
