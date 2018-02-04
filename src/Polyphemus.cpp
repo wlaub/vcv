@@ -81,6 +81,8 @@ void Polyphemus::step() {
 
     norm = CLIP(0, norm, 1);
 
+    float maxrad = 1 + stab*.001;
+
     gain = params[GAIN_PARAM].value;
 
     x = inputs[SIGNAL_INPUT].value*gain;
@@ -93,8 +95,8 @@ void Polyphemus::step() {
         //retrieve pole params from inputs
         //radius is -1 ~ 1, angle is 0 ~ 3.14
         //inputs are 0 ~ 10 w/ attenuverters
-        r = params[RADIUS_PARAM+j].value
-          + params[RADIUSCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value/10;
+        r = params[RADIUS_PARAM+j].value*maxrad
+          + params[RADIUSCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value*maxrad/10;
         a = params[ANGLE_PARAM+j].value
           + params[ANGLECV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
 
@@ -102,7 +104,7 @@ void Polyphemus::step() {
         a += aglob;
 
         //clip to +/- 1
-        r = CLIP(-1, r, 1);
+        r = CLIP(-maxrad, r, maxrad);
         a = CLIP(0, a, 6.28);
 
         filters[j].r = r;
@@ -162,12 +164,13 @@ void Polyphemus::step() {
     }
 
 
+/*
             char tstr[256];
 //            sprintf(tstr, "%f, %f, %f", r, a, g);
             sprintf(tstr, "%f", norm);
             if(testLabel)
                 testLabel->text = tstr;
-
+*/
 
     float clip = 100;
 
