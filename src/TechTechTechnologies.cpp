@@ -34,6 +34,18 @@ float num_to_cv(int num, int depth)
     return 10*float(num)/max;
 }
 
+float db_to_num(float val, float unity)
+{
+/*
+Convert a number representing Bels to a scaling factor so that
+0 -> 1
+1 -> 10^unity
+-1 -> 10^-unity
+*/
+
+    return pow(10, val*unity);
+
+}
 
 void NumField::onTextChange() 
 {

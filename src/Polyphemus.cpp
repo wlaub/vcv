@@ -68,6 +68,10 @@ B = r^2
 void Polyphemus::step() {
 //  float deltaTime = 1.0 / engineGetSampleRate();
 
+    //TODO: Logarithmic controls
+    //TODO: clipping control?
+    //TODO: normalization gain control for r=1?
+
     if(ready == 0) return;
 
     float x, y;
@@ -273,6 +277,14 @@ PolyphemusWidget::PolyphemusWidget() {
     xoff = 152.5;
     yoff = 380-302.5-25;
 
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::RADIUS, -1,1,0,N)
+
+    yoff += 53;
+
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::ANGLE, 0,3.14,0,N)
+
+    yoff += 53;
+
     CV_ATV_PARAM(xoff, yoff, Polyphemus::NORM, 0,1,0,0)
 
     yoff += 53;
@@ -280,12 +292,6 @@ PolyphemusWidget::PolyphemusWidget() {
     CV_ATV_PARAM(xoff, yoff, Polyphemus::STAB, -1,1,0,0)
 
     yoff += 53;
-
-    CV_ATV_PARAM(xoff, yoff, Polyphemus::RADIUS, -1,1,0,N)
-
-    yoff += 53;
-
-    CV_ATV_PARAM(xoff, yoff, Polyphemus::ANGLE, 0,3.14,0,N)
 
 
 
