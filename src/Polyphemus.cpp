@@ -7,8 +7,10 @@
 typedef struct
 {
     float data[2] = {0};
-    float a;
-    float b;
+    float r; //The filter radius
+    float p; //The filter angle
+    float a; //iir coefficient
+    float b; //iir coefficient
     int head = 0;
 } biquad;
 
@@ -58,7 +60,7 @@ B = r^2
 */
 
 void Polyphemus::step() {
-	float deltaTime = 1.0 / engineGetSampleRate();
+//  float deltaTime = 1.0 / engineGetSampleRate();
 
     if(ready == 0) return;
 
@@ -69,6 +71,8 @@ void Polyphemus::step() {
     gain = params[GAIN_PARAM].value;
 
     x = inputs[SIGNAL_INPUT].value*gain;
+
+    float g = 1;
 
     for(int j = 0; j < N; ++j)
     { 
@@ -85,23 +89,50 @@ void Polyphemus::step() {
         r = CLIP(-1, r, 1);
         a = CLIP(0, a, 6.28);
 
-/*
-        if(j == 1)
-        {
-            char tstr[256];
-            sprintf(tstr, "%f, %f", r, a);
-            if(testLabel)
-                testLabel->text = tstr;
-        }
-*/
-
+        filters[j].r = r;
+        filters[j].p = a;
         //Set filter params from inputs
 
-        filters[j].a = -2*r*cos(a);
+        float c = cos(a);
+
+        filters[j].a = -2*r*c;
         filters[j].b = r*r;
+    }
 
-        //apply filter to value
+    //Compute the total inverse gain at each filter frequency 
+    //and store the smallest value in g
+    g = -1;
+    for(int i = 0; i < N; ++i)
+    {
+        float p = filters[i].p;  //the angle of concern
+        
+        float tg = 1;
+        for(int j = 0; j < N; ++j)
+        {
+            a = filters[j].a;
+            float b = filters[j].b;
+            float c = cos(p);
+            float k = (a+2*b*c);
+            tg *= (1-b)*(1-b)+(1-b)*c*k+k*k;
 
+        }
+        if(tg < g || g<0)
+        {
+            g = tg;
+        }
+    }
+    if(g == 0)
+    {
+        g = 1E-6;
+    }
+
+    g = sqrt(g);
+
+//    x*=g;
+
+    //apply filter to value
+    for(int j = 0; j <N; ++j)
+    {
         y = x;
         y -= filters[j].a*filters[j].data[filters[j].head];
         filters[j].head ^= 1;
@@ -111,6 +142,14 @@ void Polyphemus::step() {
         x = y;
 
     }
+
+/*
+            char tstr[256];
+//            sprintf(tstr, "%f, %f, %f", r, a, g);
+            sprintf(tstr, "%f", g);
+            if(testLabel)
+                testLabel->text = tstr;
+*/
 
     outputs[SIGNAL_OUTPUT].value = x;
     //set output to value*gain
