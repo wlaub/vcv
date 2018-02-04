@@ -79,6 +79,8 @@ void Polyphemus::step() {
     float rglob = CV_ATV_VALUE(RADIUS, 1, N);
     float aglob = CV_ATV_VALUE(ANGLE, 3.14, N);
 
+    norm = CLIP(0, norm, 1);
+
     gain = params[GAIN_PARAM].value;
 
     x = inputs[SIGNAL_INPUT].value*gain;
@@ -142,7 +144,9 @@ void Polyphemus::step() {
 
     g = sqrt(g);
 
-//    x*=g;
+    g = (1-norm)+norm*g;
+
+    x*=g;
 
     //apply filter to value
     for(int j = 0; j <N; ++j)
@@ -270,7 +274,7 @@ PolyphemusWidget::PolyphemusWidget() {
 
     yoff += 53;
 
-    CV_ATV_PARAM(xoff, yoff, Polyphemus::STAB, 0,1,0,0)
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::STAB, -1,1,0,0)
 
     yoff += 53;
 
