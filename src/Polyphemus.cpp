@@ -20,19 +20,22 @@ struct Polyphemus : Module {
 	enum ParamIds {
         NORM_PARAM,
         NORMCV_PARAM,
+        STAB_PARAM,
+        STABCV_PARAM,
         GAIN_PARAM,
-        RADIUS_PARAM = GAIN_PARAM+N,
-        ANGLE_PARAM = RADIUS_PARAM+N,
-        RADIUSCV_PARAM = ANGLE_PARAM+N,
-        ANGLECV_PARAM = RADIUSCV_PARAM+N,
-		NUM_PARAMS = ANGLECV_PARAM+N
+        RADIUS_PARAM = GAIN_PARAM+N+1,
+        ANGLE_PARAM = RADIUS_PARAM+N+1,
+        RADIUSCV_PARAM = ANGLE_PARAM+N+1,
+        ANGLECV_PARAM = RADIUSCV_PARAM+N+1,
+		NUM_PARAMS = ANGLECV_PARAM+N+1
 	};
 	enum InputIds {
         NORM_INPUT,
+        STAB_INPUT,
 		SIGNAL_INPUT,
-        RADIUS_INPUT = SIGNAL_INPUT+N,
-        ANGLE_INPUT = RADIUS_INPUT+N,
-		NUM_INPUTS = ANGLE_INPUT+N
+        RADIUS_INPUT = SIGNAL_INPUT+N+1,
+        ANGLE_INPUT = RADIUS_INPUT+N+1,
+		NUM_INPUTS = ANGLE_INPUT+N+1
 	};
 	enum OutputIds {
         SIGNAL_OUTPUT,
@@ -70,6 +73,13 @@ void Polyphemus::step() {
     float x, y;
     float r, a;
     float gain;
+
+    float norm;
+    float stab;
+    float rglob;
+    float aglob;
+
+    norm = CV_ATV_VALUE(NORM, 1, 0)
 
     gain = params[GAIN_PARAM].value;
 
@@ -146,13 +156,24 @@ void Polyphemus::step() {
 
     }
 
-/*
+
             char tstr[256];
 //            sprintf(tstr, "%f, %f, %f", r, a, g);
-            sprintf(tstr, "%f", g);
+            sprintf(tstr, "%f", norm);
             if(testLabel)
                 testLabel->text = tstr;
-*/
+
+
+    float clip = 100;
+
+    if(x > clip)
+    {
+        x = clip;
+    }
+    else if(x<-clip)
+    {
+        x = -clip;
+    }
 
     outputs[SIGNAL_OUTPUT].value = x;
     //set output to value*gain
@@ -245,6 +266,20 @@ PolyphemusWidget::PolyphemusWidget() {
     yoff = 380-302.5-25;
 
     CV_ATV_PARAM(xoff, yoff, Polyphemus::NORM, 0,1,0,0)
+
+    yoff += 53;
+
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::STAB, 0,1,0,0)
+
+    yoff += 53;
+
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::RADIUS, -1,1,0,N)
+
+    yoff += 53;
+
+    CV_ATV_PARAM(xoff, yoff, Polyphemus::ANGLE, 0,3.14,0,N)
+
+
 
 /*
     addInput(createInput<PJ301MPort>(

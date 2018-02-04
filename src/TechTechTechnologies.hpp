@@ -66,6 +66,11 @@
         min,max,def\
         ));\
 
+#define CV_ATV_VALUE(name, max, idx)\
+params[name ## _PARAM+idx].value\
++ max*params[name ## CV_PARAM+idx].value*inputs[name ## _INPUT+idx].value/10;\
+ 
+
 
 using namespace rack;
 
