@@ -113,7 +113,7 @@ void Polyphemus::step() {
             float b = filters[j].b;
             float c = cos(p);
             float k = (a+2*b*c);
-            tg *= (1-b)*(1-b)+(1-b)*c*k+k*k;
+            tg *= (1-b)*(1-b)+2*(1-b)*c*k+k*k;
 
         }
         if(tg < g || g<0)
