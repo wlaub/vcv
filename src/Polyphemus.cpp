@@ -74,12 +74,10 @@ void Polyphemus::step() {
     float r, a;
     float gain;
 
-    float norm;
-    float stab;
-    float rglob;
-    float aglob;
-
-    norm = CV_ATV_VALUE(NORM, 1, 0)
+    float norm = CV_ATV_VALUE(NORM, 1, 0);
+    float stab = CV_ATV_VALUE(STAB, 1, 0);
+    float rglob = CV_ATV_VALUE(RADIUS, 1, N);
+    float aglob = CV_ATV_VALUE(ANGLE, 3.14, N);
 
     gain = params[GAIN_PARAM].value;
 
@@ -97,6 +95,9 @@ void Polyphemus::step() {
           + params[RADIUSCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value/10;
         a = params[ANGLE_PARAM+j].value
           + params[ANGLECV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
+
+        r += rglob;
+        a += aglob;
 
         //clip to +/- 1
         r = CLIP(-1, r, 1);
