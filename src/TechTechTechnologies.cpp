@@ -34,17 +34,37 @@ float num_to_cv(int num, int depth)
     return 10*float(num)/max;
 }
 
-float db_to_num(float val, float unity)
+double db_to_num(float val, float unity)
 {
 /*
 Convert a number representing Bels to a scaling factor so that
 0 -> 1
-1 -> 10^unity
--1 -> 10^-unity
+1 -> 10^unity/10
+-1 -> 10^-unity/10
+i.e. unity is the dB value represented by a value of 1
 */
 
-    return pow(10, val*unity);
+    return pow(10, val*unity/10);
 
+}
+
+double split_log(float val, float m, float n)
+{
+/*
+A split log map where
+0->.5 is 0->-m dB
+.5 -> 1 is -m -> -n dB
+*/
+    if (val < .5)
+    {
+        return db_to_num(-2*val, m);
+    }
+    else
+    {
+        float k = 2*m/n-2;
+        return db_to_num((k*val-k-1), n);
+    }
+ 
 }
 
 void NumField::onTextChange() 

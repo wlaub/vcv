@@ -78,12 +78,14 @@ void Polyphemus::step() {
     float r, a;
     float gain;
 
-    float norm = CV_ATV_VALUE(NORM, 1, 0);
+    double norm = CV_ATV_VALUE(NORM, 1, 0);
     float stab = CV_ATV_VALUE(STAB, 1, 0);
     float rglob = CV_ATV_VALUE(RADIUS, 1, N);
     float aglob = CV_ATV_VALUE(ANGLE, 3.14, N);
 
     norm = CLIP(0, norm, 1);
+
+    norm = 1 - split_log(norm, 20, 80);
 
     float maxrad = 1 + stab*.001;
 
@@ -143,10 +145,10 @@ void Polyphemus::step() {
             g = tg;
         }
     }
-    if(g == 0)
+/*    if(g == 0)
     {
-        g = 1E-6;
-    }
+        g = 10E-6;
+    }*/
 
     g = sqrt(g);
 
@@ -168,13 +170,13 @@ void Polyphemus::step() {
     }
 
 
-/*
+
             char tstr[256];
 //            sprintf(tstr, "%f, %f, %f", r, a, g);
-            sprintf(tstr, "%f", norm);
+            sprintf(tstr, "%f, %e", norm, g);
             if(testLabel)
                 testLabel->text = tstr;
-*/
+
 
     float clip = 100;
 

@@ -85,7 +85,8 @@ int cv_to_num(float cv, int depth);
 float depth_to_cv(int depth, int max=16);
 float num_to_cv(int num, int depth);
 
-float db_to_num(float val, float unity);
+double db_to_num(float val, float unity);
+double split_log(float v, float m, float n);
 
 struct NumField : TextField {
     void onTextChange() override;
