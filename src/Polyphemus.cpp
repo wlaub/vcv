@@ -1,12 +1,14 @@
 #include "TechTechTechnologies.hpp"
 #define N 3
+#define NSIG 2
+#define NFILT NSIG+2
 #define MIN(A,B) ((A<B)? A : B)
 #define MAX(A,B) ((A>B)? A : B)
 #define CLIP(A, B, C) MIN(MAX(A,B),C)
 
 typedef struct
 {
-    float data[2] = {0};
+    float data[NFILT][2] = {{0}};
     float r; //The filter radius
     float p; //The filter angle
     float a; //iir coefficient
@@ -33,13 +35,15 @@ struct Polyphemus : Module {
         NORM_INPUT,
         STAB_INPUT,
 		SIGNAL_INPUT,
-        RADIUS_INPUT = SIGNAL_INPUT+N+1,
+        RADIUS_INPUT = SIGNAL_INPUT+NSIG,
         ANGLE_INPUT = RADIUS_INPUT+N+1,
 		NUM_INPUTS = ANGLE_INPUT+N+1
 	};
 	enum OutputIds {
+        X_OUTPUT,
+        Y_OUTPUT,
         SIGNAL_OUTPUT,
-		NUM_OUTPUTS
+		NUM_OUTPUTS=SIGNAL_OUTPUT+NFILT
 	};
 	enum LightIds {
 		NUM_LIGHTS
@@ -47,6 +51,7 @@ struct Polyphemus : Module {
 
     int ready = 0;
 
+    float plot_idx = 0;
     Label* testLabel;
 
     biquad filters[N];
@@ -91,8 +96,6 @@ void Polyphemus::step() {
 
     gain = params[GAIN_PARAM].value;
 
-    x = inputs[SIGNAL_INPUT].value*gain;
-
     float g = 1;
 
     for(int j = 0; j < N; ++j)
@@ -101,10 +104,9 @@ void Polyphemus::step() {
         //retrieve pole params from inputs
         //radius is -1 ~ 1, angle is 0 ~ 3.14
         //inputs are 0 ~ 10 w/ attenuverters
-        r = params[RADIUS_PARAM+j].value*maxrad
-          + params[RADIUSCV_PARAM+j].value*inputs[RADIUS_INPUT+j].value*maxrad/10;
-        a = params[ANGLE_PARAM+j].value
-          + params[ANGLECV_PARAM+j].value*inputs[ANGLE_INPUT+j].value*3.14/10;
+
+        r = CV_ATV_VALUE(RADIUS, 1, j);
+        a = CV_ATV_VALUE(ANGLE, 3.14, j);
 
         r += rglob;
         a += aglob;
@@ -112,6 +114,12 @@ void Polyphemus::step() {
         //clip to +/- 1
         r = CLIP(-maxrad, r, maxrad);
         a = CLIP(0, a, 6.28);
+
+        if(j == floor(plot_idx))
+        {
+            outputs[X_OUTPUT].value = 6.67*r*cos(a);
+            outputs[Y_OUTPUT].value = 10*r*sin(a);
+        }
 
         filters[j].r = r;
         filters[j].p = a;
@@ -122,6 +130,8 @@ void Polyphemus::step() {
         filters[j].a = -2*r*c;
         filters[j].b = r*r;
     }
+    plot_idx+=.001;
+    if(plot_idx >= N) plot_idx -= N;
 
     //Compute the total inverse gain at each filter frequency 
     //and store the smallest value in g
@@ -154,43 +164,52 @@ void Polyphemus::step() {
 
     g = (1-norm)+norm*g;
 
-    x*=g;
+    float fsig[NFILT];
 
-    //apply filter to value
-    for(int j = 0; j <N; ++j)
+    for(int i = 0; i < NSIG; ++i)
     {
-        y = x;
-        y -= filters[j].a*filters[j].data[filters[j].head];
-        filters[j].head ^= 1;
-        y -= filters[j].b*filters[j].data[filters[j].head];
-
-        filters[j].data[filters[j].head] = y;
-        x = y;
-
+        fsig[i] = inputs[SIGNAL_INPUT+i].value*gain;
     }
 
+    //apply filter to value
+    for(int i = 0; i < NFILT; ++i)
+    {
+        x = fsig[i]*g;
+        for(int j = 0; j <N; ++j)
+        {
+            y = x;
+            y -= filters[j].a*filters[j].data[i][filters[j].head];
+            filters[j].head ^= 1;
+            y -= filters[j].b*filters[j].data[i][filters[j].head];
 
+            filters[j].data[i][filters[j].head] = y;
+            x = y;
 
+        }
+        float clip = 100;
+
+        if(x > clip)
+        {
+            x = clip;
+        }
+        else if(x<-clip)
+        {
+            x = -clip;
+        }
+
+        outputs[SIGNAL_OUTPUT+i].value = x;
+ 
+    }
+
+/*
             char tstr[256];
 //            sprintf(tstr, "%f, %f, %f", r, a, g);
             sprintf(tstr, "%f, %e", norm, g);
             if(testLabel)
                 testLabel->text = tstr;
+*/
 
-
-    float clip = 100;
-
-    if(x > clip)
-    {
-        x = clip;
-    }
-    else if(x<-clip)
-    {
-        x = -clip;
-    }
-
-    outputs[SIGNAL_OUTPUT].value = x;
-    //set output to value*gain
+   //set output to value*gain
 
 }
 
@@ -219,7 +238,11 @@ PolyphemusWidget::PolyphemusWidget() {
     yoff = 380-302.5-25;
 
     addInput(createInput<PJ301MPort>(
-        Vec(xoff, yoff), module, Polyphemus::SIGNAL_INPUT
+        Vec(xoff, yoff-15), module, Polyphemus::SIGNAL_INPUT
+        ));
+
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff, yoff+15), module, Polyphemus::SIGNAL_INPUT+1
         ));
 
 
@@ -232,9 +255,26 @@ PolyphemusWidget::PolyphemusWidget() {
 
     xoff = 89;
 
+    for(int i = 0; i < NFILT; i+=2)
+    {
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff, yoff-15), module, Polyphemus::SIGNAL_OUTPUT+i
+            ));
+
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff, yoff+15), module, Polyphemus::SIGNAL_OUTPUT+i+1
+            ));
+        xoff += 30;
+    }
+
     addOutput(createOutput<PJ301MPort>(
-        Vec(xoff, yoff), module, Polyphemus::SIGNAL_OUTPUT
+        Vec(xoff, yoff-15), module, Polyphemus::X_OUTPUT
         ));
+
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff, yoff+15), module, Polyphemus::Y_OUTPUT
+        ));
+
 
 
 
@@ -294,7 +334,6 @@ PolyphemusWidget::PolyphemusWidget() {
     CV_ATV_PARAM(xoff, yoff, Polyphemus::STAB, -1,1,0,0)
 
     yoff += 53;
-
 
 
 /*
