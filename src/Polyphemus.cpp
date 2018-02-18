@@ -3,6 +3,7 @@
 #define NSIG 2
 #define NFILT NSIG+2
 #define STEPFREQ 10
+#define TAPS 0x800017
 #define MIN(A,B) ((A<B)? A : B)
 #define MAX(A,B) ((A>B)? A : B)
 #define CLIP(A, B, C) MIN(MAX(A,B),C)
@@ -14,7 +15,7 @@ typedef struct
     float p; //The filter angle
     float a; //iir coefficient
     float b; //iir coefficient
-    int head = 0;
+    int head[NFILT] = {0};
 } biquad;
 
 
@@ -58,7 +59,6 @@ struct Polyphemus : Module {
     biquad filters[N];
 
     float stepphase = 0;
-    unsigned int lfsr = 0;
 
 	Polyphemus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -172,7 +172,7 @@ void Polyphemus::step() {
 
     for(int i = 0; i < NSIG; ++i)
     {
-        fsig[i] = inputs[SIGNAL_INPUT+i].value*gain;
+        fsig[i] = inputs[SIGNAL_INPUT+i].value;
     }
 
     //fsig[NFILT-2] is slow square wave
@@ -182,21 +182,21 @@ void Polyphemus::step() {
 
 
     //fsig[NFILT-1] is white noise
-
+    fsig[NFILT-1] = 10*(rand()/float(RAND_MAX)-.5);
 
 
     //apply filter to value
     for(int i = 0; i < NFILT; ++i)
     {
-        x = fsig[i]*g;
+        x = fsig[i]*g*gain;
         for(int j = 0; j <N; ++j)
         {
             y = x;
-            y -= filters[j].a*filters[j].data[i][filters[j].head];
-            filters[j].head ^= 1;
-            y -= filters[j].b*filters[j].data[i][filters[j].head];
+            y -= filters[j].a*filters[j].data[i][filters[j].head[i]];
+            filters[j].head[i] ^= 1;
+            y -= filters[j].b*filters[j].data[i][filters[j].head[i]];
 
-            filters[j].data[i][filters[j].head] = y;
+            filters[j].data[i][filters[j].head[i]] = y;
             x = y;
 
         }
@@ -215,13 +215,15 @@ void Polyphemus::step() {
  
     }
 
-/*
+
+    r = filters[0].r;
+    a = filters[0].p;
             char tstr[256];
-//            sprintf(tstr, "%f, %f, %f", r, a, g);
-            sprintf(tstr, "%f, %e", norm, g);
+            sprintf(tstr, "%f, %f, %f", r, a, g);
+//            sprintf(tstr, "%f, %e", norm, g);
             if(testLabel)
                 testLabel->text = tstr;
-*/
+
 
    //set output to value*gain
 
