@@ -138,6 +138,12 @@ struct PolyphemusWidget : ModuleWidget
 {
     PolyphemusWidget();
 };
+struct OuroborosWidget : ModuleWidget
+{
+    OuroborosWidget();
+};
+
+
 
 
 

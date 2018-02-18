@@ -127,6 +127,11 @@ void init(rack::Plugin *p) {
         "TechTech Technologies", "Polyphemus", "Polyphemus", 
         FILTER_TAG
         ));
+    p->addModel(createModel<OuroborosWidget>(
+        "TechTech Technologies", "Ouroboros", "Ouroboros", 
+        OSCILLATOR_TAG
+        ));
+
 
 
 
