@@ -2,6 +2,7 @@
 #define N 3
 #define NSIG 2
 #define NFILT NSIG+2
+#define STEPFREQ 10
 #define MIN(A,B) ((A<B)? A : B)
 #define MAX(A,B) ((A>B)? A : B)
 #define CLIP(A, B, C) MIN(MAX(A,B),C)
@@ -56,6 +57,9 @@ struct Polyphemus : Module {
 
     biquad filters[N];
 
+    float stepphase = 0;
+    unsigned int lfsr = 0;
+
 	Polyphemus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
 
@@ -71,7 +75,7 @@ B = r^2
 */
 
 void Polyphemus::step() {
-//  float deltaTime = 1.0 / engineGetSampleRate();
+  float deltaTime = 1.0 / engineGetSampleRate();
 
     //TODO: Logarithmic controls
     //TODO: clipping control?
@@ -170,6 +174,16 @@ void Polyphemus::step() {
     {
         fsig[i] = inputs[SIGNAL_INPUT+i].value*gain;
     }
+
+    //fsig[NFILT-2] is slow square wave
+    stepphase += deltaTime*STEPFREQ;
+    if(stepphase >= 1) stepphase -= 1;
+    fsig[NFILT-2] = (stepphase > 0.5) ?5:0; 
+
+
+    //fsig[NFILT-1] is white noise
+
+
 
     //apply filter to value
     for(int i = 0; i < NFILT; ++i)
