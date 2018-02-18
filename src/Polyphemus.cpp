@@ -215,7 +215,7 @@ void Polyphemus::step() {
  
     }
 
-
+/*
     r = filters[0].r;
     a = filters[0].p;
             char tstr[256];
@@ -223,9 +223,7 @@ void Polyphemus::step() {
 //            sprintf(tstr, "%f, %e", norm, g);
             if(testLabel)
                 testLabel->text = tstr;
-
-
-   //set output to value*gain
+*/
 
 }
 
@@ -251,14 +249,16 @@ PolyphemusWidget::PolyphemusWidget() {
     float xoff, yoff;
 
     xoff = 17.5;
-    yoff = 380-302.5-25;
+    yoff = 380-302.5-20;
+
+    float vspace = 14;
 
     addInput(createInput<PJ301MPort>(
-        Vec(xoff, yoff-15), module, Polyphemus::SIGNAL_INPUT
+        Vec(xoff, yoff-vspace), module, Polyphemus::SIGNAL_INPUT
         ));
 
     addInput(createInput<PJ301MPort>(
-        Vec(xoff, yoff+15), module, Polyphemus::SIGNAL_INPUT+1
+        Vec(xoff, yoff+vspace), module, Polyphemus::SIGNAL_INPUT+1
         ));
 
 
@@ -274,21 +274,22 @@ PolyphemusWidget::PolyphemusWidget() {
     for(int i = 0; i < NFILT; i+=2)
     {
         addOutput(createOutput<PJ301MPort>(
-            Vec(xoff, yoff-15), module, Polyphemus::SIGNAL_OUTPUT+i
+            Vec(xoff, yoff-vspace), module, Polyphemus::SIGNAL_OUTPUT+i
             ));
 
         addOutput(createOutput<PJ301MPort>(
-            Vec(xoff, yoff+15), module, Polyphemus::SIGNAL_OUTPUT+i+1
+            Vec(xoff, yoff+vspace), module, Polyphemus::SIGNAL_OUTPUT+i+1
             ));
-        xoff += 30;
+        xoff += 35;
     }
 
+    xoff += 30;
     addOutput(createOutput<PJ301MPort>(
-        Vec(xoff, yoff-15), module, Polyphemus::X_OUTPUT
+        Vec(xoff, yoff-vspace), module, Polyphemus::X_OUTPUT
         ));
 
     addOutput(createOutput<PJ301MPort>(
-        Vec(xoff, yoff+15), module, Polyphemus::Y_OUTPUT
+        Vec(xoff, yoff+vspace), module, Polyphemus::Y_OUTPUT
         ));
 
 
@@ -334,6 +335,8 @@ PolyphemusWidget::PolyphemusWidget() {
 
     xoff = 152.5;
     yoff = 380-302.5-25;
+
+    yoff += 53;
 
     CV_ATV_PARAM(xoff, yoff, Polyphemus::RADIUS, -1,1,0,N)
 
