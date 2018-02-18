@@ -50,6 +50,7 @@ void Ouroboros::step() {
     double freq = inputs[BASEFREQ_INPUT].value + params[BASEFREQ_PARAM].value;
     freq = 261.626*pow(2, freq);
 
+    double wave = inputs[WAVE_INPUT].value + params[WAVE_PARAM].value;
 
     for(int j = 0; j < N; ++j)
     {
@@ -73,9 +74,18 @@ void Ouroboros::step() {
         if(phase[j] >= 1) phase[j] -=1;
     }
 
+    wave =pow(2,wave);
+
     for(int j = 0; j < N; ++j)
-    {        
-        outputs[SIGNAL_OUTPUT+j].value = 5*sin(6.28*phase[j]);
+    {
+        double result = sin(6.28*phase[j]);
+
+        if(result > 0)
+            result = pow(result, 1/wave);
+        else
+            result = -pow(-result, 1/wave);
+
+        outputs[SIGNAL_OUTPUT+j].value = 5*result;
  
     }
 
@@ -120,7 +130,7 @@ OuroborosWidget::OuroborosWidget() {
 
     addParam(createParam<RoundBlackKnob>(
         Vec(xoff+28, yoff-6.5), module, Ouroboros::BASEFREQ_PARAM,
-        -1, 1, 0
+        -2, 2, 0
         ));
 
     addInput(createInput<PJ301MPort>(
@@ -130,7 +140,7 @@ OuroborosWidget::OuroborosWidget() {
 
     addParam(createParam<RoundBlackKnob>(
         Vec(xoff+28+44, yoff-6.5), module, Ouroboros::WAVE_PARAM,
-        0, 10, 0
+        0, 4, 0
         ));
 
 
@@ -140,7 +150,7 @@ OuroborosWidget::OuroborosWidget() {
     for(int j = 0; j < N; ++j)
     {
 
-        CV_ATV_PARAM(xoff, yoff, Ouroboros::FREQ, -1,1,0,j)
+        CV_ATV_PARAM(xoff, yoff, Ouroboros::FREQ, -2,2,0,j)
 
         addOutput(createOutput<PJ301MPort>(
             Vec(xoff+112.5, yoff), module, Ouroboros::SIGNAL_OUTPUT+j
