@@ -60,10 +60,19 @@ void mDAC::step() {
 
 }
 
+struct mDACWidget : ModuleWidget
+{
+    NumField** infields;
+    mDACWidget(mDAC* module);
+    void jsontag(char* result, int i);
+    json_t *toJson() override;
+    void fromJson(json_t *rootJ) override;
+};
 
-mDACWidget::mDACWidget() {
-	mDAC *module = new mDAC();
-	setModule(module);
+
+
+
+mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
 	box.size = Vec(8 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -73,10 +82,10 @@ mDACWidget::mDACWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 37.5, mDAC) 
@@ -152,4 +161,10 @@ void mDACWidget::fromJson(json_t *rootJ)
     }
 
 }
+
+Model* modelmDAC = Model::create<mDAC, mDACWidget>(
+        "TechTech Technologies", "mDAC", "mDAC", 
+        DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
+        );
+
 

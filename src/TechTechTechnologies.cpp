@@ -103,36 +103,20 @@ void init(rack::Plugin *p) {
 	p->manual = "https://github.com/wlaub/vcv/blob/master/README.md";
 
 	// For each module, specify the ModuleWidget subclass, manufacturer slug (for saving in patches), manufacturer human-readable name, module slug, and module name    
-	p->addModel(createModel<DACWidget>(
-        "TechTech Technologies", "DAC", "DAC", 
-        DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
-        ));
-	p->addModel(createModel<mDACWidget>(
-        "TechTech Technologies", "mDAC", "mDAC", 
-        DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
-        ));
-    p->addModel(createModel<PrometheusWidget>(
-        "TechTech Technologies", "Prometheus", "Prometheus", 
-        DIGITAL_TAG,LOGIC_TAG,NOISE_TAG,OSCILLATOR_TAG,SEQUENCER_TAG
-        ));
-    p->addModel(createModel<VulcanWidget>(
-        "TechTech Technologies", "Vulcan", "Vulcan", 
-        DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
-        ));
-    p->addModel(createModel<SisyphusWidget>(
-        "TechTech Technologies", "Sisyphus", "Sisyphus", 
-        SAMPLER_TAG, UTILITY_TAG
-        ));
-    p->addModel(createModel<PolyphemusWidget>(
-        "TechTech Technologies", "Polyphemus", "Polyphemus", 
-        FILTER_TAG
-        ));
-    p->addModel(createModel<OuroborosWidget>(
-        "TechTech Technologies", "Ouroboros", "Ouroboros", 
-        OSCILLATOR_TAG
-        ));
 
+    p->addModel(modelDAC);
 
+    p->addModel(modelmDAC);
+
+    p->addModel(modelPrometheus);
+
+    p->addModel(modelVulcan);
+
+    p->addModel(modelSisyphus);
+
+    p->addModel(modelPolyphemus);
+
+    p->addModel(modelOuroboros);
 
 
 

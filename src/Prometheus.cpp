@@ -104,10 +104,15 @@ void Prometheus::step() {
 
 }
 
+struct PrometheusWidget : ModuleWidget
+{
+    PrometheusWidget(Prometheus* module);
+};
 
-PrometheusWidget::PrometheusWidget() {
-	Prometheus *module = new Prometheus();
-	setModule(module);
+
+PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
+//	Prometheus *module = new Prometheus();
+//	setModule(module);
 	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -117,10 +122,10 @@ PrometheusWidget::PrometheusWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 55, Prometheus) 
@@ -145,13 +150,13 @@ PrometheusWidget::PrometheusWidget() {
         for(int i = 0; i < 8; ++i)
         {
 
-            auto* llight = createLight<MediumLight<BlueLight>>(
+            auto* llight = ModuleLightWidget::create<MediumLight<BlueLight>>(
                 Vec(30+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+j*BITL
                 );
             center(llight);
             addChild(llight);
 
-            auto* rlight = createLight<MediumLight<BlueLight>>(
+            auto* rlight = ModuleLightWidget::create<MediumLight<BlueLight>>(
                 Vec(60+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+8+j*BITL
                 );
             center(rlight);
@@ -176,3 +181,10 @@ PrometheusWidget::PrometheusWidget() {
     module->ready = 1;
 
 }
+
+Model* modelPrometheus = Model::create<Prometheus, PrometheusWidget>(
+    "TechTech Technologies", "Prometheus", "Prometheus", 
+    DIGITAL_TAG,LOGIC_TAG,NOISE_TAG,OSCILLATOR_TAG,SEQUENCER_TAG
+    );
+
+

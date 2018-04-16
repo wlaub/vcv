@@ -99,10 +99,15 @@ void Ouroboros::step() {
 
 }
 
+struct OuroborosWidget : ModuleWidget
+{
+    OuroborosWidget(Ouroboros* module);
+};
 
-OuroborosWidget::OuroborosWidget() {
-	Ouroboros *module = new Ouroboros();
-	setModule(module);
+
+OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
+//	Ouroboros *module = new Ouroboros();
+//	setModule(module);
 	box.size = Vec(12* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -112,10 +117,10 @@ OuroborosWidget::OuroborosWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     float xoff, yoff;
@@ -128,7 +133,7 @@ OuroborosWidget::OuroborosWidget() {
         ));
 
 
-    addParam(createParam<RoundBlackKnob>(
+    addParam(ParamWidget::create<RoundBlackKnob>(
         Vec(xoff+28, yoff-6.5), module, Ouroboros::BASEFREQ_PARAM,
         -2, 2, 0
         ));
@@ -138,7 +143,7 @@ OuroborosWidget::OuroborosWidget() {
         ));
 
 
-    addParam(createParam<RoundBlackKnob>(
+    addParam(ParamWidget::create<RoundBlackKnob>(
         Vec(xoff+28+44, yoff-6.5), module, Ouroboros::WAVE_PARAM,
         0, 4, 0
         ));
@@ -170,3 +175,9 @@ OuroborosWidget::OuroborosWidget() {
     module->ready = 1;
 
 }
+
+    Model* modelOuroboros = Model::create<Ouroboros, OuroborosWidget>(
+    "TechTech Technologies", "Ouroboros", "Ouroboros", 
+    OSCILLATOR_TAG
+    );
+

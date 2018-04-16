@@ -7,7 +7,7 @@
         ));\
 \
 \
-    addParam(createParam<RoundSmallBlackSnapKnob>(\
+    addParam(createParam<RoundBlackSnapKnob>(\
         Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
         1, 16, 8\
         ));\
@@ -106,43 +106,25 @@ struct RoundTinyBlackKnob : RoundBlackKnob {
 ////////////////////
 // module widgets
 ////////////////////
-
+/*
 struct MyModuleWidget : ModuleWidget {
 	MyModuleWidget();
 };
-struct DACWidget : ModuleWidget
-{
-    DACWidget();
-};
-struct mDACWidget : ModuleWidget
-{
-    NumField** infields;
-    mDACWidget();
-    void jsontag(char* result, int i);
-    json_t *toJson() override;
-    void fromJson(json_t *rootJ) override;
-};
-struct PrometheusWidget : ModuleWidget
-{
-    PrometheusWidget();
-};
-struct VulcanWidget : ModuleWidget
-{
-    VulcanWidget();
-};
-struct SisyphusWidget : ModuleWidget
-{
-    SisyphusWidget();
-};
-struct PolyphemusWidget : ModuleWidget
-{
-    PolyphemusWidget();
-};
-struct OuroborosWidget : ModuleWidget
-{
-    OuroborosWidget();
-};
+*/
 
+extern Model* modelDAC;
+
+extern Model* modelmDAC;
+
+extern Model* modelPrometheus;
+
+extern Model* modelVulcan;
+
+extern Model* modelSisyphus;
+
+extern Model* modelPolyphemus;
+
+extern Model* modelOuroboros;
 
 
 

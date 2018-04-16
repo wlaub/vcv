@@ -201,10 +201,14 @@ void Vulcan::step() {
 
 }
 
+struct VulcanWidget : ModuleWidget
+{
+    VulcanWidget(Vulcan* module);
+};
 
-VulcanWidget::VulcanWidget() {
-	Vulcan *module = new Vulcan();
-	setModule(module);
+
+
+VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -214,10 +218,10 @@ VulcanWidget::VulcanWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 50, Vulcan)
@@ -238,7 +242,7 @@ VulcanWidget::VulcanWidget() {
 
 
 
-    addParam(createParam<CKSS>(
+    addParam(ParamWidget::create<CKSS>(
         Vec(128, 380-162.18-20.641), module, Vulcan::ROUTE_PARAM,
         0, 1, 1
         ));
@@ -262,7 +266,7 @@ VulcanWidget::VulcanWidget() {
         addInput(createInput<PJ301MPort>(
             Vec(xoff+2.5, yoff+2.5+gap*3), module, Vulcan::RATE_INPUT+j
             ));
-        addParam(createParam<RoundSmallBlackSnapKnob>(
+        addParam(ParamWidget::create<RoundBlackSnapKnob>(
             Vec(xoff+31, yoff+1+gap*3), module, Vulcan::RATE_PARAM+j,
             0, 16, 1
             ));
@@ -271,7 +275,7 @@ VulcanWidget::VulcanWidget() {
         addInput(createInput<PJ301MPort>(
             Vec(xoff+2.5, yoff+2.5+gap*3+35), module, Vulcan::MODE_INPUT+j
             ));
-        addParam(createParam<CKSS>(
+        addParam(ParamWidget::create<CKSS>(
             Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j,
             0, 1, 1
             ));
@@ -299,3 +303,10 @@ VulcanWidget::VulcanWidget() {
     module->ready = 1;
 
 }
+
+Model* modelVulcan = Model::create<Vulcan, VulcanWidget>(
+        "TechTech Technologies", "Vulcan", "Vulcan", 
+        DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
+        );
+
+

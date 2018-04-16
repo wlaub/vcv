@@ -227,10 +227,15 @@ void Polyphemus::step() {
 
 }
 
+struct PolyphemusWidget : ModuleWidget
+{
+    PolyphemusWidget(Polyphemus* module);
+};
 
-PolyphemusWidget::PolyphemusWidget() {
-	Polyphemus *module = new Polyphemus();
-	setModule(module);
+
+PolyphemusWidget::PolyphemusWidget(Polyphemus* module) : ModuleWidget(module) {
+//	Polyphemus *module = new Polyphemus();
+//	setModule(module);
 	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -240,10 +245,10 @@ PolyphemusWidget::PolyphemusWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     float xoff, yoff;
@@ -262,7 +267,7 @@ PolyphemusWidget::PolyphemusWidget() {
         ));
 
 
-    addParam(createParam<RoundBlackKnob>(
+    addParam(ParamWidget::create<RoundBlackKnob>(
         Vec(xoff+28, yoff-6.5), module, Polyphemus::GAIN_PARAM,
         0, 2, 1
         ));
@@ -304,12 +309,12 @@ PolyphemusWidget::PolyphemusWidget() {
             Vec(xoff, yoff), module, Polyphemus::RADIUS_INPUT+j
             ));
 
-        addParam(createParam<RoundTinyBlackKnob>(
+        addParam(ParamWidget::create<RoundTinyBlackKnob>(
             Vec(xoff+34, yoff+2.5), module, Polyphemus::RADIUSCV_PARAM+j,
             -1,1,0
             ));
  
-        addParam(createParam<RoundBlackKnob>(
+        addParam(ParamWidget::create<RoundBlackKnob>(
             Vec(xoff+62.5, yoff-14), module, Polyphemus::RADIUS_PARAM+j,
             -1,1,0
             ));
@@ -319,12 +324,12 @@ PolyphemusWidget::PolyphemusWidget() {
             Vec(xoff, yoff+28), module, Polyphemus::ANGLE_INPUT+j
             ));
 
-        addParam(createParam<RoundTinyBlackKnob>(
+        addParam(ParamWidget::create<RoundTinyBlackKnob>(
             Vec(xoff+34, yoff+2.5+28), module, Polyphemus::ANGLECV_PARAM+j,
             -1,1,0
             ));
  
-        addParam(createParam<RoundBlackKnob>(
+        addParam(ParamWidget::create<RoundBlackKnob>(
             Vec(xoff+62.5, yoff-14+43), module, Polyphemus::ANGLE_PARAM+j,
             0,3.14,0
             ));
@@ -360,12 +365,12 @@ PolyphemusWidget::PolyphemusWidget() {
         Vec(xoff, yoff), module, Polyphemus::RADIUS_INPUT+j
         ));
 
-    addParam(createParam<RoundTinyBlackKnob>(
+    addParam(ParamWidget::create<RoundTinyBlackKnob>(
         Vec(xoff+34, yoff+9), module, Polyphemus::RADIUSCV_PARAM+j,
         -1,1,0
         ));
 
-    addParam(createParam<RoundBlackKnob>(
+    addParam(ParamWidget::create<RoundBlackKnob>(
         Vec(xoff+62.5, yoff+6.5), module, Polyphemus::RADIUS_PARAM+j,
         -1,1,0
         ));
@@ -381,3 +386,9 @@ PolyphemusWidget::PolyphemusWidget() {
     module->ready = 1;
 
 }
+
+Model* modelPolyphemus = Model::create<Polyphemus, PolyphemusWidget>(
+    "TechTech Technologies", "Polyphemus", "Polyphemus", 
+    FILTER_TAG
+    );
+

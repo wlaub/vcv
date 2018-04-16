@@ -164,10 +164,15 @@ void Sisyphus::step() {
 
 }
 
+struct SisyphusWidget : ModuleWidget
+{
+    SisyphusWidget(Sisyphus* module);
+};
 
-SisyphusWidget::SisyphusWidget() {
-	Sisyphus *module = new Sisyphus();
-	setModule(module);
+
+SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
+//	Sisyphus *module = new Sisyphus();
+//	setModule(module);
 	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -177,10 +182,10 @@ SisyphusWidget::SisyphusWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     float xoff, yoff;
@@ -200,7 +205,7 @@ SisyphusWidget::SisyphusWidget() {
 
 
         xoff = 90;
-        addParam(createParam<RoundSmallBlackKnob>(
+        addParam(ParamWidget::create<RoundSmallBlackKnob>(
             Vec(xoff+1, yoff-1.5), module, Sisyphus::LENGTH_PARAM+j,
             0,10,10
             ));
@@ -209,7 +214,7 @@ SisyphusWidget::SisyphusWidget() {
             ));
 
         xoff += 45;
-        addParam(createParam<RoundSmallBlackKnob>(
+        addParam(ParamWidget::create<RoundSmallBlackKnob>(
             Vec(xoff+1, yoff-1.5), module, Sisyphus::RATE_PARAM+j,
             0,10,5
             ));
@@ -218,7 +223,7 @@ SisyphusWidget::SisyphusWidget() {
             ));
 
         xoff += 45;
-        addParam(createParam<RoundSmallBlackSnapKnob>(
+        addParam(ParamWidget::create<RoundBlackSnapKnob>(
             Vec(xoff+1, yoff-1.5), module, Sisyphus::MODE_PARAM+j,
             0,1,0
             ));
@@ -243,7 +248,7 @@ SisyphusWidget::SisyphusWidget() {
         
         for(int i = 0; i < BITL; ++i)
         {
-            addChild(createLight<SmallLight<RedGreenBlueLight>>(
+            addChild(ModuleLightWidget::create<SmallLight<RedGreenBlueLight>>(
                 Vec(xoff, yoff+57.5+7.5/2), module, Sisyphus::LOOP_LIGHTS+3*(j*BITL+i)
                 ));
 
@@ -263,3 +268,10 @@ SisyphusWidget::SisyphusWidget() {
     module->ready = 1;
 
 }
+
+Model* modelSisyphus = Model::create<Sisyphus, SisyphusWidget>(
+        "TechTech Technologies", "Sisyphus", "Sisyphus", 
+        SAMPLER_TAG, UTILITY_TAG
+        );
+
+

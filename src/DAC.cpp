@@ -87,11 +87,15 @@ void DAC::step() {
 
 }
 
+struct DACWidget : ModuleWidget
+{
+    DACWidget(DAC* module);
+};
 
-DACWidget::DACWidget() {
-	DAC *module = new DAC();
-	setModule(module);
-	box.size = Vec(16 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
+//  DAC *module = new DAC();    
+//    setModule(module);
+    box.size = Vec(16 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -100,10 +104,10 @@ DACWidget::DACWidget() {
 		addChild(panel);
 	}
 
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(createScrew<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(createScrew<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
     float r;
     float insx = 30;
@@ -156,26 +160,26 @@ DACWidget::DACWidget() {
 
             center(jack);
 
-            auto* button = createParam<CKSS>(
+            auto* button = ParamWidget::create<CKSS>(
                 Vec(xoff+jack->box.size.x/2+gap, yoff), module, DAC::BITS_PARAM+i,
                 0,1,0
                 );
 
             center(button, 0);
 
-            auto* light = createLight<MediumLight<BlueLight>>(
+            auto* light = ModuleLightWidget::create<MediumLight<BlueLight>>(
                 Vec(xoff, yoff+jack->box.size.y/2+gap), module, DAC::BIT_LIGHT+i
                 );
             
             center(light, 1, 0);
             addChild(light);
 
-            light = createLight<MediumLight<GreenLight>>(
+            auto* light2 = ModuleLightWidget::create<MediumLight<GreenLight>>(
                 Vec(button->box.pos.x+button->box.size.x/2, yoff+jack->box.size.y/2+gap), module, DAC::BITIND_LIGHT+i
                 );
             
-            center(light, 1, 0);
-            addChild(light);
+            center(light2, 1, 0);
+            addChild(light2);
 
 
             addInput(jack);
@@ -187,3 +191,10 @@ DACWidget::DACWidget() {
     module->ready = 1;
 
 }
+
+Model *modelDAC = Model::create<DAC, DACWidget>(
+    "TechTech Technologies", "DAC", "DAC", 
+    DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
+    );
+
+
