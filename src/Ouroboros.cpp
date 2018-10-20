@@ -128,23 +128,23 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
     xoff = 12.5;
     yoff = 380-302.5-20;
 
-    addInput(createInput<PJ301MPort>(
-        Vec(xoff, yoff), module, Ouroboros::BASEFREQ_INPUT
+    addInput(Port::create<PJ301MPort>(
+        Vec(xoff, yoff), Port::INPUT, module, Ouroboros::BASEFREQ_INPUT
         ));
 
 
-    addParam(ParamWidget::create<RoundBlackKnob>(
-        Vec(xoff+28, yoff-6.5), module, Ouroboros::BASEFREQ_PARAM,
+    addParam(ParamWidget::create<RoundLargeBlackKnob>(
+        Vec(xoff+28.15, yoff-6.35), module, Ouroboros::BASEFREQ_PARAM,
         -2, 2, 0
         ));
 
-    addInput(createInput<PJ301MPort>(
-        Vec(xoff+28+44+40.5, yoff), module, Ouroboros::WAVE_INPUT
+    addInput(Port::create<PJ301MPort>(
+        Vec(xoff+28+44+40.5, yoff), Port::INPUT, module, Ouroboros::WAVE_INPUT
         ));
 
 
-    addParam(ParamWidget::create<RoundBlackKnob>(
-        Vec(xoff+28+44, yoff-6.5), module, Ouroboros::WAVE_PARAM,
+    addParam(ParamWidget::create<RoundLargeBlackKnob>(
+        Vec(xoff+28.15+44, yoff-6.35), module, Ouroboros::WAVE_PARAM,
         0, 4, 0
         ));
 
@@ -157,8 +157,8 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
 
         CV_ATV_PARAM(xoff, yoff, Ouroboros::FREQ, -2,2,0,j)
 
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+112.5, yoff), module, Ouroboros::SIGNAL_OUTPUT+j
+        addOutput(Port::create<PJ301MPort>(
+            Vec(xoff+112.5, yoff), Port::OUTPUT, module, Ouroboros::SIGNAL_OUTPUT+j
             ));
 
 

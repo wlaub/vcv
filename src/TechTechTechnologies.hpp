@@ -52,17 +52,17 @@
 
 
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
-    addInput(createInput<PJ301MPort>(\
-        Vec(xoff, yoff), module, name ## _INPUT+idx\
+    addInput(Port::create<PJ301MPort>(\
+        Vec(xoff, yoff), Port::INPUT, module, name ## _INPUT+idx\
         ));\
 \
-    addParam(createParam<RoundTinyBlackKnob>(\
-        Vec(xoff+34, yoff+2.5), module, name ## CV_PARAM+idx,\
+    addParam(ParamWidget::create<RoundTinyBlackKnob>(\
+        Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx,\
         -1,1,0\
         ));\
 \
-    addParam(createParam<RoundBlackKnob>(\
-        Vec(xoff+62.5, yoff-6.5), module, name ## _PARAM+idx,\
+    addParam(ParamWidget::create<RoundLargeBlackKnob>(\
+        Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx,\
         min,max,def\
         ));\
 
@@ -97,7 +97,7 @@ struct NumField : TextField {
 
 struct RoundTinyBlackKnob : RoundBlackKnob {
     RoundTinyBlackKnob() {
-        box.size = Vec(20, 20);
+        setSVG(SVG::load(assetPlugin(plugin, "res/RoundTinyBlackKnob.svg")));
     }
 };
  
