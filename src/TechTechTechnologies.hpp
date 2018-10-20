@@ -2,18 +2,18 @@
 #include "dsp/digital.hpp"
 
 #define DEPTH_WIDGETS(x,y,modname)\
-    addInput(createInput<PJ301MPort>(\
-        Vec(x, y+2.5), module, modname::DEPTH_INPUT\
+    addInput(Port::create<PJ301MPort>(\
+        Vec(x, y+2.5), Port::INPUT, module, modname::DEPTH_INPUT\
         ));\
 \
 \
-    addParam(createParam<RoundBlackSnapKnob>(\
+    addParam(ParamWidget::create<RoundBlackSnapKnob>(\
         Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
         1, 16, 8\
         ));\
 \
-    addOutput(createOutput<PJ301MPort>(\
-        Vec(x+60, y+2.5), module, modname::DEPTH_OUTPUT\
+    addOutput(Port::create<PJ301MPort>(\
+        Vec(x+60, y+2.5), Port::OUTPUT, module, modname::DEPTH_OUTPUT\
         ));\
 \
 
@@ -29,10 +29,10 @@
 
 
 #define PARAM_PAIR(xoff, yoff, name, def, idx)\
-    addInput(createInput<PJ301MPort>(\
-        Vec(xoff+2.5, yoff+2.5), module, name ## _INPUT+idx\
+    addInput(Port::create<PJ301MPort>(\
+        Vec(xoff+2.5, yoff+2.5), Port::INPUT, module, name ## _INPUT+idx\
         ));\
-    addParam(createParam<RoundSmallBlackKnob>(\
+    addParam(ParamWidget::create<RoundSmallBlackKnob>(\
         Vec(xoff+31, yoff+1), module, name ## _PARAM+idx,\
         0, 10, def\
         ));\
