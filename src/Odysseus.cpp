@@ -5,6 +5,7 @@
 #define CLAMP2057(val) clamp(val, -10.0f, 10.0f)
 #define INT_RATE 10*deltaTime
 #define DETECT_THRESH .476
+#define CLEAR_THRESH 2.5
 
 struct Odysseus : Module {
 	enum ParamIds {
@@ -55,6 +56,9 @@ struct Odysseus : Module {
 
     float integrator = 0;
     float shphase = 0;
+
+    SchmittTrigger clearTrigger;
+    SchmittTrigger clkTrigger;
 
 	Odysseus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -137,8 +141,6 @@ void Odysseus::step() {
     float freq = 1000;
     shphase += 6.28*freq*deltaTime;
 
-    outputs[DETECT_OUTPUT].value = sin(shphase);
-
     //Sample and hold on signal
 
 
@@ -155,6 +157,25 @@ void Odysseus::step() {
 
     integrator = CLAMP2057(integrator+int_in_val*INT_RATE);
 
+    //Clear/autoclear etc
+
+    float clear_sig= 0;
+
+    if (params[AC_PARAM].value >0.5)
+    {
+        clear_sig += outputs[DETECT_OUTPUT].value;
+    }
+
+    clear_sig += 10*params[CLEAR_PARAM].value;
+    clear_sig += inputs[CLEAR_INPUT].value;
+
+    clearTrigger.process(clear_sig/CLEAR_THRESH);
+
+    if(clearTrigger.isHigh())
+    {
+        integrator = 0;
+    }
+
     float out = integrator;
 
     //Detect
@@ -170,8 +191,6 @@ void Odysseus::step() {
     {
         outputs[DETECT_OUTPUT].value = 0;
     }
-
-    //Clear/autoclear etc
 
     outputs[OUT_OUTPUT].value = out;
 
