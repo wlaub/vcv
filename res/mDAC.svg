@@ -27,7 +27,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
      inkscape:cx="78.206527"
-     inkscape:cy="252.05722"
+     inkscape:cy="191.44807"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -55,7 +55,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,158 +69,70 @@
        id="rect817"
        d="m 0,196.45831 31.750003,0 0,100.54168 -31.750003,0 z"
        style="opacity:1;fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.48607069;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
-    <g
-       id="g4569"
-       transform="translate(7.9374997,-1.3229171)">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,7.9374977)"
-       id="g4455-7">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-4"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-4"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,17.197919)"
-       id="g4455-3">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-0"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-7"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,26.458334)"
-       id="g4455-7-8">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-4-6"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-4-8"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,35.718755)"
-       id="g4455-8">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-43"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-1"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,44.97917)"
-       id="g4455-7-4">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-4-9"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-4-2"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,54.239592)"
-       id="g4455-0">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-6"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-8"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
-    <g
-       transform="translate(7.9374997,63.500007)"
-       id="g4455-7-9">
-      <rect
-         ry="0.66666663"
-         y="220.27081"
-         x="11.906251"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3-5-4-2"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="224.23956"
-         cx="15.875001"
-         id="path4198-8-4-4-6"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="218.94789"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-4"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="228.20831"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-0"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="237.46873"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-4-6"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="246.72914"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-43"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="255.98956"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-4-9"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="265.24997"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-6"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="274.51041"
+       ry="0.66666663" />
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3-5-4-2"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="283.77081"
+       ry="0.66666663" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -232,25 +144,14 @@
          id="tspan4549"
          x="-31.136904"
          y="246.3524" /></text>
-    <g
-       id="g4573"
-       transform="translate(7.805208,0)">
-      <rect
-         ry="0.66666663"
-         y="205.71872"
-         x="12.038543"
-         height="7.9375014"
-         width="7.937501"
-         id="rect3787-3"
-         style="fill:#333333;fill-opacity:1" />
-      <ellipse
-         ry="3.3072922"
-         rx="3.307292"
-         cy="209.68747"
-         cx="16.007294"
-         id="path4198-8"
-         style="fill:#c0c0c0;fill-opacity:1" />
-    </g>
+    <rect
+       style="fill:#333333;fill-opacity:1"
+       id="rect3787-3"
+       width="7.937501"
+       height="7.9375014"
+       x="19.84375"
+       y="205.71872"
+       ry="0.66666663" />
     <g
        style="font-style:normal;font-weight:normal;font-size:3.30729222px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4364"
@@ -307,15 +208,83 @@
       </g>
     </g>
     <g
-       id="g4573-6"
-       transform="translate(-8.0697926,6.3602366e-6)">
+       id="g4357"
+       style="fill:#00ff00;opacity:0.2">
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="222.91664"
+         cx="23.8125"
+         id="path4198-8-4"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="232.17706"
+         cx="23.8125"
+         id="path4198-8-4-4"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="241.43748"
+         cx="23.8125"
+         id="path4198-8-4-7"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="250.69789"
+         cx="23.8125"
+         id="path4198-8-4-4-8"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="259.95831"
+         cx="23.8125"
+         id="path4198-8-4-1"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="269.21872"
+         cx="23.8125"
+         id="path4198-8-4-4-2"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="278.47916"
+         cx="23.8125"
+         id="path4198-8-4-8"
+         style="fill:#00ff00;fill-opacity:1" />
+      <ellipse
+         ry="3.3072922"
+         rx="3.307292"
+         cy="287.73956"
+         cx="23.8125"
+         id="path4198-8-4-4-6"
+         style="fill:#00ff00;fill-opacity:1" />
       <ellipse
          ry="3.3072922"
          rx="3.307292"
          cy="209.68747"
-         cx="16.007294"
-         id="path4198-8-9"
-         style="fill:#c0c0c0;fill-opacity:1" />
+         cx="23.812502"
+         id="path4198-8"
+         style="fill:#00ff00;fill-opacity:1" />
+      <g
+         transform="translate(-8.0697926,6.3602366e-6)"
+         id="g4573-6"
+         style="fill:#00ff00">
+        <ellipse
+           style="fill:#00ff00;fill-opacity:1"
+           id="path4198-8-9"
+           cx="16.007294"
+           cy="209.68747"
+           rx="3.307292"
+           ry="3.3072922" />
+      </g>
     </g>
     <rect
        style="fill:#000000;fill-opacity:1"

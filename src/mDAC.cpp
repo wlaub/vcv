@@ -88,7 +88,7 @@ mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
 	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-    DEPTH_WIDGETS(17.5, 37.5, mDAC) 
+    DEPTH_WIDGETS(17.5, 35, mDAC) 
 
 
     infields = new NumField*[NOUT];
@@ -99,8 +99,8 @@ mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
     {
 
         float yoff = i*35+85;
-        addOutput(createOutput<PJ301MPort>(
-            Vec(77.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
+        addOutput(Port::create<PJ301MPort>(
+            Vec(77.5, yoff+2.5), Port::OUTPUT, module, mDAC::ANLG_OUTPUT+i
             ));
 
         infields[i] = new NumField();
