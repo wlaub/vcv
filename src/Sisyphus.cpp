@@ -195,49 +195,49 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
     {
         xoff = 47.5;
         yoff = 380-287.5-25+j*75;
-
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff, yoff), module, Sisyphus::SIGNAL_INPUT+j
+        
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff, yoff), Port::INPUT, module, Sisyphus::SIGNAL_INPUT+j
             ));
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff, yoff+30), module, Sisyphus::GATE_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff, yoff+30), Port::INPUT, module, Sisyphus::GATE_INPUT+j
             ));
 
 
-        xoff = 90;
-        addParam(ParamWidget::create<RoundSmallBlackKnob>(
-            Vec(xoff+1, yoff-1.5), module, Sisyphus::LENGTH_PARAM+j,
+        xoff = 90.2;
+        addParam(ParamWidget::create<RoundBlackKnob>(
+            Vec(xoff, yoff-2.3), module, Sisyphus::LENGTH_PARAM+j,
             0,10,10
             ));
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), module, Sisyphus::LENGTH_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::LENGTH_INPUT+j
             ));
 
         xoff += 45;
-        addParam(ParamWidget::create<RoundSmallBlackKnob>(
-            Vec(xoff+1, yoff-1.5), module, Sisyphus::RATE_PARAM+j,
+        addParam(ParamWidget::create<RoundBlackKnob>(
+            Vec(xoff, yoff-2.3), module, Sisyphus::RATE_PARAM+j,
             0,10,5
             ));
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), module, Sisyphus::RATE_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::RATE_INPUT+j
             ));
 
         xoff += 45;
         addParam(ParamWidget::create<RoundBlackSnapKnob>(
-            Vec(xoff+1, yoff-1.5), module, Sisyphus::MODE_PARAM+j,
+            Vec(xoff, yoff-2.3), module, Sisyphus::MODE_PARAM+j,
             0,1,0
             ));
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), module, Sisyphus::MODE_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::MODE_INPUT+j
             ));
 
 
         xoff+=45;
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+2.5, yoff), module, Sisyphus::SIGNAL_OUTPUT+j
+        addOutput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff), Port::OUTPUT, module, Sisyphus::SIGNAL_OUTPUT+j
             ));
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), module, Sisyphus::TRIG_OUTPUT+j
+        addOutput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), Port::OUTPUT, module, Sisyphus::TRIG_OUTPUT+j
             ));
 
         float l = 14*15;
