@@ -32,8 +32,8 @@
     addInput(Port::create<PJ301MPort>(\
         Vec(xoff+2.5, yoff+2.5), Port::INPUT, module, name ## _INPUT+idx\
         ));\
-    addParam(ParamWidget::create<RoundSmallBlackKnob>(\
-        Vec(xoff+31, yoff+1), module, name ## _PARAM+idx,\
+    addParam(ParamWidget::create<RoundBlackKnob>(\
+        Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx,\
         0, 10, def\
         ));\
 \

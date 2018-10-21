@@ -230,14 +230,14 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
     xoff = 165;
     yoff = 380-285-45;
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+2.5, yoff+2.5), module, Vulcan::AND_OUTPUT
+    addOutput(Port::create<PJ301MPort>(
+        Vec(xoff+2.5, yoff+2.5), Port::OUTPUT, module, Vulcan::AND_OUTPUT
         ));
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+32.5, yoff+2.5), module, Vulcan::XOR_OUTPUT
+    addOutput(Port::create<PJ301MPort>(
+        Vec(xoff+32.5, yoff+2.5), Port::OUTPUT, module, Vulcan::XOR_OUTPUT
         ));
-    addOutput(createOutput<PJ301MPort>(
-        Vec(xoff+62.5, yoff+2.5), module, Vulcan::OR_OUTPUT
+    addOutput(Port::create<PJ301MPort>(
+        Vec(xoff+62.5, yoff+2.5), Port::OUTPUT, module, Vulcan::OR_OUTPUT
         ));
 
 
@@ -263,17 +263,17 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
         PARAM_PAIR(xoff, yoff+gap*2, Vulcan::WIDTH, 10, j)
 
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3), module, Vulcan::RATE_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5+gap*3), Port::INPUT, module, Vulcan::RATE_INPUT+j
             ));
         addParam(ParamWidget::create<RoundBlackSnapKnob>(
-            Vec(xoff+31, yoff+1+gap*3), module, Vulcan::RATE_PARAM+j,
+            Vec(xoff+30.15, yoff+.15+gap*3), module, Vulcan::RATE_PARAM+j,
             0, 16, 1
             ));
 
 
-        addInput(createInput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3+35), module, Vulcan::MODE_INPUT+j
+        addInput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5+gap*3+35), Port::INPUT, module, Vulcan::MODE_INPUT+j
             ));
         addParam(ParamWidget::create<CKSS>(
             Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j,
@@ -283,12 +283,12 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
         yoff = 380-30-45;
 
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5), module, Vulcan::POS_OUTPUT+j
+        addOutput(Port::create<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5), Port::OUTPUT, module, Vulcan::POS_OUTPUT+j
             ));
 
-        addOutput(createOutput<PJ301MPort>(
-            Vec(xoff+32.5, yoff+2.5), module, Vulcan::TRIG_OUTPUT+j
+        addOutput(Port::create<PJ301MPort>(
+            Vec(xoff+32.5, yoff+2.5), Port::OUTPUT, module, Vulcan::TRIG_OUTPUT+j
             ));
 
     }
