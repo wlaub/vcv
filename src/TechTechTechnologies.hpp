@@ -13,7 +13,7 @@
         ));\
 \
     addOutput(Port::create<PJ301MPort>(\
-        Vec(x+60, y+2.5), Port::OUTPUT, module, modname::DEPTH_OUTPUT\
+        Vec(x+60.25, y+2.5), Port::OUTPUT, module, modname::DEPTH_OUTPUT\
         ));\
 \
 
