@@ -1,6 +1,7 @@
 #include "TechTechTechnologies.hpp"
 #define NOISE_LUT_LEN 8
 #define NOISE_STD_DEV 4
+#define CLAMP6011(val) clamp(val, -10.0f, 10.0f)
 
 struct Odysseus : Module {
 	enum ParamIds {
@@ -108,7 +109,7 @@ void Odysseus::step() {
     float off_knob = 
         10*2*(curve_pot(params[OFFSET_PARAM].value, 100, 6.98, 6.98, 3.09, 3.09)-.5);
 
-    float off_val = off_cv + off_knob;
+    float off_val = CLAMP6011(off_cv + off_knob);
 
     //Noise level
     float noise_cv = inputs[NOISE_INPUT].value * 
@@ -120,13 +121,15 @@ void Odysseus::step() {
     float std_dev = NOISE_STD_DEV*curve_lut(noise_level, NOISE_LUT, NOISE_LUT_LEN);
 
     //Generate noise
-    
+   
     float noise_val = 0;
     if(std_dev > 0 )
     {
-        noise_val = std_dev*randomNormal();
+        noise_val = CLAMP6011(std_dev*randomNormal());
     }
-   
+
+    float sig_val = CLAMP6011(noise_val+off_val);
+
     //Sample and hold clock
     
 
@@ -140,7 +143,7 @@ void Odysseus::step() {
 
     //Clear/autoclear etc
 
-    outputs[OUT_OUTPUT].value = noise_val+off_val;
+    outputs[OUT_OUTPUT].value = sig_val;
 
     char tstr[256];
     sprintf(tstr, "offset: %f\nnoise: %f", off_val, std_dev);

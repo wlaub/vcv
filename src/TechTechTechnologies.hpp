@@ -1,5 +1,6 @@
 #include "rack.hpp"
 #include "dsp/digital.hpp"
+#include "dsp/functions.hpp"
 
 #define OUTPORT(x,y,modname,param)\
     auto *param = Port::create<PJ301MPort>(\
