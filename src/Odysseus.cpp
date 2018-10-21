@@ -2,6 +2,8 @@
 #define NOISE_LUT_LEN 8
 #define NOISE_STD_DEV 4
 #define CLAMP6011(val) clamp(val, -10.0f, 10.0f)
+#define CLAMP2057(val) clamp(val, -10.0f, 10.0f)
+#define INT_RATE 10*deltaTime
 
 struct Odysseus : Module {
 	enum ParamIds {
@@ -50,6 +52,9 @@ struct Odysseus : Module {
         {5.05, 0},
     };
 
+    float integrator = 0;
+    float shphase = 0;
+
 	Odysseus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
 
@@ -96,10 +101,7 @@ float curve_pot(float a, float res, float rt=-1, float rb=-1, float rtx = 0, flo
 }
 
 void Odysseus::step() {
-	// Implement a simple sine oscillator
-	//float deltaTime = 1.0 / engineGetSampleRate();
-
-	// Compute the frequency from the pitch parameter and input
+	float deltaTime = 1.0 / engineGetSampleRate();
 
     if(ready == 0) return;
 
@@ -131,22 +133,35 @@ void Odysseus::step() {
     float sig_val = CLAMP6011(noise_val+off_val);
 
     //Sample and hold clock
-    
+    float freq = 1000;
+    shphase += 6.28*freq*deltaTime;
+
+    outputs[DETECT_OUTPUT].value = sin(shphase);
 
     //Sample and hold on signal
 
+
+    float sh_val = sig_val;
+
     //Rate attenuation
-    
+   
+    float rate_knob = 
+    (curve_pot(params[RATE_PARAM].value, 100, -1, 1.15));
+
+    float int_in_val = sh_val*rate_knob;
+
     //Integrate
+
+    integrator = CLAMP2057(integrator+int_in_val*INT_RATE);
 
     //Detect
 
     //Clear/autoclear etc
 
-    outputs[OUT_OUTPUT].value = sig_val;
+    outputs[OUT_OUTPUT].value = integrator;
 
     char tstr[256];
-    sprintf(tstr, "offset: %f\nnoise: %f", off_val, std_dev);
+    sprintf(tstr, "offset: %f\nnoise: %f\nintin: %f", off_val, std_dev, int_in_val);
     if(testLabel)
         testLabel->text = tstr;
 
