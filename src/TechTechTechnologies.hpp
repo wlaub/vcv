@@ -1,6 +1,50 @@
 #include "rack.hpp"
 #include "dsp/digital.hpp"
 
+#define OUTPORT(x,y,modname,param)\
+    auto *param = Port::create<PJ301MPort>(\
+        Vec(x,y), Port::OUTPUT, module, modname::param\
+        );\
+    center(param,1,1);\
+    addOutput(param);\
+\
+
+#define INPORT(x,y,modname,param)\
+    auto *param = Port::create<PJ301MPort>(\
+        Vec(x,y), Port::INPUT, module, modname::param\
+        );\
+    center(param,1,1);\
+    addInput(param);\
+\
+
+#define KNOB(x,y,min, max, def, type, modname,param)\
+    auto *param = ParamWidget::create<Round ## type ## BlackKnob>(\
+        Vec(x,y),module, modname::param,\
+        min, max, def\
+        );\
+    center(param,1,1);\
+    addParam(param);\
+\
+
+#define SWITCH(x,y, modname, param, ...)\
+auto* param = ParamWidget::create<CKSS>(\
+    Vec(x,y), module, modname::param,\
+    __VA_ARGS__\
+    );\
+center(param,1,1);\
+addParam(param);\
+\
+
+#define BUTTON(x,y, type, modname, param, ...)\
+auto* param = ParamWidget::create<type>(\
+    Vec(x,y), module, modname::param,\
+    __VA_ARGS__\
+    );\
+center(param,1,1);\
+addParam(param);\
+\
+
+
 #define DEPTH_WIDGETS(x,y,modname)\
     addInput(Port::create<PJ301MPort>(\
         Vec(x, y+2.5), Port::INPUT, module, modname::DEPTH_INPUT\
@@ -97,10 +141,24 @@ struct NumField : TextField {
 
 struct RoundTinyBlackKnob : RoundBlackKnob {
     RoundTinyBlackKnob() {
-        setSVG(SVG::load(assetPlugin(plugin, "res/RoundTinyBlackKnob.svg")));
+        setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
  
+struct DWhite : SVGSwitch, MomentarySwitch {
+    DWhite() {
+        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_1.svg")));
+    }
+};
+
+struct DWhiteLatch : SVGSwitch, ToggleSwitch {
+    DWhiteLatch() {
+        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_1.svg")));
+    }
+};
+
 
 
 ////////////////////
@@ -126,6 +184,6 @@ extern Model* modelPolyphemus;
 
 extern Model* modelOuroboros;
 
-
+extern Model* modelOdysseus;
 
 
