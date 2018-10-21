@@ -4,6 +4,7 @@
 #define CLAMP6011(val) clamp(val, -10.0f, 10.0f)
 #define CLAMP2057(val) clamp(val, -10.0f, 10.0f)
 #define INT_RATE 10*deltaTime
+#define DETECT_THRESH .476
 
 struct Odysseus : Module {
 	enum ParamIds {
@@ -154,11 +155,25 @@ void Odysseus::step() {
 
     integrator = CLAMP2057(integrator+int_in_val*INT_RATE);
 
+    float out = integrator;
+
     //Detect
+
+    float detect_knob =
+    (curve_pot(params[DETECT_PARAM].value, 100, -1, 6.98));
+    
+    if (abs(detect_knob*out) >= DETECT_THRESH)
+    {
+        outputs[DETECT_OUTPUT].value = 5;
+    }
+    else
+    {
+        outputs[DETECT_OUTPUT].value = 0;
+    }
 
     //Clear/autoclear etc
 
-    outputs[OUT_OUTPUT].value = integrator;
+    outputs[OUT_OUTPUT].value = out;
 
     char tstr[256];
     sprintf(tstr, "offset: %f\nnoise: %f\nintin: %f", off_val, std_dev, int_in_val);
