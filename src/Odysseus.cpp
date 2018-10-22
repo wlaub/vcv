@@ -158,7 +158,7 @@ void Odysseus::step() {
         }
     }
 
-    float freq_knob = 1000*curve_pot(params[FREQ_PARAM].value, 100);
+    float freq_knob = 1000*(1-params[FREQ_PARAM].value);
     freq_knob = freq_knob*3e3/(freq_knob+3e3);
     freq_knob += 49.9; 
 
