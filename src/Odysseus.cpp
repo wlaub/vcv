@@ -140,7 +140,30 @@ void Odysseus::step() {
 
     //Sample and hold clock
     float freq = 1000;
-    //TODO get actual freq info
+    int ndiv = 1;
+
+    if(params[FS_PARAM].value > 0.5) //fast mode = 64
+    {
+        ndiv = 64;
+    }
+    else
+    {
+        if(params[SS_PARAM].value > 0.5) //slow mode = 1024
+        {
+            ndiv = 1024;
+        }
+        else //slower mode = 16384
+        {
+            ndiv = 16384;
+        }
+    }
+
+    float freq_knob = 1000*curve_pot(params[FREQ_PARAM].value, 100);
+    freq_knob = freq_knob*3e3/(freq_knob+3e3);
+    freq_knob += 49.9; 
+
+    freq = 1e6 * 50 / (freq_knob*ndiv);
+
     shphase += freq*deltaTime;
 
     float clk_sig = 0;
@@ -217,11 +240,12 @@ void Odysseus::step() {
 
     outputs[OUT_OUTPUT].value = out;
 
+    /*
     char tstr[256];
-    sprintf(tstr, "offset: %f\nnoise: %f\nintin: %f", off_val, std_dev, int_in_val);
+    sprintf(tstr, "freq: %f", freq);
     if(testLabel)
         testLabel->text = tstr;
-
+    */
 }
 
 struct OdysseusWidget : ModuleWidget
