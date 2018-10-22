@@ -238,7 +238,7 @@ void Odysseus::step() {
         outputs[DETECT_OUTPUT].value = 0;
     }
 
-    outputs[OUT_OUTPUT].value = out;
+    outputs[OUT_OUTPUT].value = CLAMP6011(out+inputs[IN_INPUT].value);
 
     /*
     char tstr[256];
