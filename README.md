@@ -1,7 +1,39 @@
 
 # TechTech Technologies VCV Plugins
 
-Mostly relating to reconfigurable LFSRs
+### Odysseus
+
+Ramp/random walk generator. This module is still in development. Current implementation is based on design values, but will be updated to reflect final hardware behavior after it's finished.
+
+### Ouroboros
+
+5 VCO's modulating each other in a loop
+
+### Sisyphus
+
+4 circular buffers with length and rate control
+
+* Gate input: Controls buffer I/O
+  * Low value records input to buffer
+  * High value loops through buffer
+* Length control: Sets buffer length from 0-10s
+* Rate control: Sets buffer playback rate from 0x to 2x
+* Mode control: Currently does nothing
+* Trig output: generates a pulse when the buffer loops
+* Lights: Display buffer information
+  * Red: buffer end location
+  * Green: buffer start location
+  * Blue: buffer playback location
+
+### Polyphemus
+
+6-pole IIR filter
+
+* 3 pole pairs defined by radius and angle
+  * radius input from -1 to 1 with CV input. Clips to (-1,1).
+  * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
+
+## LFSR Modules
 
 ### Depth
 
@@ -37,30 +69,6 @@ These modules deal with digital numbers passes around as 0-10V CV's. The module 
 * The top three outputs are bitwise combinations of the two axes
 
 The original intent of this module was to produce a 2-dimensional point defined by the two axes and have it step horizontally and then vertically over a rectangular area. The 3 logic outputs combine the two axes to generate a single non-linear sequence.
-
-### Sisyphus
-
-4 circular buffers with length and rate control
-
-* Gate input: Controls buffer I/O
-  * Low value records input to buffer
-  * High value loops through buffer
-* Length control: Sets buffer length from 0-10s
-* Rate control: Sets buffer playback rate from 0x to 2x
-* Mode control: Currently does nothing
-* Trig output: generates a pulse when the buffer loops
-* Lights: Display buffer information
-  * Red: buffer end location
-  * Green: buffer start location
-  * Blue: buffer playback location
-
-### Polyphemus
-
-6-pole IIR filter
-
-* 3 pole pairs defined by radius and angle
-  * radius input from -1 to 1 with CV input. Clips to (-1,1).
-  * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
 
 ### DAC
 
