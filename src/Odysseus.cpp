@@ -54,6 +54,7 @@ struct Odysseus : Module {
         {5.05, 0},
     };
 
+    float sh_val = 0;
     float integrator = 0;
     float shphase = 0;
 
@@ -139,12 +140,34 @@ void Odysseus::step() {
 
     //Sample and hold clock
     float freq = 1000;
-    shphase += 6.28*freq*deltaTime;
+    //TODO get actual freq info
+    shphase += freq*deltaTime;
+
+    float clk_sig = 0;
+
+    while(shphase >= 1)
+    {
+        shphase -= 1;
+        clk_sig = 5;
+    }
+
+
+    if(inputs[CLK_INPUT].active)
+    {
+        clk_sig = inputs[CLK_INPUT].value;
+    }
+    else
+    {
+    }
+
+    clkTrigger.process(clk_sig);
 
     //Sample and hold on signal
 
-
-    float sh_val = sig_val;
+    if (clkTrigger.isHigh())
+    {
+        sh_val = sig_val;
+    }
 
     //Rate attenuation
    
