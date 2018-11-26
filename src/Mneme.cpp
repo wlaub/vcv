@@ -18,16 +18,18 @@ struct Mneme : Module {
         DELAY_PARAM,
         DELAY_CV_PARAM = DELAY_PARAM+N,
         IN_CV_PARAM = DELAY_CV_PARAM+N,
-        NUM_PARAMS = IN_CV_PARAM+N*NIN
+        OUT_CV_PARAM = IN_CV_PARAM+N,       
+        FB_CV_PARAM = OUT_CV_PARAM+N,
+        NUM_PARAMS = FB_CV_PARAM+N*(N-1)
 	};
 	enum InputIds {
         DELAY_INPUT,
 		SIGNAL_INPUT = DELAY_INPUT+N,
-		NUM_INPUTS = SIGNAL_INPUT+N*NIN
+		NUM_INPUTS = SIGNAL_INPUT+N
 	};
 	enum OutputIds {
         SIGNAL_OUTPUT,
-		NUM_OUTPUTS = SIGNAL_OUTPUT+N*NOUT
+		NUM_OUTPUTS = SIGNAL_OUTPUT+N
 	};
 	enum LightIds {
         LOOP_LIGHTS,
@@ -59,9 +61,20 @@ void Mneme::step() {
 
     if(ready == 0) return;
 
+    //One big circular buffer
+
     for(int j = 0; j < N; ++j)
     { 
-
+        //Compute tap positions
+        //
+        //
+        //Compute tap value/outputs
+        //
+        //
+        //Compute tap inputs
+        //
+        //
+        //Add inputs at tap
 
     }
 
@@ -107,17 +120,26 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 
         for(int i = 0; i < NIN; ++i)
         {
-            yoff = 192.561+12.5 - 38.891*i;
-            INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N+i)
-            KNOB(xoff+44.186+12,380-(yoff), 0, 1, .5, Tiny, Mneme, IN_CV_PARAM, j*N+i)
+
+            yoff = 192.561+12.5 - 38.891*1;
+            auto *param = ParamWidget::create<LEDSliderBlue>(
+                Vec(xoff + 13.413+10.63/2 + i*(33.098-13.413), 380-yoff),
+                module, Mneme::IN_CV_PARAM + N*j+i,
+                0, 1, 0.5
+                );
+            center(param,1,1);
+            addParam(param);
         }
 
-        for(int i = 0; i < NOUT; i+=2)
-        {
-            yoff = 192.561+12.5 - 38.891*(NIN+i/2);
-            OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N+i)
-            OUTPORT(xoff+44.186+12,380-(yoff), Mneme, IN_CV_PARAM, j*N+i)
-        }
+        yoff = 192.561+12.5 - 38.891*(3);
+        INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N)
+        KNOB(xoff+44.186+12,380-(yoff), 0,1,.5, Tiny, Mneme, IN_CV_PARAM, j*N)
+
+        yoff = 192.561+12.5 - 38.891*(4);
+        OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_OUTPUT, j*N)
+        KNOB(xoff+44.186+12,380-(yoff), 0,1,.5, Tiny, Mneme, OUT_CV_PARAM, j*N)
+
+
 
     }
 
