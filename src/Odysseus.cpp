@@ -269,24 +269,24 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) : ModuleWidget(module) {
 	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-    OUTPORT(12.883+12.5, 380-(33.337+12.5), Odysseus, DETECT_OUTPUT)
-    OUTPORT(108.966+15, 380-(33.337+12.5), Odysseus, OUT_OUTPUT)
+    OUTPORT(12.883+12.5, 380-(33.337+12.5), Odysseus, DETECT_OUTPUT, 0)
+    OUTPORT(108.966+15, 380-(33.337+12.5), Odysseus, OUT_OUTPUT, 0)
 	
-    INPORT(6.721+12.5, 380-(318.706+12.5), Odysseus, OFFSET_INPUT)
-    INPORT(117.618+12.5, 380-(318.706+12.5), Odysseus, NOISE_INPUT)
-    INPORT(62.171+12.5, 380-(207.812+12.5), Odysseus, CLK_INPUT)
-    INPORT(62.171+12.5, 380-(133.833+12.5), Odysseus, CLEAR_INPUT)
-    INPORT(62.171+12.5, 380-(33.337+12.5), Odysseus, IN_INPUT)
+    INPORT(6.721+12.5, 380-(318.706+12.5), Odysseus, OFFSET_INPUT, 0)
+    INPORT(117.618+12.5, 380-(318.706+12.5), Odysseus, NOISE_INPUT, 0)
+    INPORT(62.171+12.5, 380-(207.812+12.5), Odysseus, CLK_INPUT, 0)
+    INPORT(62.171+12.5, 380-(133.833+12.5), Odysseus, CLEAR_INPUT, 0)
+    INPORT(62.171+12.5, 380-(33.337+12.5), Odysseus, IN_INPUT, 0)
 
-    KNOB(44.186+12,380-(319.206+12), 0, 1, .5, Tiny, Odysseus, OFFSET_CV_PARAM)
-    KNOB(81.152+12,380-(319.206+12), 0, 1, 0, Tiny, Odysseus, NOISE_CV_PARAM)
+    KNOB(44.186+12,380-(319.206+12), 0, 1, .5, Tiny, Odysseus, OFFSET_CV_PARAM, 0)
+    KNOB(81.152+12,380-(319.206+12), 0, 1, 0, Tiny, Odysseus, NOISE_CV_PARAM, 0)
 
-    KNOB(6.706+31,380-(241.064+31), 0, 1, .5, Huge, Odysseus, OFFSET_PARAM)
-    KNOB(80.635+31,380-(241.064+31), 0, 1, 0, Huge, Odysseus, NOISE_PARAM)
+    KNOB(6.706+31,380-(241.064+31), 0, 1, .5, Huge, Odysseus, OFFSET_PARAM, 0)
+    KNOB(80.635+31,380-(241.064+31), 0, 1, 0, Huge, Odysseus, NOISE_PARAM, 0)
 
-    KNOB(16.701+21.005,380-(154.949+21.005), 0, 1, 0, Large, Odysseus, FREQ_PARAM)
-    KNOB(90.630+21.005,380-(154.949+21.005), 0, 1, 0, Large, Odysseus, RATE_PARAM)
-    KNOB(53.666+21.005,380-(66.233+21.005), 0, 1, 0, Large, Odysseus, DETECT_PARAM)
+    KNOB(16.701+21.005,380-(154.949+21.005), 0, 1, 0, Large, Odysseus, FREQ_PARAM, 0)
+    KNOB(90.630+21.005,380-(154.949+21.005), 0, 1, 0, Large, Odysseus, RATE_PARAM, 0)
+    KNOB(53.666+21.005,380-(66.233+21.005), 0, 1, 0, Large, Odysseus, DETECT_PARAM, 0)
 
     SWITCH(20.353+7, 380-(209.991+20.641/2), Odysseus, FS_PARAM, 0, 1, 0)
     SWITCH(41.055+7, 380-(209.991+20.641/2), Odysseus, SS_PARAM, 0, 1, 0)

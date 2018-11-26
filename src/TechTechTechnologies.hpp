@@ -2,25 +2,25 @@
 #include "dsp/digital.hpp"
 #include "dsp/functions.hpp"
 
-#define OUTPORT(x,y,modname,param)\
+#define OUTPORT(x,y,modname,param, offset)\
     auto *param = Port::create<PJ301MPort>(\
-        Vec(x,y), Port::OUTPUT, module, modname::param\
+        Vec(x,y), Port::OUTPUT, module, modname::param + offset\
         );\
     center(param,1,1);\
     addOutput(param);\
 \
 
-#define INPORT(x,y,modname,param)\
+#define INPORT(x,y,modname,param, offset)\
     auto *param = Port::create<PJ301MPort>(\
-        Vec(x,y), Port::INPUT, module, modname::param\
+        Vec(x,y), Port::INPUT, module, modname::param + offset\
         );\
     center(param,1,1);\
     addInput(param);\
 \
 
-#define KNOB(x,y,min, max, def, type, modname,param)\
+#define KNOB(x,y,min, max, def, type, modname,param, offset)\
     auto *param = ParamWidget::create<Round ## type ## BlackKnob>(\
-        Vec(x,y),module, modname::param,\
+        Vec(x,y),module, modname::param + offset,\
         min, max, def\
         );\
     center(param,1,1);\
@@ -187,4 +187,5 @@ extern Model* modelOuroboros;
 
 extern Model* modelOdysseus;
 
+extern Model* modelMneme;
 
