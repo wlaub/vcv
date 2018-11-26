@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="50"
+   height="50"
+   id="svg3347"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="TTTSmallKnob.svg">
+  <defs
+     id="defs3349" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="12.091265"
+     inkscape:cx="28.669588"
+     inkscape:cy="28.51709"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="1002"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3352">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1002.3622)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path4198-8-7-7-21-9-7-7-6-6-1-7-27-1"
+       d="M 25,1049.9872 A 22.624994,22.624994 0 0 1 2.375,1027.3622 22.624994,22.624994 0 0 1 25,1004.7372 22.624994,22.624994 0 0 1 47.625,1027.3622 22.624994,22.624994 0 0 1 25,1049.9872 z"
+       style="fill:#000000;fill-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4198-8-7-7-21-9-7-7-6-6-1-7-27-1-0"
+       d="M 25,1041.4072 A 14.044996,14.044985 0 0 1 10.955,1027.3622 14.044996,14.044985 0 0 1 25,1013.3172 14.044996,14.044985 0 0 1 39.045,1027.3622 14.044996,14.044985 0 0 1 25,1041.4072 z"
+       style="fill:#ffffff;fill-opacity:1" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect3395"
+       width="5.3499999"
+       height="9.4751997"
+       x="22.325001"
+       y="1004.7372" />
+  </g>
+</svg>
