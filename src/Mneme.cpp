@@ -89,7 +89,7 @@ struct MnemeWidget : ModuleWidget
 MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 //	Mneme *module = new Mneme();
 //	setModule(module);
-	box.size = Vec(40* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
 		SVGPanel *panel = new SVGPanel();
