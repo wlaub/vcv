@@ -108,15 +108,15 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
         for(int i = 0; i < NIN; ++i)
         {
             yoff = 192.561+12.5 - 38.891*i;
-            INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*i)
-            KNOB(xoff+44.186+12,380-(yoff), 0, 1, .5, Tiny, Mneme, IN_CV_PARAM, j*i)
+            INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N+i)
+            KNOB(xoff+44.186+12,380-(yoff), 0, 1, .5, Tiny, Mneme, IN_CV_PARAM, j*N+i)
         }
 
         for(int i = 0; i < NOUT; i+=2)
         {
             yoff = 192.561+12.5 - 38.891*(NIN+i/2);
-            OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*i)
-            OUTPORT(xoff+44.186+12,380-(yoff), Mneme, IN_CV_PARAM, j*i)
+            OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N+i)
+            OUTPORT(xoff+44.186+12,380-(yoff), Mneme, IN_CV_PARAM, j*N+i)
         }
 
     }
