@@ -1,17 +1,119 @@
 #include "TechTechTechnologies.hpp"
+#include <math.h>
 #define BITL 20
 #define N 4
 #define NIN 3
 #define NOUT 4
-#define BUFL (10*48000)
+#define BUFL (1<<16)
 
 typedef struct
 {
     float data[BUFL];
-    int head;
-    int tail;
-    float loc;
+    unsigned int head;
 } cbuf;
+
+float interpolate(float left, float right, float alpha)
+{
+    //Buffer interpolate function from left/right values and distance from
+    //left index to value at the corresponding position
+    return left*(1-alpha)+right*(alpha);
+}
+float reverse_interpolate(float val, float alpha, int dir)
+{
+    //Reverse interpolate from value at float position alpha from left index
+    //to value that would appear at left or right index depending on dir
+    if(dir == 0) //left
+    {
+        return val*(1-alpha);
+    }
+    else //right
+    {
+        return alpha*val;
+    }
+}
+
+unsigned int buffer_get_index(cbuf* buffer, unsigned int pos)
+{ printf("buffer_get_index\n");
+    //Return the index of the given position in the past
+    printf("pos - %i\n", pos);
+    printf("head - %i\n", buffer->head);
+   
+    while(pos >= BUFL)
+    {
+        pos -= BUFL;
+    }
+    if(pos <= buffer->head)
+    {
+        return buffer->head - pos;
+    }
+    else
+    {
+        if(buffer -> head != BUFL-1)
+            return (BUFL-pos)+buffer->head;
+        else
+            return 0;
+        //pos = head + 1
+        //BUFL-head-1+head = BUFL-1
+        //
+        //pos = BUFL-1
+        //BUFL-BUFL+1=head+1
+    }
+
+}
+
+#define BUF_DECODE(buffer, loc)\
+    float alpha;\
+    unsigned int left, right;\
+    left = buffer_get_index(buffer, floor(loc));\
+    printf("l %i\n", left);\
+    right = left+1; if(right == BUFL) --right;\
+    printf("r %i\n", right);\
+    alpha = loc-floor(loc);\
+
+int buffer_push(cbuf* buffer, float val)
+{// printf("buffer_push\n");
+    buffer->head +=1;
+    if(buffer->head == BUFL) buffer->head = 0;
+    buffer->data[buffer->head] = val;
+    printf("==head - %i\n", buffer->head);
+    return 0;
+}
+
+int buffer_insert(cbuf* buffer, float loc, float val)
+{ 
+    //Insert the value at position val into the buffer using reverse
+    //interpolation
+    BUF_DECODE(buffer, loc)
+
+    buffer->data[left]  = reverse_interpolate(val, alpha, 0);
+    buffer->data[right] = reverse_interpolate(val, alpha, 1);
+
+    return 0;
+}
+
+int buffer_add_insert(cbuf* buffer, float loc, float val)
+{// printf("buffer_add_insert\n");
+    //Same as insert, but add instead of replace
+  printf("--%i\n", buffer->head);
+    BUF_DECODE(buffer, loc)
+
+  printf("--%i\n", buffer->head);
+     buffer->data[left]  += reverse_interpolate(val, alpha, 0);
+    buffer->data[right] += reverse_interpolate(val, alpha, 1);
+    printf("--%i\n", buffer->head);
+    //Do clipping
+
+    return 0;
+}
+
+float buffer_get_tap(cbuf* buffer, float loc)
+{// printf("buffer_get_tap\n");
+    //Get the value at the given float index
+    BUF_DECODE(buffer, loc)
+
+    return interpolate(buffer->data[left], buffer->data[right], alpha);
+
+}
 
 struct Mneme : Module {
 	enum ParamIds {
@@ -37,15 +139,12 @@ struct Mneme : Module {
 	};
 
     int ready = 0;
-
-    SchmittTrigger clockTrigger[N];
-    SchmittTrigger gateTrigger[N];
-
-    PulseGenerator trigPulse[N];
+    float pos[N];
+    float vals[N];
 
     Label* testLabel;
 
-    cbuf buffer[N];
+    cbuf* buffer;
 
 	Mneme() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 	void step() override;
@@ -57,27 +156,56 @@ struct Mneme : Module {
 };
 
 void Mneme::step() {
-	float deltaTime = 1.0 / engineGetSampleRate();
+    printf("1");
+    float deltaTime = 1.0 / engineGetSampleRate();
+    printf("1");
 
     if(ready == 0) return;
 
     //One big circular buffer
+    //Push data into buffer
+
+    printf("1");
+    buffer_push(buffer, inputs[SIGNAL_INPUT].value);
+    printf("2");
 
     for(int j = 0; j < N; ++j)
-    { 
-        //Compute tap positions
-        //
-        //
-        //Compute tap value/outputs
-        //
-        //
-        //Compute tap inputs
-        //
-        //
-        //Add inputs at tap
+    {
+        pos[j] = inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value 
+               + params[DELAY_PARAM+j].value;
+        pos[j] *= BUFL;
+        //maybe clip the length?
 
+        vals[j] = buffer_get_tap(buffer, pos[j]);
     }
-
+    printf("3");
+    for(int j = 0; j < N; ++j)
+    {
+        printf("3--\n");
+        printf("??%i\n", buffer->head);
+        float accum = 0;
+        int k = 0; //k tracks the source index
+        printf("???%i\n", buffer->head);       
+        for(int i = 0; i < NIN; ++i, ++k)
+        {
+            if(i==j) ++k;
+            else
+            {
+                accum += vals[k]*params[FB_CV_PARAM+j*N+i].value;
+            }
+        }
+        printf("????%i\n", buffer->head); 
+        accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
+        //clip signal?
+        printf("?????%i\n", buffer->head);
+        buffer_add_insert(buffer, pos[j], accum);
+        printf("??????%i\n", buffer->head);
+        outputs[SIGNAL_OUTPUT].value = (accum+vals[j])*params[OUT_CV_PARAM+j].value;
+        printf("???????%i\n", buffer->head);
+    }
+ 
+    printf("4");
+ 
 }
 
 struct MnemeWidget : ModuleWidget
@@ -91,6 +219,8 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 //	setModule(module);
 	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
+     printf("x");
+    
 	{
 		SVGPanel *panel = new SVGPanel();
 		panel->box.size = box.size;
@@ -107,17 +237,19 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
     float xoff, yoff;
 
 
+    printf("x");
     for(int j = 0; j < N; ++j)
     {
         xoff = 73.929*j;
         yoff = 311.307+10;
 
         INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, DELAY_INPUT, j)
-        KNOB(xoff+44.186+12,380-(yoff), 0, 1, .5, Tiny, Mneme, DELAY_CV_PARAM, j)
+        KNOB(xoff+44.186+12,380-(yoff), -1, 1, 0, Tiny, Mneme, DELAY_CV_PARAM, j)
 
-        KNOB(xoff+31+6.707,380-(233.164+29), 0, 1, .5, Huge, Mneme, DELAY_PARAM, j)
+        KNOB(xoff+31+6.707,380-(233.164+29), 0, 1, .01, Huge, Mneme, DELAY_PARAM, j)
 
-
+    printf("x");
+ 
         for(int i = 0; i < NIN; ++i)
         {
 
@@ -131,6 +263,7 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
             addParam(param);
         }
 
+     printf("x");
         yoff = 192.561+12.5 - 38.891*(3);
         INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N)
         KNOB(xoff+44.186+12,380-(yoff), 0,1,.5, Tiny, Mneme, IN_CV_PARAM, j*N)
@@ -142,7 +275,8 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 
 
     }
-
+    printf("x");
+ 
     auto* label = new Label();
     label->box.pos=Vec(0, 30);
     label->text = "";
@@ -150,6 +284,10 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
     module->testLabel = label;
 
     module->ready = 1;
+
+    module->buffer = new cbuf; 
+    printf("z");
+
 
 }
 
