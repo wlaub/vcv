@@ -4,7 +4,7 @@
 #define N 4
 #define NIN 3
 #define NOUT 4
-#define BUFL (1<<16)
+#define BUFL (1<<24)
 
 typedef struct
 {
@@ -33,10 +33,10 @@ float reverse_interpolate(float val, float alpha, int dir)
 }
 
 unsigned int buffer_get_index(cbuf* buffer, unsigned int pos)
-{ printf("buffer_get_index\n");
+{// printf("buffer_get_index\n");
     //Return the index of the given position in the past
-    printf("pos - %i\n", pos);
-    printf("head - %i\n", buffer->head);
+//    printf("pos - %i\n", pos);
+//    printf("head - %i\n", buffer->head);
    
     while(pos >= BUFL)
     {
@@ -65,9 +65,7 @@ unsigned int buffer_get_index(cbuf* buffer, unsigned int pos)
     float alpha;\
     unsigned int left, right;\
     left = buffer_get_index(buffer, floor(loc));\
-    printf("l %i\n", left);\
     right = left+1; if(right == BUFL) --right;\
-    printf("r %i\n", right);\
     alpha = loc-floor(loc);\
 
 int buffer_push(cbuf* buffer, float val)
@@ -75,7 +73,7 @@ int buffer_push(cbuf* buffer, float val)
     buffer->head +=1;
     if(buffer->head == BUFL) buffer->head = 0;
     buffer->data[buffer->head] = val;
-    printf("==head - %i\n", buffer->head);
+
     return 0;
 }
 
@@ -94,13 +92,10 @@ int buffer_insert(cbuf* buffer, float loc, float val)
 int buffer_add_insert(cbuf* buffer, float loc, float val)
 {// printf("buffer_add_insert\n");
     //Same as insert, but add instead of replace
-  printf("--%i\n", buffer->head);
     BUF_DECODE(buffer, loc)
 
-  printf("--%i\n", buffer->head);
-     buffer->data[left]  += reverse_interpolate(val, alpha, 0);
+    buffer->data[left]  += reverse_interpolate(val, alpha, 0);
     buffer->data[right] += reverse_interpolate(val, alpha, 1);
-    printf("--%i\n", buffer->head);
     //Do clipping
 
     return 0;
@@ -117,36 +112,36 @@ float buffer_get_tap(cbuf* buffer, float loc)
 
 struct Mneme : Module {
 	enum ParamIds {
-        DELAY_PARAM,
-        DELAY_CV_PARAM = DELAY_PARAM+N,
-        IN_CV_PARAM = DELAY_CV_PARAM+N,
-        OUT_CV_PARAM = IN_CV_PARAM+N,       
-        FB_CV_PARAM = OUT_CV_PARAM+N,
-        NUM_PARAMS = FB_CV_PARAM+N*(N-1)
+        ENUMS(DELAY_PARAM,N),
+        ENUMS(DELAY_CV_PARAM, N),
+        ENUMS(IN_CV_PARAM, N),
+        ENUMS(OUT_CV_PARAM, N),
+        ENUMS(FB_CV_PARAM, N*(N-1)),
+        NUM_PARAMS
 	};
 	enum InputIds {
-        DELAY_INPUT,
-		SIGNAL_INPUT = DELAY_INPUT+N,
-		NUM_INPUTS = SIGNAL_INPUT+N
+        ENUMS(DELAY_INPUT, N),
+		ENUMS(SIGNAL_INPUT, N),
+		NUM_INPUTS
 	};
 	enum OutputIds {
-        SIGNAL_OUTPUT,
-		NUM_OUTPUTS = SIGNAL_OUTPUT+N
+        ENUMS(SIGNAL_OUTPUT, N),
+		NUM_OUTPUTS
 	};
 	enum LightIds {
-        LOOP_LIGHTS,
-		NUM_LIGHTS = LOOP_LIGHTS + N*BITL*3
+		NUM_LIGHTS
 	};
 
     int ready = 0;
+
     float pos[N];
     float vals[N];
 
     Label* testLabel;
 
-    cbuf* buffer;
+    cbuf buffer;
 
-	Mneme() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Mneme() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS) {}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -156,56 +151,54 @@ struct Mneme : Module {
 };
 
 void Mneme::step() {
-    printf("1");
     float deltaTime = 1.0 / engineGetSampleRate();
-    printf("1");
 
     if(ready == 0) return;
 
     //One big circular buffer
     //Push data into buffer
 
-    printf("1");
-    buffer_push(buffer, inputs[SIGNAL_INPUT].value);
-    printf("2");
+    buffer_push(&buffer, inputs[SIGNAL_INPUT].value*params[IN_CV_PARAM].value);
 
     for(int j = 0; j < N; ++j)
     {
-        pos[j] = inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value 
+        pos[j] = (inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value)*(BUFL-1)
                + params[DELAY_PARAM+j].value;
-        pos[j] *= BUFL;
         //maybe clip the length?
+        //account for sample rate
 
-        vals[j] = buffer_get_tap(buffer, pos[j]);
+        vals[j] = buffer_get_tap(&buffer, pos[j]);
     }
-    printf("3");
+
     for(int j = 0; j < N; ++j)
     {
-        printf("3--\n");
-        printf("??%i\n", buffer->head);
         float accum = 0;
+
         int k = 0; //k tracks the source index
-        printf("???%i\n", buffer->head);       
-        for(int i = 0; i < NIN; ++i, ++k)
+        for(int i = 0; i < NIN; ++i)
         {
             if(i==j) ++k;
             else
             {
-                accum += vals[k]*params[FB_CV_PARAM+j*N+i].value;
+                accum += vals[k]*params[FB_CV_PARAM+j*NIN+i].value;
             }
+            ++k;
         }
-        printf("????%i\n", buffer->head); 
-        accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
+        if(j != 0)
+            accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
         //clip signal?
-        printf("?????%i\n", buffer->head);
-        buffer_add_insert(buffer, pos[j], accum);
-        printf("??????%i\n", buffer->head);
-        outputs[SIGNAL_OUTPUT].value = (accum+vals[j])*params[OUT_CV_PARAM+j].value;
-        printf("???????%i\n", buffer->head);
+
+        buffer_add_insert(&buffer, pos[j], accum);
+
+        outputs[SIGNAL_OUTPUT+j].value = (accum+vals[j])*params[OUT_CV_PARAM+j].value;
     }
  
-    printf("4");
- 
+     
+//    char tstr[256];
+//    sprintf(tstr, ": %f", pos[0]);
+//    if(testLabel)
+//        testLabel->text = tstr;
+    
 }
 
 struct MnemeWidget : ModuleWidget
@@ -215,11 +208,7 @@ struct MnemeWidget : ModuleWidget
 
 
 MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
-//	Mneme *module = new Mneme();
-//	setModule(module);
 	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
-
-     printf("x");
     
 	{
 		SVGPanel *panel = new SVGPanel();
@@ -236,8 +225,6 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 
     float xoff, yoff;
 
-
-    printf("x");
     for(int j = 0; j < N; ++j)
     {
         xoff = 73.929*j;
@@ -246,48 +233,39 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
         INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, DELAY_INPUT, j)
         KNOB(xoff+44.186+12,380-(yoff), -1, 1, 0, Tiny, Mneme, DELAY_CV_PARAM, j)
 
-        KNOB(xoff+31+6.707,380-(233.164+29), 0, 1, .01, Huge, Mneme, DELAY_PARAM, j)
+        KNOB(xoff+31+6.707,380-(233.164+29), 1, BUFL-1, 10, Huge, Mneme, DELAY_PARAM, j)
 
-    printf("x");
- 
         for(int i = 0; i < NIN; ++i)
         {
 
             yoff = 192.561+12.5 - 38.891*1;
             auto *param = ParamWidget::create<LEDSliderBlue>(
                 Vec(xoff + 13.413+10.63/2 + i*(33.098-13.413), 380-yoff),
-                module, Mneme::IN_CV_PARAM + N*j+i,
-                0, 1, 0.5
+                module, Mneme::FB_CV_PARAM + NIN*j+i,
+                -1, 1, 0
                 );
             center(param,1,1);
             addParam(param);
         }
 
-     printf("x");
         yoff = 192.561+12.5 - 38.891*(3);
-        INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j*N)
-        KNOB(xoff+44.186+12,380-(yoff), 0,1,.5, Tiny, Mneme, IN_CV_PARAM, j*N)
+        INPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_INPUT, j)
+        KNOB(xoff+44.186+12,380-(yoff), -1,1,0, Tiny, Mneme, IN_CV_PARAM, j)
 
         yoff = 192.561+12.5 - 38.891*(4);
-        OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_OUTPUT, j*N)
-        KNOB(xoff+44.186+12,380-(yoff), 0,1,.5, Tiny, Mneme, OUT_CV_PARAM, j*N)
-
-
+        OUTPORT(6.721+12.5+xoff, 380-(yoff), Mneme, SIGNAL_OUTPUT, j)
+        KNOB(xoff+44.186+12,380-(yoff), -1,1,0, Tiny, Mneme, OUT_CV_PARAM, j)
 
     }
-    printf("x");
  
     auto* label = new Label();
-    label->box.pos=Vec(0, 30);
+    label->box.pos=Vec(30, 0);
     label->text = "";
+    label->color = nvgRGB(0,0,0);
     addChild(label); 
     module->testLabel = label;
 
     module->ready = 1;
-
-    module->buffer = new cbuf; 
-    printf("z");
-
 
 }
 
