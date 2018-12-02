@@ -4,7 +4,7 @@
 #define N 4
 #define NIN 3
 #define NOUT 4
-#define BUFL (1<<12)
+#define BUFL (1<<16)
 
 typedef struct
 {
