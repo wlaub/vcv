@@ -77,6 +77,15 @@ int buffer_push(cbuf* buffer, float val)
     return 0;
 }
 
+float buffer_add(cbuf* buffer, int index, float val)
+{
+    //Add the given value at the given index; Clamp as needed
+    buffer->data[index]  += val;
+    buffer->data[index] = clamp(buffer->data[index], -10.f, 10.f);
+
+    return buffer->data[index];
+}
+
 int buffer_insert(cbuf* buffer, float loc, float val)
 { 
     //Insert the value at position val into the buffer using reverse
@@ -89,13 +98,18 @@ int buffer_insert(cbuf* buffer, float loc, float val)
     return 0;
 }
 
+
 int buffer_add_insert(cbuf* buffer, float loc, float val)
 {// printf("buffer_add_insert\n");
     //Same as insert, but add instead of replace
     BUF_DECODE(buffer, loc)
 
-    buffer->data[left]  += reverse_interpolate(val, alpha, 0);
-    buffer->data[right] += reverse_interpolate(val, alpha, 1);
+    buffer_add(buffer, left, reverse_interpolate(val, alpha, 0));
+//    buffer->data[left] += reverse_interpolate(val, alpha, 1);
+//    buffer->data[left] = clamp(buffer->data[left], -10.f, 10.f);
+    buffer_add(buffer, left, reverse_interpolate(val, alpha, 0));
+//    buffer->data[right] += reverse_interpolate(val, alpha, 1);
+//    buffer->data[right] = clamp(buffer->data[right], -10.f, 10.f);   
     //Do clipping
 
     return 0;
@@ -166,7 +180,7 @@ void Mneme::step() {
     for(int j = 0; j < N; ++j)
     {
         pos[j+1] = (inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value)*(BUFL-1)
-               + params[DELAY_PARAM+j].value;
+               + params[DELAY_PARAM+j].value+pos[j];
         //maybe clip the length?
         //account for sample rate
 
@@ -178,6 +192,10 @@ void Mneme::step() {
         float accum = 0;
 
         int k = 0; //k tracks the source index
+        //Calculated feedpack to point j where
+        // j = 0 is the input to the first tap
+        // j = N is the output of the Nth tap
+        //
         for(int i = 0; i < N; ++i)
         {
             if(i==j) ++k;
@@ -187,13 +205,21 @@ void Mneme::step() {
             }
             ++k;
         }
-        if(j != N)
+        //Input j=0 is into tap 1
+        //Input j=N-1 is fed intp tap N
+        //j=0 was already done to acquire the input
+        if(j != N && j!= 0)
             accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
-        //clip signal?
 
-        buffer_add_insert(&buffer, pos[j], accum);
+        if(j==0)
+        {
+            buffer_add(&buffer, buffer.head, accum);
+        }
         if(j>0)
+        {
+            buffer_add_insert(&buffer, pos[j], accum);
             outputs[SIGNAL_OUTPUT+j-1].value = (accum+vals[j])*params[OUT_CV_PARAM+j-1].value;
+        }
     }
  
      
@@ -242,11 +268,24 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
         {
 
             yoff = 192.561+12.5 - 38.891*1;
-            auto *param = ParamWidget::create<LEDSliderBlue>(
-                Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
-                module, Mneme::FB_CV_PARAM + NIN*j+i,
-                -1, 1, 0
+
+            ParamWidget* param;
+            if(i<j)
+            {
+                param = ParamWidget::create<LEDSliderRed>(
+                    Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
+                    module, Mneme::FB_CV_PARAM + N*j+i,
+                    -1, 1, 0
                 );
+            }
+            else
+            {
+                param = ParamWidget::create<LEDSliderBlue>(
+                    Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
+                    module, Mneme::FB_CV_PARAM + N*j+i,
+                    -1, 1, 0
+                );
+            }
             center(param,1,1);
             addParam(param);
         }
