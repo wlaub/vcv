@@ -8,6 +8,41 @@ class Control():
     Represents a control derived from path metadata
     """
 
+    create_declarations ="""
+    ParamWidget* param;
+    InputWidget* input;
+    OutputWidget* output;
+    LightWidget* light;
+    """
+
+    create_strings = {
+    'param':"""
+    param = ParamWidget.create<{widget}>(
+        Vec({xpos}, {ypos}), 
+        module, {name}::{id},
+        {min}, {max}, {default}
+    );
+    center(param,1,1);
+    addParam(param);
+    """,
+    'input':"""
+    input = Port::create<PJ301MPort>(
+        Vec({xpos},{ypos}), Port::INPUT, module, {name}::{id}
+        );
+    center(input,1,1);
+    addInput(input);    
+    """,
+    'output':"""
+    output = Port::create<PJ301MPort>(
+        Vec({xpos},{ypos}), Port::OUTPUT, module, {name}::{id}
+        );
+    center(output,1,1);
+    addInput(output);    
+    """,
+   'light':"""
+    """,
+    }
+
     @staticmethod
     def is_title(node):
         return node.tag[-5:].lower() == 'title'
@@ -59,6 +94,22 @@ class Control():
             elif Control.is_desc(subnode):
                 self.config = ast.literal_eval(subnode.text)
 
+    def get_instantiation(self, modname):
+        """
+        Return the panel instantiation string for this control
+        """
+        try:
+            result = self.create_strings[self.kind].format(
+                name=modname, widget=self.widget,
+                id=self._id, xpos = self.pos[0], ypos = self.pos[1],
+                **self.config
+                )
+        except KeyError as e:
+            result = f'FAILED to instantiate {self._id}\n'
+            result += str(e)
+
+        return result
+
 
 class Panel():
     
@@ -67,6 +118,14 @@ class Panel():
         self.tree = tree = et.parse(infile)
         self.controls = []
         self.cleantree = None
+
+        self.modname = infile[:-4]
+        self.outfile = 'clean_'+infile
+
+        if self.infile[:6] == 'proto_':
+            self.outfile = self.infile[6:]
+            self.modname = self.modname[6:]
+
 
     @staticmethod
     def is_path(node):
@@ -100,16 +159,24 @@ class Panel():
             return True
         return False
 
+    def get_instantiation_block(self):
+        """
+        Return the entire panel instantiation block for this panel
+        """
+        result = []
+        for ctrl in self.controls:
+            result.append(ctrl.get_instantiation(self.modname))
+
+        return '\n'.join(result)
+
     def write_clean_file(self, outfile = None):
         if outfile == None:
-            outfile = 'clean_'+self.infile
+            outfile = self.outfile
         assert outfile != infile
         self.cleantree.write(outfile)
 
     def __repr__(self):
-        if self.cleantree == None:
-            return 'Panel - unprocessed'
-        return f'Panel - {len(self.controls)} controls'
+        return f'Panel for {self.modname} - {len(self.controls)} controls'
 
 if __name__ == '__main__':
     infile = sys.argv[1]
@@ -117,3 +184,4 @@ if __name__ == '__main__':
     panel.process_all()
     print(panel)
     panel.write_clean_file()
+    print(panel.get_instantiation_block())
