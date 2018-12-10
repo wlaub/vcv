@@ -100,9 +100,20 @@ class Panel():
             return True
         return False
 
+    def write_clean_file(self, outfile = None):
+        if outfile == None:
+            outfile = 'clean_'+self.infile
+        assert outfile != infile
+        self.cleantree.write(outfile)
+
+    def __repr__(self):
+        if self.cleantree == None:
+            return 'Panel - unprocessed'
+        return f'Panel - {len(self.controls)} controls'
+
 if __name__ == '__main__':
     infile = sys.argv[1]
     panel = Panel(infile)
     panel.process_all()
-    
-
+    print(panel)
+    panel.write_clean_file()
