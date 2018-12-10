@@ -2,46 +2,12 @@ import xml.etree.ElementTree as et
 import sys
 import ast
 from svgpathtools.parser import parse_path
+import panel_config
 
-class Control():
+class Control(panel_config.ControlConfig):
     """
     Represents a control derived from path metadata
     """
-
-    create_declarations ="""
-    ParamWidget* param;
-    InputWidget* input;
-    OutputWidget* output;
-    LightWidget* light;
-    """
-
-    create_strings = {
-    'param':"""
-    param = ParamWidget.create<{widget}>(
-        Vec({xpos}, {ypos}), 
-        module, {name}::{id},
-        {min}, {max}, {default}
-    );
-    center(param,1,1);
-    addParam(param);
-    """,
-    'input':"""
-    input = Port::create<PJ301MPort>(
-        Vec({xpos},{ypos}), Port::INPUT, module, {name}::{id}
-        );
-    center(input,1,1);
-    addInput(input);    
-    """,
-    'output':"""
-    output = Port::create<PJ301MPort>(
-        Vec({xpos},{ypos}), Port::OUTPUT, module, {name}::{id}
-        );
-    center(output,1,1);
-    addInput(output);    
-    """,
-   'light':"""
-    """,
-    }
 
     @staticmethod
     def is_title(node):
