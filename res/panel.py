@@ -105,8 +105,7 @@ class Control():
                 **self.config
                 )
         except KeyError as e:
-            result = f'FAILED to instantiate {self._id}\n'
-            result += str(e)
+            result = f'FAILED to instantiate {self._id} due to missing param {e}'
 
         return result
 
@@ -163,7 +162,7 @@ class Panel():
         """
         Return the entire panel instantiation block for this panel
         """
-        result = []
+        result = [Control.create_declarations]
         for ctrl in self.controls:
             result.append(ctrl.get_instantiation(self.modname))
 
