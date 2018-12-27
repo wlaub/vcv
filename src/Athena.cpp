@@ -1,7 +1,7 @@
 #include "TechTechTechnologies.hpp"
 #include <math.h>
 #define BITL 20
-#define N 1
+#define N 3
 #define NIN 3
 #define NOUT 4
 #define BUFL (1<<16)
@@ -9,17 +9,17 @@
 
 struct Athena : Module {
     enum ParamIds {
-        ENUMS(ANGLE_PARAM,N),
-        ENUMS(RADIUS_PARAM, N),
+        ENUMS(ANGLE_PARAM,1),
+        ENUMS(RADIUS_PARAM, 1),
         NUM_PARAMS
     };
     enum InputIds {
-        ENUMS(SIGNAL_INPUT, N),
+        ENUMS(SIGNAL_INPUT, 1),
         NUM_INPUTS
     };
     enum OutputIds {
-        ENUMS(LEFT_OUTPUT, N),
-        ENUMS(RIGHT_OUTPUT, N),
+        ENUMS(LEFT_OUTPUT, 1),
+        ENUMS(RIGHT_OUTPUT, 1),
         NUM_OUTPUTS
     };
     enum LightIds {
@@ -49,13 +49,20 @@ void Athena::step() {
     //One big circular buffer
     //Push data into buffer
 
+    float inval = inputs[SIGNAL_INPUT].value;
 
+    outputs[LEFT_OUTPUT].value = 0;
+    outputs[RIGHT_OUTPUT].value = 0;
+    
+    float r = params[RADIUS_PARAM].value;
+    float aref = params[ANGLE_PARAM].value*PI*2;
     for(int j = 0; j < N; ++j)
     {
-        float ears = 0.1;
-        float inval = inputs[SIGNAL_INPUT+j].value;
-        float r = params[RADIUS_PARAM+j].value;
-        float a = params[ANGLE_PARAM+j].value*PI*2;
+        float ears = 0.9;
+
+        float a = aref + j*2*PI/N;
+        while(a > PI) a-=2*PI;
+        while(a < -PI) a+= 2*PI;
         float oval[2]; //output val
         float rval[2]; //distance val
         float dval[2]; //delay val
@@ -63,16 +70,23 @@ void Athena::step() {
 
         for(int i = 0; i < 2; ++i)
         {
-            float x = r*cos(a);
-            float y = r*sin(a);
+            float x = r*sin(a); //0 is forward
+            float y = r*cos(a);
             float idx = i*2-1;
-            float xoff = x+idx*ears;
-            rval[i] = sqrt(y*y+xoff*xoff);
-            
 
+            float xoff = x-idx*ears;
+            
+            rval[i] = sqrt(y*y+xoff*xoff);
+            float k = 0.5-idx*abs(a/(2*PI)); // 0 when max, 1 when min
+            
+            k=20/(1+k*19);
+
+            gval[i] = 1/(1+rval[i]*k);
+
+            oval[i] = inval*gval[i];
         }
-        outputs[LEFT_OUTPUT+j].value=rval[0];
-        outputs[RIGHT_OUTPUT+j].value=rval[1];
+        outputs[LEFT_OUTPUT].value+=oval[0];
+        outputs[RIGHT_OUTPUT].value+=oval[1];
     }
 
 
@@ -108,17 +122,25 @@ AthenaWidget::AthenaWidget(Athena* module) : ModuleWidget(module) {
 
     float xoff, yoff;
 
+
+    xoff = 0;
+    yoff = 311.307+10;
+
+    INPORT(6.721+12.5+xoff, 380-(yoff), Athena, SIGNAL_INPUT, 0)
+    OUTPORT(6.721+12.5+xoff, 380-(yoff)-20, Athena, LEFT_OUTPUT, 0)
+    OUTPORT(6.721+12.5+xoff, 380-(yoff)+20, Athena, RIGHT_OUTPUT, 0)
+
+    KNOB(xoff+44.186+12,380-(yoff), 0, 10, 1, Tiny, Athena, RADIUS_PARAM, 0)
+    KNOB(xoff+31+6.707,380-(233.164+29), -.5, .5, 0, Huge, Athena, ANGLE_PARAM, 0)
+
+
     for(int j = 0; j < N; ++j)
     {
         xoff = 73.929*j;
         yoff = 311.307+10;
 
-        INPORT(6.721+12.5+xoff, 380-(yoff), Athena, SIGNAL_INPUT, j)
-        KNOB(xoff+44.186+12,380-(yoff), 0, 10, 1, Tiny, Athena, RADIUS_PARAM, j)
-        KNOB(xoff+31+6.707,380-(233.164+29), 0, 1, 0, Huge, Athena, ANGLE_PARAM, j)
-        OUTPORT(6.721+12.5+xoff, 380-(yoff)-20, Athena, LEFT_OUTPUT, j)
-        OUTPORT(6.721+12.5+xoff, 380-(yoff)+20, Athena, RIGHT_OUTPUT, j)
-    }
+
+  }
  
     auto* label = new Label();
     label->box.pos=Vec(30, 0);
