@@ -189,3 +189,4 @@ extern Model* modelOdysseus;
 
 extern Model* modelMneme;
 
+extern Model* modelAthena;
