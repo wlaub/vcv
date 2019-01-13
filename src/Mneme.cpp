@@ -100,7 +100,9 @@ void Mneme::step() {
         if(j>0)
         {
             buffer->add_floating(pos[j], accum);
-            outputs[SIGNAL_OUTPUT+j-1].value = (accum+vals[j])*params[OUT_CV_PARAM+j-1].value;
+//            outputs[SIGNAL_OUTPUT+j-1].value = (accum+vals[j])*params[OUT_CV_PARAM+j-1].value;
+            outputs[SIGNAL_OUTPUT+j-1].value = 
+                buffer->get_tap_floating(pos[j])*params[OUT_CV_PARAM+j-1].value;
         }
     }
  
