@@ -14,8 +14,27 @@ class Metadata(panel_config.MetadataConfig):
         """
         Extract metadata from nodes on the appropriate layer
         """
-        pass
+        if layer == None or layer.lower() != 'metadata': return False
+        if 'text' not in node.tag.lower(): return False
+        src = '\n'.join([line.text for line in node.getchildren() if line.text != None]).strip()
+        if src[0] != '{':
+            src = f'{{{src}}}'
+        try:
+            new_configs = ast.literal_eval(src)
+        except:
+            print(src)
+            raise
 
+        self.config.update(new_configs) 
+
+    def get_tags(self):
+        """
+        Return a string representing tags defined in metadata
+        """
+        tags = self.config.get('tags', None)
+        if tags == None: return ''
+        #validate against vcv src?
+        return ', '+', '.join(tags)
 
 class Control(panel_config.ControlConfig):
     """
@@ -289,7 +308,8 @@ class Panel():
             plugin = 'TechTechTechnologies',
             modname = self.modname,
             modname_full = self.modname,
-            width = self.width/15.
+            width = self.width/15.,
+            tags = self.metadata.get_tags()
             )
 
     def write_headers(self, src_dir = '../src'):

@@ -6,7 +6,10 @@ modname
 modname_full
     the readable module name
 tags
-    a string representing the module tags
+    a string representing the module tags. Must include preceeding comma if not
+    empty
+width
+    module width in HP
 
 control_instantiation
     a string containing all the control widget instantiations
@@ -96,6 +99,6 @@ struct {modname}Widget : ModuleWidget {{
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *model{modname} = Model::create<{modname}, {modname}Widget>("{plugin}", "{modname}", "{modname_full}");
+Model *model{modname} = Model::create<{modname}, {modname}Widget>("{plugin}", "{modname}", "{modname_full}"{tags});
 """
 
