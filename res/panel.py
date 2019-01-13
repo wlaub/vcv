@@ -94,6 +94,19 @@ class Control(panel_config.ControlConfig):
         self.enum_base=f'{self.kind.upper()}_{name.upper()}' 
         return self.enum_base
 
+    def get_enum_expr(self):
+        """
+        Return the expression to reference this control by enum and index
+        e.g. enum_base   (not indexed)
+             enum_base   (indexed)
+             enub_base+1 (indexed)
+        """
+        result = self.get_enum_base()
+        idx = self.get_index()
+        if idx != None and idx > 0:
+            result = f'{result}+{idx}'
+        return result
+
     def get_enum(self, controls):
         """
         Compute the enumerator rendering string for this control or None if
@@ -127,7 +140,7 @@ class Control(panel_config.ControlConfig):
         try:
             result = self.create_strings[self.kind].format(
                 name=modname, widget=self.widget,
-                id=self._id, xpos = self.pos[0], ypos = self.pos[1],
+                id=self.get_enum_expr(), xpos = self.pos[0], ypos = self.pos[1],
                 **self.config
                 )
         except KeyError as e:
@@ -177,7 +190,8 @@ class Panel():
             self.controls = []
             self.cleantree = et.parse(self.infile)
             root = self.cleantree.getroot()
-        
+            self.width=float(root.get('width'))
+
         for node in root.getchildren():
             if Panel.is_path(node): 
                 res = self.process(node, layer)
@@ -224,7 +238,10 @@ class Panel():
             lines[key].append(' '*8+text)
 
         for key, val in lines.items():
-           lines[key] = '\n'.join(sorted(val))
+            if len(val) > 0:
+                lines[key] = ',\n'.join(sorted(val))+','
+            else:
+                lines[key] = ''
 
         return Control.enums_template.format(**lines)
 
@@ -239,7 +256,7 @@ class Panel():
             plugin = 'TechTechTechnologies',
             modname = self.modname,
             modname_full = self.modname,
-            tags='',
+            width = self.width/15.
             )
 
     def write_headers(self, src_dir = '../src'):
@@ -258,28 +275,24 @@ class Panel():
                 f.write(self.get_enum_block())
         except Exception as e:
             print(f'Failed to generate enum block\n{e}')
-            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_vars.hpp'), 'w') as f:
                 f.write(self.get_vars_block())
         except Exception as e:
             print(f'Failed to generate vars block\n{e}')
-            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_inputs.hpp'), 'w') as f:
                 f.write(self.get_input_block())
         except Exception as e:
             print(f'Failed to generate input block\n{e}')
-            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_outputs.hpp'), 'w') as f:
                 f.write(self.get_output_block())
         except Exception as e:
             print(f'Failed to generate input block\n{e}')
-            raise
 
         filename = os.path.join(src_dir, f'{self.modname}.cpp')
         if not os.path.exists(filename):

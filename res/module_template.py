@@ -69,7 +69,16 @@ void {modname}::step() {{
 
 struct {modname}Widget : ModuleWidget {{
     {modname}Widget({modname} *module) : ModuleWidget(module) {{
-        setPanel(SVG::load(assetPlugin(plugin, "res/{modname}.svg")));
+        box.size = Vec({width} * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+
+        {{
+            SVGPanel *panel = new SVGPanel();
+            panel->box.size = box.size;
+            panel->setBackground(SVG::load(assetPlugin(plugin, "res/{modname}.svg")));
+            addChild(panel);
+        }}
+
+
 
         addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -87,6 +96,6 @@ struct {modname}Widget : ModuleWidget {{
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *model{modname} = Model::create<{modname}, {modname}Widget>("{plugin}", "{modname}", "{modname_full}", {tags});
+Model *model{modname} = Model::create<{modname}, {modname}Widget>("{plugin}", "{modname}", "{modname_full}");
 """
 

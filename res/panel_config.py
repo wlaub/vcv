@@ -46,14 +46,14 @@ class ControlConfig():
 
     create_declarations ="""
     ParamWidget* param;
-    InputWidget* input;
-    OutputWidget* output;
+    Port* input;
+    Port* output;
     LightWidget* light;
     """
 
     create_strings= {
         'param':"""
-    param = ParamWidget.create<{widget}>(
+    param = ParamWidget::create<{widget}>(
         Vec({xpos}, {ypos}), 
         module, {name}::{id},
         {min}, {max}, {default}
@@ -73,7 +73,7 @@ class ControlConfig():
         Vec({xpos},{ypos}), Port::OUTPUT, module, {name}::{id}
         );
     center(output,1,1);
-    addInput(output);    
+    addOutput(output);    
         """,
        'light':"""
     light = ModuleLightWidget::create<{widget}>(
