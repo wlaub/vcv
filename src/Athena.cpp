@@ -14,7 +14,7 @@ struct Athena : Module {
         NUM_PARAMS
     };
     enum InputIds {
-        ENUMS(SIGNAL_INPUT, 1),
+        ENUMS(SIGNAL_INPUT, N),
         NUM_INPUTS
     };
     enum OutputIds {
@@ -83,7 +83,7 @@ void Athena::step() {
 
             gval[i] = 1/(1+rval[i]*k);
 
-            oval[i] = inval*gval[i];
+            oval[i] = inval*gval[i]/N;
         }
         outputs[LEFT_OUTPUT].value+=oval[0];
         outputs[RIGHT_OUTPUT].value+=oval[1];
