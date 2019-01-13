@@ -180,7 +180,7 @@
      inkscape:cx="377.06278"
      inkscape:cy="188.5969"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -3326,7 +3326,7 @@
        inkscape:connector-curvature="0">
       <desc
          id="desc6947">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[-10,10],
 }</desc>
     </path>
@@ -3338,7 +3338,7 @@
        inkscape:connector-curvature="0">
       <desc
          id="desc6943">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[0,10],
 }</desc>
     </path>
@@ -3350,7 +3350,7 @@
        inkscape:connector-curvature="0">
       <desc
          id="desc6945">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[-10,10],
 }</desc>
     </path>
@@ -3362,19 +3362,19 @@
        inkscape:connector-curvature="0">
       <desc
          id="desc6941">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[0,10],
 }</desc>
     </path>
     <path
        inkscape:label="input"
        style="fill:#00ff00;fill-opacity:1"
-       d="M 370.00709,100.00003 A 12.492901,12.5 0 0 1 382.5,87.500002 a 12.492901,12.5 0 0 1 12.4929,12.500028 12.492901,12.5 0 0 1 -12.4929,12.5 12.492901,12.5 0 0 1 -12.49291,-12.5 z"
+       d="m 370.0071,100.00001 a 12.492901,12.5 0 0 1 12.49291,-12.500024 12.492901,12.5 0 0 1 12.4929,12.500024 12.492901,12.5 0 0 1 -12.4929,12.5 12.492901,12.5 0 0 1 -12.49291,-12.5 z"
        id="hp_shape"
        inkscape:connector-curvature="0">
       <desc
          id="desc6939">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[-10,10],
 }</desc>
     </path>
@@ -3386,7 +3386,7 @@
        inkscape:connector-curvature="0">
       <desc
          id="desc6937">{
-'class':'auto_offset_atv',
+'class':'atv_offset_input',
 'clip':[0,10],
 }</desc>
     </path>

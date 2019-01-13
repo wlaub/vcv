@@ -4,6 +4,7 @@ import ast
 from svgpathtools.parser import parse_path
 import panel_config, module_template
 import os
+import copy
 
 class Metadata(panel_config.MetadataConfig):
 
@@ -26,6 +27,23 @@ class Metadata(panel_config.MetadataConfig):
             raise
 
         self.config.update(new_configs) 
+
+    def apply_class(self, ctrl):
+        """
+        Apply class to the given control as needed
+        """
+        if not 'class' in ctrl.config.keys(): return False
+        classes = self.config.get('classes', {})
+        ctrl_class = ctrl.config['class']
+        try:
+            new_data = copy.deepcopy(classes[ctrl_class])
+        except:
+            print(f'Failed to get class {ctrl_class} for {ctrl._id}')
+            raise
+        del ctrl.config['class']
+        new_data.update(ctrl.config)
+        ctrl.config=new_data
+
 
     def get_tags(self):
         """
@@ -234,6 +252,7 @@ class Panel():
 
             node_layer = Panel.get_layer(root, layer)
             self._process_node(None, root, layer=node_layer)
+            self.post_process()
             return
 
         for node in root.getchildren():
@@ -250,7 +269,12 @@ class Panel():
                 self.process_all(node, layer=node_layer)
                 #TODO Exclude layers
 
-
+    def post_process(self):
+        """
+        Anything that needs to be done after loading everything
+        """
+        for ctrl in self.controls:
+            self.metadata.apply_class(ctrl)
 
     def process(self, node, layer):
         """

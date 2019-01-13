@@ -139,7 +139,7 @@
         
 
     input = Port::create<PJ301MPort>(
-        Vec(382.499995,100.00001599999999), Port::INPUT, module, Achilles::INPUT_HP_SHAPE
+        Vec(382.500005,99.999998), Port::INPUT, module, Achilles::INPUT_HP_SHAPE
         );
     center(input,1,1);
     addInput(input);    
