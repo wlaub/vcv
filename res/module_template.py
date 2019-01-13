@@ -28,47 +28,47 @@ module = """
 #include "{plugin}.hpp"
 
 
-struct {modname} : Module {
+struct {modname} : Module {{
     /* +ENUMS */
-    {enums}
+    #include "{modname}_enums.hpp"
     /* -ENUMS */
     
     /* +TRIGGER_VARS */
-    {trigger_variables}
+    #include "{modname}_vars.hpp"
     /* -TRIGGER_VARS */
 
 
-    {modname}() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+    {modname}() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {{}}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - toJson, fromJson: serialization of internal data
     // - onSampleRateChange: event triggered by a change of sample rate
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
-};
+}};
 
 
-void {modname}::step() {
+void {modname}::step() {{
     float deltaTime = engineGetSampleTime();
 
 
     /*  +INPUT_PROCESSING */
-    {input_processing}
+    #include "{modname}_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
 
 
     /*  +OUTPUT_PROCESSING */
-    {output_processing}
+    #include "{modname}_outputs.hpp"
     /*  -OUTPUT_PROCESSING */
 
 
 
-}
+}}
 
 
-struct {modname}Widget : ModuleWidget {
-    {modname}Widget({modname} *module) : ModuleWidget(module) {
+struct {modname}Widget : ModuleWidget {{
+    {modname}Widget({modname} *module) : ModuleWidget(module) {{
         setPanel(SVG::load(assetPlugin(plugin, "res/{modname}.svg")));
 
         addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
@@ -77,10 +77,10 @@ struct {modname}Widget : ModuleWidget {
         addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
         /* +CONTROL INSTANTIATION */
-        {control_instantiation}
+        #include "{modname}_panel.hpp"
         /* -CONTROL INSTANTIATION */
-    }
-};
+    }}
+}};
 
 
 // Specify the Module and ModuleWidget subclass, human-readable

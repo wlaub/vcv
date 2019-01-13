@@ -3,6 +3,26 @@
 #
 
 class ControlConfig():
+    
+    enums_template = """
+    enum ParamIds {
+        {param}
+        NUM_PARAMS
+    };
+    enum InputIds {
+        {input}
+        NUM_INPUTS
+    };
+    enum OutputIds {
+        {output}
+        NUM_OUTPUTS
+    };
+    enum LightIds {
+        {light}
+        NUM_LIGHTS
+    };
+    """
+
     create_declarations ="""
     ParamWidget* param;
     InputWidget* input;
