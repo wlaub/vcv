@@ -83,3 +83,4 @@ class ControlConfig():
     addChild(light);
         """,
     }
+

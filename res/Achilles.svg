@@ -1,4 +1,4 @@
-<ns0:svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns3="http://www.openswatchbook.org/uri/2009/osb" xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:ns6="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="380" id="svg2" version="1.1" width="405" ns2:docname="Achilles.svg" ns1:version="0.91 r13725">
+<ns0:svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns3="http://www.openswatchbook.org/uri/2009/osb" xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:ns6="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="380" id="svg2" version="1.1" width="405" ns2:docname="proto_Achilles.svg" ns1:version="0.91 r13725">
   <ns0:defs id="defs4">
     <ns0:linearGradient id="linearGradient18103">
       <ns0:stop id="stop18105" offset="0" style="stop-color:#666666;stop-opacity:1;" />
@@ -7,13 +7,11 @@
     <ns0:linearGradient id="linearGradient18091" ns3:paint="solid">
       <ns0:stop id="stop18093" offset="0" style="stop-color:#666666;stop-opacity:1;" />
     </ns0:linearGradient>
-    <ns0:linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" gradientUnits="userSpaceOnUse" id="linearGradient18109" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-4-8" />
     <ns0:linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" gradientUnits="userSpaceOnUse" id="linearGradient18109-6" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-6" />
     <ns0:linearGradient id="linearGradient18103-6">
       <ns0:stop id="stop18105-6" offset="0" style="stop-color:#666666;stop-opacity:1;" />
       <ns0:stop id="stop18107-2" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
     </ns0:linearGradient>
-    <ns0:linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,-23.33333,0.71383)" gradientUnits="userSpaceOnUse" id="linearGradient18126" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-4-8" />
     <ns0:linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" gradientUnits="userSpaceOnUse" id="linearGradient18109-0" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-4" />
     <ns0:linearGradient id="linearGradient18103-4">
       <ns0:stop id="stop18105-9" offset="0" style="stop-color:#666666;stop-opacity:1;" />
@@ -27,8 +25,6 @@
       <ns0:stop id="stop18162-2" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
       <ns0:stop id="stop18107-3-3" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
     </ns0:linearGradient>
-    <ns0:linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18230" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8" />
-    <ns0:linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18260" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8" />
     <ns0:linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18260-7" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-9" />
     <ns0:linearGradient id="linearGradient18103-4-8-9">
       <ns0:stop id="stop18105-9-9-5" offset="0" style="stop-color:#666666;stop-opacity:1;" />
@@ -36,7 +32,6 @@
       <ns0:stop id="stop18162-2-3" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
       <ns0:stop id="stop18107-3-3-4" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
     </ns0:linearGradient>
-    <ns0:linearGradient gradientTransform="translate(-157.49998,402.49999)" gradientUnits="userSpaceOnUse" id="linearGradient18395" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-9" />
     <ns0:linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18260-1" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-5" />
     <ns0:linearGradient id="linearGradient18103-4-8-5">
       <ns0:stop id="stop18105-9-9-3" offset="0" style="stop-color:#666666;stop-opacity:1;" />
@@ -44,9 +39,8 @@
       <ns0:stop id="stop18162-2-2" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
       <ns0:stop id="stop18107-3-3-3" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
     </ns0:linearGradient>
-    <ns0:linearGradient gradientTransform="translate(442.5,37.5)" gradientUnits="userSpaceOnUse" id="linearGradient18395-2" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-5" />
   </ns0:defs>
-  <ns2:namedview bordercolor="#666666" borderopacity="1.0" id="base" pagecolor="#ffffff" showgrid="false" showguides="false" units="px" ns1:bbox-nodes="false" ns1:bbox-paths="false" ns1:current-layer="layer3" ns1:cx="178.50383" ns1:cy="176.01107" ns1:document-units="px" ns1:guide-bbox="true" ns1:object-nodes="false" ns1:object-paths="true" ns1:pageopacity="0.0" ns1:pageshadow="2" ns1:snap-bbox="false" ns1:snap-bbox-edge-midpoints="false" ns1:snap-global="true" ns1:snap-grids="true" ns1:snap-intersection-paths="false" ns1:snap-nodes="true" ns1:snap-object-midpoints="true" ns1:window-height="880" ns1:window-maximized="0" ns1:window-width="1598" ns1:window-x="0" ns1:window-y="18" ns1:zoom="2.0223254">
+  <ns2:namedview bordercolor="#666666" borderopacity="1.0" id="base" pagecolor="#ffffff" showgrid="true" showguides="false" units="px" ns1:bbox-nodes="false" ns1:bbox-paths="false" ns1:current-layer="layer7" ns1:cx="178.50383" ns1:cy="176.01107" ns1:document-units="px" ns1:guide-bbox="true" ns1:object-nodes="false" ns1:object-paths="true" ns1:pageopacity="0.0" ns1:pageshadow="2" ns1:snap-bbox="false" ns1:snap-bbox-edge-midpoints="false" ns1:snap-global="true" ns1:snap-grids="true" ns1:snap-intersection-paths="false" ns1:snap-nodes="true" ns1:snap-object-midpoints="true" ns1:window-height="880" ns1:window-maximized="0" ns1:window-width="1598" ns1:window-x="0" ns1:window-y="18" ns1:zoom="2.0223254">
     <ns1:grid empspacing="4" enabled="true" id="grid8011" originx="2.5px" originy="12.5px" snapvisiblegridlinesonly="true" spacingx="5px" spacingy="5px" type="xygrid" visible="true" />
   </ns2:namedview>
   <ns0:metadata id="metadata7">
@@ -341,8 +335,7 @@
     <ns0:rect height="10" id="rect17912" rx="5" ry="5" style="opacity:0;fill:#c0ffc0;fill-opacity:1;stroke:#c0ffc0;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" transform="translate(0,672.36204)" width="5" x="37.5" y="77.5" />
     <ns0:rect height="230" id="rect15730-2" rx="5" ry="5" style="display:inline;fill:#c0c0c0;fill-opacity:1;stroke:#c0c0c0;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" width="70" x="7.6550078" y="717.36206" />
   </ns0:g>
-  <ns0:g id="layer7" style="display:inline" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Functional">
-    <ns0:rect height="30" id="rect15748-5" rx="5" ry="5" style="fill:url(#linearGradient18109);fill-opacity:1;stroke:none" transform="matrix(0,1,-1,0,0,0)" width="70" x="285" y="-77.5" />
+  <ns0:g id="layer7" style="display:inline" ns1:groupmode="layer" ns1:label="Functional">
     <ns0:rect height="30" id="rect15748-5-6" rx="5" ry="5" style="fill:#666666;fill-opacity:1;stroke:none" width="30" x="167.5" y="205.00002" />
     <ns0:rect height="70" id="rect15748-5-60" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="7.5" y="285" />
     <ns0:rect height="110" id="rect15930" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" transform="matrix(0,-1,1,0,0,0)" width="30" x="-275" y="287.5" />
@@ -386,19 +379,38 @@
       <ns0:path d="m 32.5,247.5 c 0,2.77 2.23,5 5,5 l 5,0 c 2.77,0 5,-2.23 5,-5 l 0,-2.5 -5,0 c -2.77,0 -5,-2.23 -5,-5 l 0,-2.5 c -2.77,0 -5,2.23 -5,5 l 0,5 z" id="rect17918-3-2" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
     </ns0:g>
     <ns0:rect height="70" id="rect15748-5-60-6-5-4" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="247.5" y="285" />
-    <ns0:rect height="30" id="rect15748-5-9" rx="5" ry="5" style="display:inline;fill:url(#linearGradient18126);fill-opacity:1;stroke:none" width="70" x="87.5" y="245" />
     <ns0:rect height="70" id="rect16313" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="127.5" y="165" />
     <ns0:path d="m 130,210 c 2.77,0 5,-2.23 5,-5 l 0,-5 c 0,-2.77 -2.23,-5 -5,-5 l -2.5,0 0,5 c 0,2.77 -2.23,5 -5,5 l -2.5,0 c 0,2.77 2.23,5 5,5 l 5,0 z" id="path18055-9" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
-    <ns0:rect height="30" id="rect15748-5-1" rx="5" ry="5" style="display:inline;fill:url(#linearGradient18260);fill-opacity:1;stroke:none" transform="scale(-1,-1)" width="70" x="-157.5" y="-235" />
-    <ns0:g id="g18206-0" style="display:inline" transform="matrix(-1,0,0,1,365,0)">
+    <ns0:rect height="30" id="rect15748-5-1" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" transform="scale(-1,-1)" width="70" x="-157.5" y="-235" />
+    <ns0:g id="g18206-0" style="display:inline;fill:#666666" transform="matrix(-1,0,0,1,365,0)">
       <ns0:rect height="70" id="rect16313-2" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="127.5" y="165" />
       <ns0:path d="m 130,210 c 2.77,0 5,-2.23 5,-5 l 0,-5 c 0,-2.77 -2.23,-5 -5,-5 l -2.5,0 0,5 c 0,2.77 -2.23,5 -5,5 l -2.5,0 c 0,2.77 2.23,5 5,5 l 5,0 z" id="path18055-9-8" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
-      <ns0:rect height="30" id="rect15748-5-1-2" rx="5" ry="5" style="display:inline;fill:url(#linearGradient18230);fill-opacity:1;stroke:none" transform="scale(-1,-1)" width="70" x="-157.5" y="-235" />
+      <ns0:rect height="30" id="rect15748-5-1-2" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" transform="scale(-1,-1)" width="70" x="-157.5" y="-235" />
     </ns0:g>
     <ns0:rect height="30" id="rect15748-5-60-8-0-1" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="207.5" y="285" />
-    <ns0:rect height="30" id="rect15748-5-1-0" rx="5" ry="5" style="display:inline;fill:url(#linearGradient18395);fill-opacity:1;stroke:none" transform="matrix(0,-1,1,0,0,0)" width="70" x="-315" y="167.5" />
+    <ns0:rect height="30" id="rect15748-5-1-0" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" transform="matrix(0,-1,1,0,0,0)" width="110" x="-355" y="167.5" />
     <ns0:path d="m 192.5,327.5 c 0,2.77 2.23,5 5,5 l 5,0 c 2.77,0 5,-2.23 5,-5 l 0,-2.5 -5,0 c -2.77,0 -5,-2.23 -5,-5 l 0,-2.5 c -2.77,0 -5,2.23 -5,5 l 0,5 z" id="path18055-9-4" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
-    <ns0:rect height="30" id="rect15748-5-1-9" rx="5" ry="5" style="display:inline;fill:url(#linearGradient18395-2);fill-opacity:1;stroke:none" transform="matrix(0,1,-1,0,0,0)" width="70" x="285" y="-197.5" />
+    <ns0:g id="g9804" transform="translate(121.51104,-47.805878)">
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-6" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="5.9889607" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-6-7" rx="6.6666665" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="40" x="-9.0110397" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-6-3" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="-34.01104" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-6-3-5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="15" x="-14.01104" y="292.80588" />
+    </ns0:g>
+    <ns0:g id="g9804-3" style="display:inline" transform="matrix(0,1,-1,0,370.30588,319.01104)">
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-6-5" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="5.9889607" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-6-7-6" rx="6.6666665" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="40" x="-9.0110397" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-6-3-2" rx="5" ry="5" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="-34.01104" y="292.80588" />
+      <ns0:rect height="30" id="rect15748-5-6-3-5-9" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="15" x="-14.01104" y="292.80588" />
+    </ns0:g>
+    <ns0:rect height="40" id="rect15748-5-6-1" style="display:inline;fill:#666666;fill-opacity:1;stroke:none" width="30" x="167.5" y="280" />
+    <ns0:g id="g9882">
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-2" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="87.5" y="205" />
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-2-7" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="92.5" y="205" />
+    </ns0:g>
+    <ns0:g id="g9882-0" style="display:inline" transform="matrix(-1,0,0,-1,365,440)">
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-2-9" rx="5" ry="5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="87.5" y="205" />
+      <ns0:rect height="30" id="rect15748-5-60-8-0-1-2-7-3" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" width="30" x="92.5" y="205" />
+    </ns0:g>
   </ns0:g>
   <ns0:g id="layer9" style="display:none" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Ticks">
     <ns0:g id="g17046" transform="translate(120,-2.500005)">
@@ -754,11 +766,11 @@
       <ns0:path d="m -28.000009,220.49969 1.000002,0 0,4.00002 -1.000002,0 z" id="rect4404-2-46-5-4-7-5" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-y="-2.645836" />
     </ns0:g>
   </ns0:g>
-  <ns0:g id="layer2" style="display:inline" ns1:groupmode="layer" ns1:label="Inputs">
+  <ns0:g id="layer2" style="display:inline" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Inputs">
     </ns0:g>
   <ns0:g id="layer4" style="display:inline" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Outputs">
     </ns0:g>
-  <ns0:g id="layer3" style="display:inline" ns1:groupmode="layer" ns1:label="Params">
+  <ns0:g id="layer3" style="display:inline" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Params">
     </ns0:g>
   <ns0:g id="layer8" style="display:none" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Mechanical">
     <ns0:g id="g16379" transform="translate(54.701266,-79.58317)">

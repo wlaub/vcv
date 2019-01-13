@@ -16,7 +16,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="Achilles.svg">
+   sodipodi:docname="proto_Achilles.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -40,16 +40,6 @@
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient18103-4-8"
-       id="linearGradient18109"
-       x1="47.5"
-       y1="302.5"
-       x2="77.5"
-       y2="302.5"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient18103-6"
        id="linearGradient18109-6"
        x1="47.5"
@@ -69,16 +59,6 @@
          offset="1"
          id="stop18107-2" />
     </linearGradient>
-    <linearGradient
-       y2="302.5"
-       x2="77.5"
-       y1="302.5"
-       x1="47.5"
-       gradientTransform="matrix(2.3333333,0,0,0.85714435,-23.33333,0.71383)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient18126"
-       xlink:href="#linearGradient18103-4-8"
-       inkscape:collect="always" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient18103-4"
@@ -133,24 +113,6 @@
          id="stop18107-3-3" />
     </linearGradient>
     <linearGradient
-       y2="-220"
-       x2="-87.5"
-       y1="-220"
-       x1="-157.5"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient18230"
-       xlink:href="#linearGradient18103-4-8"
-       inkscape:collect="always" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient18103-4-8"
-       id="linearGradient18260"
-       gradientUnits="userSpaceOnUse"
-       x1="-157.5"
-       y1="-220"
-       x2="-87.5"
-       y2="-220" />
-    <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient18103-4-8-9"
        id="linearGradient18260-7"
@@ -179,16 +141,6 @@
          id="stop18107-3-3-4" />
     </linearGradient>
     <linearGradient
-       gradientTransform="translate(-157.49998,402.49999)"
-       y2="-220"
-       x2="-87.5"
-       y1="-220"
-       x1="-157.5"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient18395"
-       xlink:href="#linearGradient18103-4-8-9"
-       inkscape:collect="always" />
-    <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient18103-4-8-5"
        id="linearGradient18260-1"
@@ -216,16 +168,6 @@
          offset="1"
          id="stop18107-3-3-3" />
     </linearGradient>
-    <linearGradient
-       gradientTransform="translate(442.5,37.5)"
-       y2="-220"
-       x2="-87.5"
-       y1="-220"
-       x1="-157.5"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient18395-2"
-       xlink:href="#linearGradient18103-4-8-5"
-       inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -238,8 +180,8 @@
      inkscape:cx="178.50383"
      inkscape:cy="176.01107"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
-     showgrid="false"
+     inkscape:current-layer="layer7"
+     showgrid="true"
      inkscape:window-width="1598"
      inkscape:window-height="880"
      inkscape:window-x="0"
@@ -279,7 +221,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1915,18 +1857,7 @@
      inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="Functional"
-     style="display:inline"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:url(#linearGradient18109);fill-opacity:1;stroke:none"
-       id="rect15748-5"
-       width="70"
-       height="30"
-       x="285"
-       y="-77.5"
-       rx="5"
-       ry="5"
-       transform="matrix(0,1,-1,0,0,0)" />
+     style="display:inline">
     <rect
        style="fill:#666666;fill-opacity:1;stroke:none"
        id="rect15748-5-6"
@@ -2259,15 +2190,6 @@
        rx="5"
        ry="5" />
     <rect
-       style="display:inline;fill:url(#linearGradient18126);fill-opacity:1;stroke:none"
-       id="rect15748-5-9"
-       width="70"
-       height="30"
-       x="87.5"
-       y="245"
-       rx="5"
-       ry="5" />
-    <rect
        ry="5"
        rx="5"
        y="165"
@@ -2282,7 +2204,7 @@
        style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
        inkscape:connector-curvature="0" />
     <rect
-       style="display:inline;fill:url(#linearGradient18260);fill-opacity:1;stroke:none"
+       style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
        id="rect15748-5-1"
        width="70"
        height="30"
@@ -2293,7 +2215,7 @@
        transform="scale(-1,-1)" />
     <g
        transform="matrix(-1,0,0,1,365,0)"
-       style="display:inline"
+       style="display:inline;fill:#666666"
        id="g18206-0">
       <rect
          style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
@@ -2318,7 +2240,7 @@
          height="30"
          width="70"
          id="rect15748-5-1-2"
-         style="display:inline;fill:url(#linearGradient18230);fill-opacity:1;stroke:none" />
+         style="display:inline;fill:#666666;fill-opacity:1;stroke:none" />
     </g>
     <rect
        style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -2330,11 +2252,11 @@
        rx="5"
        ry="5" />
     <rect
-       style="display:inline;fill:url(#linearGradient18395);fill-opacity:1;stroke:none"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect15748-5-1-0"
-       width="70"
+       width="110"
        height="30"
-       x="-315"
+       x="-355"
        y="167.5"
        rx="5"
        ry="5"
@@ -2344,16 +2266,130 @@
        d="m 192.5,327.5 c 0,2.77 2.23,5 5,5 l 5,0 c 2.77,0 5,-2.23 5,-5 l 0,-2.5 -5,0 c -2.77,0 -5,-2.23 -5,-5 l 0,-2.5 c -2.77,0 -5,2.23 -5,5 l 0,5 z"
        style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        inkscape:connector-curvature="0" />
+    <g
+       id="g9804"
+       transform="translate(121.51104,-47.805878)">
+      <rect
+         y="292.80588"
+         x="5.9889607"
+         width="30"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="5"
+         id="rect15748-5-60-8-0-1-6"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-9.0110397"
+         width="40"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="6.6666665"
+         id="rect15748-5-60-8-0-1-6-7"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-34.01104"
+         width="30"
+         style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="5"
+         id="rect15748-5-6-3"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-14.01104"
+         width="15"
+         style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
+         id="rect15748-5-6-3-5"
+         height="30" />
+    </g>
+    <g
+       style="display:inline"
+       id="g9804-3"
+       transform="matrix(0,1,-1,0,370.30588,319.01104)">
+      <rect
+         y="292.80588"
+         x="5.9889607"
+         width="30"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="5"
+         id="rect15748-5-60-8-0-1-6-5"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-9.0110397"
+         width="40"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="6.6666665"
+         id="rect15748-5-60-8-0-1-6-7-6"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-34.01104"
+         width="30"
+         style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
+         ry="5"
+         rx="5"
+         id="rect15748-5-6-3-2"
+         height="30" />
+      <rect
+         y="292.80588"
+         x="-14.01104"
+         width="15"
+         style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
+         id="rect15748-5-6-3-5-9"
+         height="30" />
+    </g>
     <rect
-       style="display:inline;fill:url(#linearGradient18395-2);fill-opacity:1;stroke:none"
-       id="rect15748-5-1-9"
-       width="70"
-       height="30"
-       x="285"
-       y="-197.5"
-       rx="5"
-       ry="5"
-       transform="matrix(0,1,-1,0,0,0)" />
+       style="display:inline;fill:#666666;fill-opacity:1;stroke:none"
+       id="rect15748-5-6-1"
+       width="30"
+       height="40"
+       x="167.5"
+       y="280" />
+    <g
+       id="g9882">
+      <rect
+         ry="5"
+         rx="5"
+         y="205"
+         x="87.5"
+         height="30"
+         width="30"
+         id="rect15748-5-60-8-0-1-2"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" />
+      <rect
+         y="205"
+         x="92.5"
+         height="30"
+         width="30"
+         id="rect15748-5-60-8-0-1-2-7"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" />
+    </g>
+    <g
+       transform="matrix(-1,0,0,-1,365,440)"
+       style="display:inline"
+       id="g9882-0">
+      <rect
+         ry="5"
+         rx="5"
+         y="205"
+         x="87.5"
+         height="30"
+         width="30"
+         id="rect15748-5-60-8-0-1-2-9"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" />
+      <rect
+         y="205"
+         x="92.5"
+         height="30"
+         width="30"
+         id="rect15748-5-60-8-0-1-2-7-3"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" />
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -4122,7 +4158,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Inputs"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        inkscape:connector-curvature="0"
        id="env_0"
@@ -4363,7 +4400,8 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Params"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        inkscape:connector-curvature="0"
        id="env_atv_0"

@@ -199,6 +199,7 @@ class Panel():
                     root.remove(node)
             else:
                 self.process_all(node, layer=Panel.get_layer(node, layer))
+                #TODO Exclude layers
 
     def process(self, node, layer):
         """
