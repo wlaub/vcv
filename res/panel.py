@@ -44,6 +44,17 @@ class Metadata(panel_config.MetadataConfig):
         new_data.update(ctrl.config)
         ctrl.config=new_data
 
+    def is_keep(self, layer):
+        """
+        Return True if the layer should be kept in the final output svg or
+        False if it should not
+        """
+        try:
+            keep = self.config['layers']
+            if layer in keep: return True
+            return False
+        except KeyError: return True
+
 
     def get_tags(self):
         """
@@ -239,7 +250,7 @@ class Panel():
 
     def process_all(self, root = None, first=False, layer=None):
         """
-        Find an process every path in the file
+        Find and process every path in the file
         """
         if first or root == None:
             self.controls = []
@@ -252,8 +263,23 @@ class Panel():
 
             node_layer = Panel.get_layer(root, layer)
             self._process_node(None, root, layer=node_layer)
-            self.post_process()
+            self.post_process(root)
             return
+
+    def _delete_layer(self, root, node = None, layer=None):
+        """
+        The actual recursion function for processing nodes
+        """
+        node_layer = Panel.get_layer(node, layer)
+        if root!= None and node_layer!=None and not self.metadata.is_keep(node_layer):
+            print(f'  {node_layer}')
+            root.remove(node)
+            return
+
+        for subnode in node.getchildren():
+            self._delete_layer(node, subnode)
+
+
 
     def _process_node(self, root, node, layer):
         """
@@ -265,18 +291,17 @@ class Panel():
             res = self.process(node, node_layer)
             if res and root != None:
                 root.remove(node)
-        else:
-            self.process_all(node, layer=node_layer)
-            #TODO Exclude layers
 
         for subnode in node.getchildren():
             self._process_node(node, subnode, layer=node_layer)
 
 
-    def post_process(self):
+    def post_process(self, root):
         """
         Anything that needs to be done after loading everything
         """
+        print('Deleting layers:')
+        self._delete_layer(None, root)
         for ctrl in self.controls:
             self.metadata.apply_class(ctrl)
 

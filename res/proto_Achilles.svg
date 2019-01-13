@@ -177,10 +177,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3814815"
-     inkscape:cx="377.06278"
+     inkscape:cx="378.78299"
      inkscape:cy="188.5969"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer10"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -1389,7 +1389,7 @@
      inkscape:groupmode="layer"
      id="layer9"
      inkscape:label="Ticks"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <g
        id="g17046"
@@ -5664,6 +5664,17 @@
          x="409.70505"
          y="354.58112"
          id="tspan7037" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="553.75336"
+       y="45.576408"
+       id="text7039"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan7041"
+         x="553.75336"
+         y="45.576408">'layers':['Aesthetic', 'Functional', 'Ticks']</tspan></text>
   </g>
   <flowRoot
      xml:space="preserve"
