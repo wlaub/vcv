@@ -28,8 +28,10 @@ class Control(panel_config.ControlConfig):
         """
         Is a control if the label parameter is one of param, input, or output
         """
-        if layer == None or layer.lower() not in ['inputs', 'outputs', 'params']:
+        if layer == None or layer.lower() not in Control.kind_map.keys():
             return False
+        return True
+        #just using layers for now
         for key,val in node.items():
             if Control.is_label(key):
                 if val.lower() in ['param', 'input', 'output']:
@@ -44,12 +46,14 @@ class Control(panel_config.ControlConfig):
         self.config is a python variable in the path description (dict)
         self.pos is [x,y] location of the center of the control
         """
-        for key, val in node.items():
-            if Control.is_label(key):
-                self.kind = val.lower()
+        self.kind = self.enum_kind_map[self.kind_map[layer.lower()]]
 
         self._id = node.get('id').upper()
         d = node.get('d')
+
+        self.enum_base = None
+        self.enum_idx = None
+        self.enum_count = None
 
         self.path = parse_path(d)
        
@@ -63,6 +67,58 @@ class Control(panel_config.ControlConfig):
                 self.widget = subnode.text
             elif Control.is_desc(subnode):
                 self.config = ast.literal_eval(subnode.text)
+
+    def get_index(self):
+        """
+        Return the index of this control or None if it is not indexed.
+        """
+        if not '_' in self._id: return None
+        if self.enum_idx != None: return self.enum_idx
+        try:
+            self.enum_idx= int(self._id.split('_')[-1])
+            return self.enum_idx
+        except:
+            return None
+
+    def get_enum_base(self):
+        """
+        Get the control enum base name of the form
+        KIND_NAME
+        from self.kind and self._id respectively, stripping any _#
+        """
+        if self.enum_base != None: return self.enum_base
+        idx = self.get_index()
+        name = self._id
+        if idx != None:
+            name = '_'.join(name.split('_')[:-1])
+        self.enum_base=f'{self.kind.upper()}_{name.upper()}' 
+        return self.enum_base
+
+    def get_enum(self, controls):
+        """
+        Compute the enumerator rendering string for this control or None if
+        this control is indexed and not the first index. 
+        Return [enum_index, enum_string]
+        """
+        idx = self.get_index()
+        if idx != None and idx > 0: return None, None
+
+        enum_base = self.get_enum_base()
+        count=0
+        if idx == 0:
+            if self.enum_count == None:
+                for ctrl in controls:
+                    if ctrl != self and ctrl.get_enum_base() == enum_base:
+                        try:
+                            count = max(count, ctrl.get_index())
+                        except TypeError:
+                            raise KeyError(f'Un-indexed instance of {enum_base}')
+                self.enum_count = count
+            count = self.enum_count
+        return self.kind, self.create_enum.format(
+                name = enum_base, count= count+1
+                )
+
 
     def get_instantiation(self, modname):
         """
@@ -161,14 +217,13 @@ class Panel():
         ...
         """
 
-        lines = {}
+        lines = {k: [] for k in Control.enum_kind_map.values()}
         for ctrl in self.controls:
             key, text = ctrl.get_enum(self.controls)
             if key == None: continue
-            if key not in lines.keys(): lines[key] = []
-            lines[key].append(text)
+            lines[key].append(' '*8+text)
 
-        for key, val in lines:
+        for key, val in lines.items():
            lines[key] = '\n'.join(sorted(val))
 
         return Control.enums_template.format(**lines)
@@ -203,24 +258,28 @@ class Panel():
                 f.write(self.get_enum_block())
         except Exception as e:
             print(f'Failed to generate enum block\n{e}')
+            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_vars.hpp'), 'w') as f:
                 f.write(self.get_vars_block())
         except Exception as e:
             print(f'Failed to generate vars block\n{e}')
+            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_inputs.hpp'), 'w') as f:
                 f.write(self.get_input_block())
         except Exception as e:
             print(f'Failed to generate input block\n{e}')
+            raise
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_outputs.hpp'), 'w') as f:
                 f.write(self.get_output_block())
         except Exception as e:
             print(f'Failed to generate input block\n{e}')
+            raise
 
         filename = os.path.join(src_dir, f'{self.modname}.cpp')
         if not os.path.exists(filename):
