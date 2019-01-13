@@ -1,3 +1,7 @@
+
+class MetadataConfig():
+    pass
+
 #
 # Control instantiation strings
 #

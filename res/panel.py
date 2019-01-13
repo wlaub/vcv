@@ -5,6 +5,18 @@ from svgpathtools.parser import parse_path
 import panel_config, module_template
 import os
 
+class Metadata(panel_config.MetadataConfig):
+
+    def __init__(self):
+        self.config = {}
+
+    def add_node(self, node, layer):
+        """
+        Extract metadata from nodes on the appropriate layer
+        """
+        pass
+
+
 class Control(panel_config.ControlConfig):
     """
     Represents a control derived from path metadata
@@ -66,7 +78,11 @@ class Control(panel_config.ControlConfig):
             if Control.is_title(subnode):
                 self.widget = subnode.text
             elif Control.is_desc(subnode):
-                self.config = ast.literal_eval(subnode.text)
+                try:
+                    self.config = ast.literal_eval(subnode.text)
+                except:
+                    print(f'Failed to load for {self._id} from {subnode.text}')
+                    raise
 
     def get_index(self):
         """
@@ -157,6 +173,8 @@ class Panel():
         self.controls = []
         self.cleantree = None
 
+        self.metadata = Metadata()
+
         self.modname = infile[:-4]
         self.outfile = 'clean_'+infile
 
@@ -195,14 +213,25 @@ class Panel():
             nsn = root.tag[root.tag.index('}')+1:]
             et.register_namespace('', ns)
 
+            node_layer = Panel.get_layer(root, layer)
+            self._process_node(None, root, layer=node_layer)
+            return
+
         for node in root.getchildren():
+            self._process_node(root, node, layer)
+
+    def _process_node(self, root, node, layer):
+            node_layer = Panel.get_layer(node, layer)
+            self.metadata.add_node(node, node_layer)
             if Panel.is_path(node): 
-                res = self.process(node, layer)
-                if res:
+                res = self.process(node, node_layer)
+                if res and root != None:
                     root.remove(node)
             else:
-                self.process_all(node, layer=Panel.get_layer(node, layer))
+                self.process_all(node, layer=node_layer)
                 #TODO Exclude layers
+
+
 
     def process(self, node, layer):
         """

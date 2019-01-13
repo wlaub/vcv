@@ -27,7 +27,7 @@
         
 
     input = Port::create<PJ301MPort>(
-        Vec(22.522725,180.000005), Port::INPUT, module, Achilles::INPUT_ENV+2
+        Vec(22.5000005,180.000005), Port::INPUT, module, Achilles::INPUT_ENV+2
         );
     center(input,1,1);
     addInput(input);    
@@ -274,7 +274,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(22.522723, 60.000001999999995), 
         module, Achilles::PARAM_ENV_ATV,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -301,7 +301,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(62.5, 140.0), 
         module, Achilles::PARAM_ENV_ATV+1,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -310,7 +310,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(62.5, 180.0), 
         module, Achilles::PARAM_ENV_ATV+2,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -337,7 +337,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(22.522724999999998, 260.00001), 
         module, Achilles::PARAM_ENV_ATV+3,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -345,8 +345,8 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(222.5, 340.0), 
-        module, Achilles::PARAM_FEEDBACK_LEVEL,
-        0, 1, 0.5
+        module, Achilles::PARAM_FEEDBACK_ATV,
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -364,7 +364,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(102.50568, 300.0), 
         module, Achilles::PARAM_VOCT_OFFSET,
-        -2, 2, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -381,8 +381,8 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(262.5, 260.0), 
-        module, Achilles::PARAM_PULSE_LEVEL_ATV,
-        0, 1, 0.5
+        module, Achilles::PARAM_NOISE_LEVEL_ATV,
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -390,7 +390,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(22.5, 300.0), 
-        module, Achilles::PARAM_MATCH_OFFSET,
+        module, Achilles::PARAM_MATCH_ATV,
         -1, 1, 0
     );
     center(param,1,1);
@@ -426,7 +426,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(302.500005, 300.0), 
-        module, Achilles::PARAM_LP_LEVEL_OFFSET,
+        module, Achilles::PARAM_LP_LEVEL_ATV,
         0, 1, 1
     );
     center(param,1,1);
@@ -435,7 +435,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(342.500005, 300.0), 
-        module, Achilles::PARAM_BP_LEVEL_OFFSET,
+        module, Achilles::PARAM_BP_LEVEL_ATV,
         0, 1, 1
     );
     center(param,1,1);
@@ -444,7 +444,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(382.500005, 300.0), 
-        module, Achilles::PARAM_HP_LEVEL_OFFSET,
+        module, Achilles::PARAM_HP_LEVEL_ATV,
         0, 1, 1
     );
     center(param,1,1);
@@ -472,7 +472,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(302.499995, 260.00001), 
         module, Achilles::PARAM_LP_SHAPE_OFFSET,
-        0, 1, 0.5
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -508,7 +508,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(302.499995, 180.00002), 
         module, Achilles::PARAM_BP_SHAPE_OFFSET,
-        0, 1, 0.5
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -544,7 +544,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(302.499995, 100.000021), 
         module, Achilles::PARAM_HP_SHAPE_OFFSET,
-        0, 1, 0.5
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -561,8 +561,8 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(142.47727500000002, 59.999992000000006), 
-        module, Achilles::PARAM_NOISE_SHAPE_OFFSET,
-        1, 1, 0
+        module, Achilles::PARAM_NOISE_SHAPE_ATV,
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -588,7 +588,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(222.499995, 59.999992000000006), 
-        module, Achilles::PARAM_NOISE_SHAPE_OFFSET+1,
+        module, Achilles::PARAM_NOISE_SHAPE_ATV+1,
         -1, 1, 0
     );
     center(param,1,1);
@@ -597,7 +597,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(222.499995, 99.999991), 
-        module, Achilles::PARAM_NOISE_BW_OFFSET+1,
+        module, Achilles::PARAM_NOISE_BW_ATV+1,
         0, 1, 0.5
     );
     center(param,1,1);
@@ -606,7 +606,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(142.477275, 99.99999), 
-        module, Achilles::PARAM_NOISE_BW_OFFSET,
+        module, Achilles::PARAM_NOISE_BW_OATV,
         0, 1, 0.5
     );
     center(param,1,1);
@@ -615,7 +615,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(142.477275, 139.99999000000003), 
-        module, Achilles::PARAM_NOISE_SLOPE_OFFSET,
+        module, Achilles::PARAM_NOISE_SLOPE_ATV,
         -1, 1, 1
     );
     center(param,1,1);
@@ -642,7 +642,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(222.499995, 139.99999), 
-        module, Achilles::PARAM_NOISE_SLOPE_OFFSET+1,
+        module, Achilles::PARAM_NOISE_SLOPE_ATV+1,
         -1, 1, -1
     );
     center(param,1,1);
