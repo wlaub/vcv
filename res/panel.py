@@ -191,6 +191,9 @@ class Panel():
             self.cleantree = et.parse(self.infile)
             root = self.cleantree.getroot()
             self.width=float(root.get('width'))
+            ns = root.tag[1:root.tag.index('}')]
+            nsn = root.tag[root.tag.index('}')+1:]
+            et.register_namespace('', ns)
 
         for node in root.getchildren():
             if Panel.is_path(node): 
@@ -307,6 +310,7 @@ class Panel():
         if outfile == None:
             outfile = self.outfile
         assert outfile != infile
+
         self.cleantree.write(outfile)
 
     def __repr__(self):
