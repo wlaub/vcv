@@ -606,7 +606,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(142.477275, 99.99999), 
-        module, Achilles::PARAM_NOISE_BW_OATV,
+        module, Achilles::PARAM_NOISE_BW_ATV,
         0, 1, 0.5
     );
     center(param,1,1);

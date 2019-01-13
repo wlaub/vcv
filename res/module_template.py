@@ -94,6 +94,11 @@ struct {modname}Widget : ModuleWidget {{
     }}
 }};
 
+#include "{modname}_instance.hpp"
+
+"""
+
+instance = """
 
 // Specify the Module and ModuleWidget subclass, human-readable
 // author name for categorization per plugin, module slug (should never

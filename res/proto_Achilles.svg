@@ -180,7 +180,7 @@
      inkscape:cx="377.06278"
      inkscape:cy="188.5969"
      inkscape:document-units="px"
-     inkscape:current-layer="layer10"
+     inkscape:current-layer="layer3"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -4110,7 +4110,7 @@
     </path>
     <path
        inkscape:connector-curvature="0"
-       id="noise_bw_oatv_0"
+       id="noise_bw_atv_0"
        d="M 142.47728,109.99999 A 9.9943184,10.000001 0 0 0 152.47159,100 9.9943184,10.000001 0 0 0 142.47728,89.99999 9.9943184,10.000001 0 0 0 132.48296,100 a 9.9943184,10.000001 0 0 0 9.99432,9.99999 z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">

@@ -297,6 +297,17 @@ class Panel():
 
         return Control.enums_template.format(**lines)
 
+    def get_module_instance(self):
+        """
+        Create the module instantiation line
+        """
+        return module_template.instance.format(
+            plugin = 'TechTechTechnologies',
+            modname = self.modname,
+            modname_full = self.modname,
+            width = self.width/15.,
+            tags = self.metadata.get_tags()
+            )
 
     def get_module_src(self):
         """
@@ -346,6 +357,14 @@ class Panel():
                 f.write(self.get_output_block())
         except Exception as e:
             print(f'Failed to generate input block\n{e}')
+
+        try:
+            with open(os.path.join(src_dir,f'{self.modname}_instance.hpp'), 'w') as f:
+                f.write(self.get_module_instance())
+        except Exception as e:
+            print(f'Failed to generate instance block\n{e}')
+
+
 
         filename = os.path.join(src_dir, f'{self.modname}.cpp')
         if not os.path.exists(filename):
