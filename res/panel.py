@@ -255,19 +255,23 @@ class Panel():
             self.post_process()
             return
 
-        for node in root.getchildren():
-            self._process_node(root, node, layer)
-
     def _process_node(self, root, node, layer):
-            node_layer = Panel.get_layer(node, layer)
-            self.metadata.add_node(node, node_layer)
-            if Panel.is_path(node): 
-                res = self.process(node, node_layer)
-                if res and root != None:
-                    root.remove(node)
-            else:
-                self.process_all(node, layer=node_layer)
-                #TODO Exclude layers
+        """
+        The actual recursion function for processing nodes
+        """
+        node_layer = Panel.get_layer(node, layer)
+        self.metadata.add_node(node, node_layer)
+        if Panel.is_path(node): 
+            res = self.process(node, node_layer)
+            if res and root != None:
+                root.remove(node)
+        else:
+            self.process_all(node, layer=node_layer)
+            #TODO Exclude layers
+
+        for subnode in node.getchildren():
+            self._process_node(node, subnode, layer=node_layer)
+
 
     def post_process(self):
         """
