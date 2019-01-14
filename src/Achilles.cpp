@@ -11,6 +11,8 @@ struct Achilles : Module {
     #include "Achilles_vars.hpp"
     /* -TRIGGER_VARS */
 
+    int ready = 0;
+
     ttt::CircularBuffer* delay;
     float delay_tap = 10;
 
@@ -27,7 +29,7 @@ struct Achilles : Module {
 void Achilles::step() {
     float deltaTime = engineGetSampleTime();
 
-
+    if(ready == 0) return;
     /*  +INPUT_PROCESSING */
     #include "Achilles_inputs.hpp"
     /*  -INPUT_PROCESSING */
@@ -139,6 +141,8 @@ struct AchillesWidget : ModuleWidget {
         /* +CONTROL INSTANTIATION */
         #include "Achilles_panel.hpp"
         /* -CONTROL INSTANTIATION */
+
+        module->ready=1;
     }
 };
 
