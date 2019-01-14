@@ -30,7 +30,7 @@
         ENUMS(PARAM_NOISE_SHAPE_ATV,2),
         ENUMS(PARAM_NOISE_SLOPE_ATV,2),
         ENUMS(PARAM_OUTPUT_LEVEL,1),
-        ENUMS(PARAM_VOCT_ATV,1),
+        ENUMS(PARAM_VOCT_OFFSET,1),
         NUM_PARAMS
     };
     enum InputIds {

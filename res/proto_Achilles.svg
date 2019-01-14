@@ -177,7 +177,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3814815"
-     inkscape:cx="291.91972"
+     inkscape:cx="349.82856"
      inkscape:cy="217.55132"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
@@ -2796,7 +2796,12 @@
        inkscape:label="input">
       <desc
          id="desc6903">{
-'class':'auto_atv'
+	'norm': 0,
+	'offset':{
+		'src':'auto',
+		'scale':1,
+		'offset':0,
+	}
 }</desc>
     </path>
     <path
@@ -3282,7 +3287,7 @@
     </path>
     <path
        inkscape:connector-curvature="0"
-       id="voct_atv"
+       id="voct_offset"
        d="m 102.50568,310 a 9.9943184,10.000001 0 0 1 -9.99432,-10 9.9943184,10.000001 0 0 1 9.99432,-10 9.9943184,10.000001 0 0 1 9.99432,10 9.9943184,10.000001 0 0 1 -9.99432,10 z"
        style="fill:#00ffff;fill-opacity:1"
        inkscape:label="param">

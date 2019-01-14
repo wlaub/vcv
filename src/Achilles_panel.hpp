@@ -363,7 +363,7 @@
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(102.50568, 300.0), 
-        module, Achilles::PARAM_VOCT_ATV,
+        module, Achilles::PARAM_VOCT_OFFSET,
         -1, 1, 0
     );
     center(param,1,1);

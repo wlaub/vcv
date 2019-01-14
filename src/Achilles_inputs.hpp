@@ -33,7 +33,7 @@ float param_env_atv[4];
 float param_env_offset[4];
 float param_feedback_atv;
 float param_output_level;
-float param_voct_atv;
+float param_voct_offset;
 float param_fm_atv;
 float param_noise_level_atv;
 float param_match_atv;
@@ -73,7 +73,7 @@ param_env_offset[3] = params[PARAM_ENV_OFFSET+3].value;
 param_env_atv[3] = params[PARAM_ENV_ATV+3].value;
 param_feedback_atv = params[PARAM_FEEDBACK_ATV].value;
 param_output_level = params[PARAM_OUTPUT_LEVEL].value;
-param_voct_atv = params[PARAM_VOCT_ATV].value;
+param_voct_offset = params[PARAM_VOCT_OFFSET].value;
 param_fm_atv = params[PARAM_FM_ATV].value;
 param_noise_level_atv = params[PARAM_NOISE_LEVEL_ATV].value;
 param_match_atv = params[PARAM_MATCH_ATV].value;
@@ -149,9 +149,9 @@ input_match *= param_match_atv;
 input_voct = inputs[INPUT_VOCT].value;
 if (!inputs[INPUT_VOCT].active) 
 {
-    input_voct = 10;
+    input_voct = 0;
 }
-input_voct *= param_voct_atv;
+input_voct += 0+1*param_voct_offset;
 input_ext_env = inputs[INPUT_EXT_ENV].value;
 input_noise_input = inputs[INPUT_NOISE_INPUT].value;
 input_noise_level = inputs[INPUT_NOISE_LEVEL].value;
