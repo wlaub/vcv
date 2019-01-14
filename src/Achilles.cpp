@@ -102,7 +102,7 @@ void Achilles::step() {
     }
     else
     {
-        feedback += filter_out*param_feedback_atv;
+        feedback += filter_out*param_feedback_atv; //TODO: Norm to 1 and use input_feedback
     }
 
     feedback += noise;
