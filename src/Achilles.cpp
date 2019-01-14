@@ -36,7 +36,17 @@ void Achilles::step() {
 
     /* ENVELOPE HANDLING */
 
-    float env = input_gate; //TODO
+    float env; //TODO
+    env = input_gate;
+    output_env = env;
+    if(! inputs[INPUT_EXT_ENV].active)
+    {
+    }
+    else
+    {
+        env = input_ext_env;
+    }
+
 
     /* NOISE GENERATION */
 
