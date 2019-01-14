@@ -30,7 +30,7 @@ void Achilles::step() {
     #include "Achilles_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
-
+    output_env_gate = input_match;
 
     /*  +OUTPUT_PROCESSING */
     #include "Achilles_outputs.hpp"

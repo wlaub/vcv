@@ -268,26 +268,31 @@ class Control(panel_config.ControlConfig):
         if idx == None: return f'{type_str} {var_name};'
         return f'{type_str} {var_name}[{self.enum_count}];'
 
+    def get_param_string(self, controls):
+        """
+        Get the string that reads the param value into the base variable
+        Needs a list of all controls to look up other refs
+        """
+        if self.kind != 'param': return
+        return f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
+
     def get_input_string(self, controls):
         """
         Get the string that reads the value into the base variable
         Needs a list of all controls to look up other refs
         """
-        if self.kind in ['output', 'light']: return
-        if self.kind == 'param':
-            return f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
-        elif self.kind =='input':
-            result = []
-            result.append( f'{self.get_variable_access()} = {self.get_vcv_access()}.value;')
-  
-            result.append(self.get_norm_string())
-            result.append(self.get_gain_string(controls))
-            result.append(self.get_offset_string(controls))
-            result.append(self.get_clip_string())
+        if self.kind != 'input' : return
+        result = []
+        result.append( f'{self.get_variable_access()} = {self.get_vcv_access()}.value;')
 
-            result = list(filter(lambda x: x != None, result))
+        result.append(self.get_norm_string())
+        result.append(self.get_gain_string(controls))
+        result.append(self.get_offset_string(controls))
+        result.append(self.get_clip_string())
 
-            return '\n'.join(result)
+        result = list(filter(lambda x: x != None, result))
+
+        return '\n'.join(result)
 
     def get_output_string(self, controls):
         """
@@ -555,6 +560,13 @@ class Panel():
         for ctrl in self.controls:
             line = ctrl.get_declaration_string()
             if line != None: result.append(line)
+
+        result.extend(['','/* Read params */',''])
+        
+        for ctrl in self.controls:
+            line = ctrl.get_param_string(self.controls)
+            if line != None: result.append(line)
+
 
         result.extend(['','/* Read inputs */',''])
         for ctrl in self.controls:
