@@ -346,10 +346,10 @@ if (!{self.get_vcv_access()}.active)
 {self.get_variable_access()} = clamp({self.get_variable_access()}, {clipping[0]}f, {clipping[1]}f);"""
             elif clipping[0] == None:
                 result += f"""
-{self.get_variable_access()} = max({self.get_variable_access()}, {clipping[1]}f);"""
+{self.get_variable_access()} = min({self.get_variable_access()}, {clipping[1]}f);"""
             elif clipping[1] == None:
                 result += f"""
-{self.get_variable_access()} = min({self.get_variable_access()}, {clipping[0]}f);"""
+{self.get_variable_access()} = max({self.get_variable_access()}, {clipping[0]}f);"""
  
            
 
