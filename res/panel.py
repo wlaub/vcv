@@ -301,7 +301,6 @@ class Control(panel_config.ControlConfig):
         """
         if self.kind in ['input', 'param']: return
         result = []
-        result.append(self.get_norm_string())
         result.append(self.get_gain_string(controls))
         result.append(self.get_offset_string(controls))
         result.append(self.get_clip_string())
