@@ -144,6 +144,16 @@ class Control(panel_config.ControlConfig):
         except:
             return None
 
+    def get_base_name(self):
+        """
+        Get the base id/name without any indexing suffix
+        """
+        idx = self.get_index()
+        name = self._id
+        if idx != None:
+            name = '_'.join(name.split('_')[:-1])
+        return name
+
     def get_enum_base(self):
         """
         Get the control enum base name of the form
@@ -151,10 +161,7 @@ class Control(panel_config.ControlConfig):
         from self.kind and self._id respectively, stripping any _#
         """
         if self.enum_base != None: return self.enum_base
-        idx = self.get_index()
-        name = self._id
-        if idx != None:
-            name = '_'.join(name.split('_')[:-1])
+        name = self.get_base_name()
         self.enum_base=f'{self.kind.upper()}_{name.upper()}' 
         return self.enum_base
 
@@ -167,7 +174,7 @@ class Control(panel_config.ControlConfig):
         """
         result = self.get_enum_base()
         idx = self.get_index()
-        if idx != None and idx > 0:
+        if idx != None and idx != 0:
             result = f'{result}+{idx}'
         return result
 
@@ -196,6 +203,19 @@ class Control(panel_config.ControlConfig):
                 name = enum_base, count= count+1
                 )
 
+    def get_auto(self, kind):
+        """
+        Return the _id of the param that relates to this port by kind
+        name[_#] -> name_kind[#]
+        e.g. env_1 -> env_atv_1
+        """
+        idx = self.get_index()
+        base = self.get_base_name()
+        if idx == None: return f'{base}_{kind}'
+        return f'{base}_{kind}_{idx}'
+
+    def get_auto_gain(self): return self.get_auto('ATV')
+    def get_auto_offset(self): return self.get_auto('OFFSET')
 
     def get_instantiation(self, modname):
         """
@@ -212,6 +232,129 @@ class Control(panel_config.ControlConfig):
 
         return result
 
+    def get_variable_name(self):
+        """
+        name of the variable this value will be stored in
+        """
+        return self.get_enum_base().lower()
+
+    def get_variable_access(self):
+        """
+        string to get the indexed variable name for this control
+        """
+        base = self.get_variable_name()
+        idx = self.get_index()
+        if idx == None: return base
+        return f'{base}[{idx}]'
+
+    def get_vcv_access(self):
+        """
+        string to access the vcv object e.g. inputs[INPUT_NAME+2]
+        """
+        index = self.get_enum_expr()
+        return f'{self.kind}s[{index}]'
+
+    def get_declaration_string(self):
+        """
+        Get the string that declares the variable for this value
+        indexed [0]:  'float[N] variable_name;'
+        indexed [>0]: None
+        single:       'float variable_name;'
+        """
+        idx = self.get_index()
+        if idx != None and idx > 0: return None
+        type_str = self.config.get('type', 'float')
+        var_name = self.get_variable_name()
+        if idx == None: return f'{type_str} {var_name};'
+        return f'{type_str} {var_name}[{self.enum_count}];'
+
+
+    def get_input_string(self, controls):
+        """
+        Get the string that reads the value into the base variable
+        Needs a list of all controls to look up other refs
+        """
+        if self.kind in ['output', 'light']: return
+        if self.kind == 'param':
+            return f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
+        if self.kind == 'input':
+            result = f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
+            try: #norm unused inputs
+                norm = self.config['norm']
+            except KeyError: pass
+            else:
+                result += f"""
+if (!{self.get_vcv_access()}.active) 
+{{
+    {self.get_variable_access()} = {norm};
+}}"""
+ 
+            try: #apply gain from params 
+                gain = self.config['gain']
+            except KeyError: pass
+            else:
+                try:
+                    gain = float(gain)
+                except ValueError:
+                    if gain == 'auto':
+                        gain_src = self.get_auto_gain()
+                    else:
+                        gain_src = gain
+                    ctrl_src = None
+                    for ctrl in controls:
+                        if ctrl._id == gain_src: 
+                            ctrl_src = ctrl
+                            break
+                    if ctrl_src == None:
+                        raise KeyError(f'No matching gain source {gain_src} for {self._id}')
+                    gain = ctrl_src.get_variable_access()
+                result += f"""
+{self.get_variable_access()} *= {gain};"""
+
+            try: #apply offset
+                offset = self.config['offset']
+            except KeyError: pass
+            else:
+                off_off = offset.get('offset', 0)
+                off_scale = offset.get('scale', 1)
+                off_src = offset.get('src', None)
+                off_val = 0;
+                if off_src == None: pass
+                if off_src == 'auto':
+                    off_src = self.get_auto_offset()
+
+                if off_src != None:
+                    ctrl_src = None
+                    for ctrl in controls:
+                        if ctrl._id == gain_src: 
+                            ctrl_src = ctrl
+                            break
+                    if ctrl_src == None:
+                        raise KeyError(f'No matching offset source {off_src} for {self._id}')
+                    off_val = ctrl_src.get_variable_access()
+                result += f"""
+{self.get_variable_access()} += {off_off}+{off_scale}*{off_val};"""
+
+        try: #apply clipping on inputs
+            clipping = self.config['clip']
+            clipping = list(map(lambda x: str(x) if x!= None else x, clipping))
+            clipping = list(map(lambda x: x if (x == None or '.' in x) else f'{x}.0', clipping))
+        except KeyError: pass
+        else:
+            if not None in clipping:
+                result += f"""
+{self.get_variable_access()} = clamp({self.get_variable_access()}, {clipping[0]}f, {clipping[1]}f);"""
+            elif clipping[0] == None:
+                result += f"""
+{self.get_variable_access()} = max({self.get_variable_access()}, {clipping[1]}f);"""
+            elif clipping[1] == None:
+                result += f"""
+{self.get_variable_access()} = min({self.get_variable_access()}, {clipping[0]}f);"""
+ 
+           
+
+
+        return result
 
 class Panel():
     
@@ -376,6 +519,19 @@ class Panel():
             tags = self.metadata.get_tags()
             )
 
+    def get_input_block(self):
+        result = ['/* Declare vars */']
+        for ctrl in self.controls:
+            line = ctrl.get_declaration_string()
+            if line != None: result.append(line)
+
+        result.extend(['','/* Read inputs */',''])
+        for ctrl in self.controls:
+            line = ctrl.get_input_string(self.controls)
+            if line != None: result.append(line)
+
+        return '\n'.join(result)
+
     def write_headers(self, src_dir = '../src'):
         """
         write all the auxilliary header files for this module and the template
@@ -409,7 +565,7 @@ class Panel():
             with open(os.path.join(src_dir,f'{self.modname}_outputs.hpp'), 'w') as f:
                 f.write(self.get_output_block())
         except Exception as e:
-            print(f'Failed to generate input block\n{e}')
+            print(f'Failed to generate output block\n{e}')
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_instance.hpp'), 'w') as f:
