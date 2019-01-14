@@ -268,7 +268,6 @@ class Control(panel_config.ControlConfig):
         if idx == None: return f'{type_str} {var_name};'
         return f'{type_str} {var_name}[{self.enum_count}];'
 
-
     def get_input_string(self, controls):
         """
         Get the string that reads the value into the base variable
@@ -277,64 +276,104 @@ class Control(panel_config.ControlConfig):
         if self.kind in ['output', 'light']: return
         if self.kind == 'param':
             return f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
-        if self.kind == 'input':
-            result = f'{self.get_variable_access()} = {self.get_vcv_access()}.value;'
-            try: #norm unused inputs
-                norm = self.config['norm']
-            except KeyError: pass
-            else:
-                result += f"""
-if (!{self.get_vcv_access()}.active) 
+        elif self.kind =='input':
+            result = []
+            result.append( f'{self.get_variable_access()} = {self.get_vcv_access()}.value;')
+  
+            result.append(self.get_norm_string())
+            result.append(self.get_gain_string(controls))
+            result.append(self.get_offset_string(controls))
+            result.append(self.get_clip_string())
+
+            result = list(filter(lambda x: x != None, result))
+
+            return '\n'.join(result)
+
+    def get_output_string(self, controls):
+        """
+        Get the string that updates a variable and loads it into the relevant
+        output
+        """
+        if self.kind in ['input', 'param']: return
+        result = []
+        result.append(self.get_norm_string())
+        result.append(self.get_gain_string(controls))
+        result.append(self.get_offset_string(controls))
+        result.append(self.get_clip_string())
+
+        result.append( f'{self.get_vcv_access()}.value = {self.get_variable_access()};')
+
+        result = list(filter(lambda x: x != None, result))
+
+        return '\n'.join(result)
+
+
+    def get_norm_string(self):
+        try: #norm unused inputs
+            norm = self.config['norm']
+        except KeyError: return None
+        else:
+            return f"""if (!{self.get_vcv_access()}.active) 
 {{
     {self.get_variable_access()} = {norm};
 }}"""
- 
-            try: #apply gain from params 
-                gain = self.config['gain']
-            except KeyError: pass
-            else:
-                try:
-                    gain = float(gain)
-                except ValueError:
-                    if gain == 'auto':
-                        gain_src = self.get_auto_gain()
-                    else:
-                        gain_src = gain
-                    ctrl_src = None
-                    for ctrl in controls:
-                        if ctrl._id == gain_src: 
-                            ctrl_src = ctrl
-                            break
-                    if ctrl_src == None:
-                        raise KeyError(f'No matching gain source {gain_src} for {self._id}')
-                    gain = ctrl_src.get_variable_access()
-                result += f"""
-{self.get_variable_access()} *= {gain};"""
 
-            try: #apply offset
-                offset = self.config['offset']
-            except KeyError: pass
-            else:
-                off_off = offset.get('offset', 0)
-                off_scale = offset.get('scale', 1)
-                off_src = offset.get('src', None)
-                off_val = 0;
-                if off_src == None: pass
-                if off_src == 'auto':
-                    off_src = self.get_auto_offset()
+    def get_gain_string(self, controls):
+        """
+        Get the gain apply string if there is one for this control
+        """
+        try: #apply gain from params 
+            gain = self.config['gain']
+        except KeyError: return None
+        else:
+            try:
+                gain = float(gain)
+            except ValueError:
+                if gain == 'auto':
+                    gain_src = self.get_auto_gain()
+                else:
+                    gain_src = gain
+                ctrl_src = None
+                for ctrl in controls:
+                    if ctrl._id == gain_src: 
+                        ctrl_src = ctrl
+                        break
+                if ctrl_src == None:
+                    raise KeyError(f'No matching gain source {gain_src} for {self._id}')
+                gain = ctrl_src.get_variable_access()
+            return f"{self.get_variable_access()} *= {gain};"
 
-                if off_src != None:
-                    ctrl_src = None
-                    for ctrl in controls:
-                        if ctrl._id == gain_src: 
-                            ctrl_src = ctrl
-                            break
-                    if ctrl_src == None:
-                        raise KeyError(f'No matching offset source {off_src} for {self._id}')
-                    off_val = ctrl_src.get_variable_access()
-                result += f"""
-{self.get_variable_access()} += {off_off}+{off_scale}*{off_val};"""
+    def get_offset_string(self, controls):
+        """
+        Get the offset apply string if there is one for this control
+        """
+        try: #apply offset
+            offset = self.config['offset']
+        except KeyError: pass
+        else:
+            off_off = offset.get('offset', 0)
+            off_scale = offset.get('scale', 1)
+            off_src = offset.get('src', None)
+            off_val = 0;
+            if off_src == None: pass
+            if off_src == 'auto':
+                off_src = self.get_auto_offset()
 
+            if off_src != None:
+                ctrl_src = None
+                for ctrl in controls:
+                    if ctrl._id == off_src: 
+                        ctrl_src = ctrl
+                        break
+                if ctrl_src == None:
+                    raise KeyError(f'No matching offset source {off_src} for {self._id}')
+                off_val = ctrl_src.get_variable_access()
+            return f"{self.get_variable_access()} += {off_off}+{off_scale}*{off_val};"
+
+    def get_clip_string(self):
+        """
+        Get the clipping apply string if there is one for this control
+        """
         try: #apply clipping on inputs
             clipping = self.config['clip']
             clipping = list(map(lambda x: str(x) if x!= None else x, clipping))
@@ -342,19 +381,11 @@ if (!{self.get_vcv_access()}.active)
         except KeyError: pass
         else:
             if not None in clipping:
-                result += f"""
-{self.get_variable_access()} = clamp({self.get_variable_access()}, {clipping[0]}f, {clipping[1]}f);"""
+                return f"{self.get_variable_access()} = clamp({self.get_variable_access()}, {clipping[0]}f, {clipping[1]}f);"
             elif clipping[0] == None:
-                result += f"""
-{self.get_variable_access()} = min({self.get_variable_access()}, {clipping[1]}f);"""
+                return f"{self.get_variable_access()} = min({self.get_variable_access()}, {clipping[1]}f);"
             elif clipping[1] == None:
-                result += f"""
-{self.get_variable_access()} = max({self.get_variable_access()}, {clipping[0]}f);"""
- 
-           
-
-
-        return result
+                return f"{self.get_variable_access()} = max({self.get_variable_access()}, {clipping[0]}f);"
 
 class Panel():
     
@@ -531,6 +562,16 @@ class Panel():
             if line != None: result.append(line)
 
         return '\n'.join(result)
+
+    def get_output_block(self):
+
+        result = ['','/* Write outputs */','']
+        for ctrl in self.controls:
+            line = ctrl.get_output_string(self.controls)
+            if line != None: result.append(line)
+
+        return '\n'.join(result)
+
 
     def write_headers(self, src_dir = '../src'):
         """

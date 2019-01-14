@@ -56,7 +56,7 @@ float param_hp_bw_atv;
 float param_hp_shape_offset;
 float param_hp_bw_offset;
 float param_noise_shape_atv[1];
-float param_noise_level[1];
+float param_noise_atv[1];
 float param_noise_bw_atv[1];
 float param_noise_slope_atv[1];
 float param_aux_noise_mix[1];
@@ -69,7 +69,7 @@ if (!inputs[INPUT_ENV].active)
     input_env[0] = 10;
 }
 input_env[0] *= param_env_atv[0];
-input_env[0] += 0+10*param_env_atv[0];
+input_env[0] += 0+10*param_env_offset[0];
 input_env[0] = clamp(input_env[0], 0.0f, 10.0f);
 input_env[3] = inputs[INPUT_ENV+3].value;
 if (!inputs[INPUT_ENV+3].active) 
@@ -77,7 +77,7 @@ if (!inputs[INPUT_ENV+3].active)
     input_env[3] = 10;
 }
 input_env[3] *= param_env_atv[3];
-input_env[3] += 0+10*param_env_atv[3];
+input_env[3] += 0+10*param_env_offset[3];
 input_env[3] = clamp(input_env[3], 0.0f, 10.0f);
 input_env[1] = inputs[INPUT_ENV+1].value;
 if (!inputs[INPUT_ENV+1].active) 
@@ -85,7 +85,7 @@ if (!inputs[INPUT_ENV+1].active)
     input_env[1] = 10;
 }
 input_env[1] *= param_env_atv[1];
-input_env[1] += 0+10*param_env_atv[1];
+input_env[1] += 0+10*param_env_offset[1];
 input_env[1] = clamp(input_env[1], 0.0f, 10.0f);
 input_env[2] = inputs[INPUT_ENV+2].value;
 if (!inputs[INPUT_ENV+2].active) 
@@ -93,7 +93,7 @@ if (!inputs[INPUT_ENV+2].active)
     input_env[2] = 10;
 }
 input_env[2] *= param_env_atv[2];
-input_env[2] += 0+10*param_env_atv[2];
+input_env[2] += 0+10*param_env_offset[2];
 input_env[2] = clamp(input_env[2], 0.0f, 10.0f);
 input_match = inputs[INPUT_MATCH].value;
 if (!inputs[INPUT_MATCH].active) 
@@ -157,7 +157,7 @@ if (!inputs[INPUT_LP_SHAPE].active)
     input_lp_shape = 10;
 }
 input_lp_shape *= param_lp_shape_atv;
-input_lp_shape += 0+10*param_lp_shape_atv;
+input_lp_shape += 0+10*param_lp_shape_offset;
 input_lp_shape = clamp(input_lp_shape, -10.0f, 10.0f);
 input_lp_bw = inputs[INPUT_LP_BW].value;
 if (!inputs[INPUT_LP_BW].active) 
@@ -165,7 +165,7 @@ if (!inputs[INPUT_LP_BW].active)
     input_lp_bw = 10;
 }
 input_lp_bw *= param_lp_bw_atv;
-input_lp_bw += 0+10*param_lp_bw_atv;
+input_lp_bw += 0+10*param_lp_bw_offset;
 input_lp_bw = clamp(input_lp_bw, 0.0f, 10.0f);
 input_bp_shape = inputs[INPUT_BP_SHAPE].value;
 if (!inputs[INPUT_BP_SHAPE].active) 
@@ -173,7 +173,7 @@ if (!inputs[INPUT_BP_SHAPE].active)
     input_bp_shape = 10;
 }
 input_bp_shape *= param_bp_shape_atv;
-input_bp_shape += 0+10*param_bp_shape_atv;
+input_bp_shape += 0+10*param_bp_shape_offset;
 input_bp_shape = clamp(input_bp_shape, -10.0f, 10.0f);
 input_bp_bw = inputs[INPUT_BP_BW].value;
 if (!inputs[INPUT_BP_BW].active) 
@@ -181,7 +181,7 @@ if (!inputs[INPUT_BP_BW].active)
     input_bp_bw = 10;
 }
 input_bp_bw *= param_bp_bw_atv;
-input_bp_bw += 0+10*param_bp_bw_atv;
+input_bp_bw += 0+10*param_bp_bw_offset;
 input_bp_bw = clamp(input_bp_bw, 0.0f, 10.0f);
 input_hp_shape = inputs[INPUT_HP_SHAPE].value;
 if (!inputs[INPUT_HP_SHAPE].active) 
@@ -189,7 +189,7 @@ if (!inputs[INPUT_HP_SHAPE].active)
     input_hp_shape = 10;
 }
 input_hp_shape *= param_hp_shape_atv;
-input_hp_shape += 0+10*param_hp_shape_atv;
+input_hp_shape += 0+10*param_hp_shape_offset;
 input_hp_shape = clamp(input_hp_shape, -10.0f, 10.0f);
 input_hp_bw = inputs[INPUT_HP_BW].value;
 if (!inputs[INPUT_HP_BW].active) 
@@ -197,7 +197,7 @@ if (!inputs[INPUT_HP_BW].active)
     input_hp_bw = 10;
 }
 input_hp_bw *= param_hp_bw_atv;
-input_hp_bw += 0+10*param_hp_bw_atv;
+input_hp_bw += 0+10*param_hp_bw_offset;
 input_hp_bw = clamp(input_hp_bw, 0.0f, 10.0f);
 input_aux_noise[0] = inputs[INPUT_AUX_NOISE].value;
 input_aux_noise[1] = inputs[INPUT_AUX_NOISE+1].value;
@@ -276,8 +276,8 @@ param_hp_bw_atv = params[PARAM_HP_BW_ATV].value;
 param_hp_shape_offset = params[PARAM_HP_SHAPE_OFFSET].value;
 param_hp_bw_offset = params[PARAM_HP_BW_OFFSET].value;
 param_noise_shape_atv[0] = params[PARAM_NOISE_SHAPE_ATV].value;
-param_noise_level[1] = params[PARAM_NOISE_LEVEL+1].value;
-param_noise_level[0] = params[PARAM_NOISE_LEVEL].value;
+param_noise_atv[1] = params[PARAM_NOISE_ATV+1].value;
+param_noise_atv[0] = params[PARAM_NOISE_ATV].value;
 param_noise_shape_atv[1] = params[PARAM_NOISE_SHAPE_ATV+1].value;
 param_noise_bw_atv[1] = params[PARAM_NOISE_BW_ATV+1].value;
 param_noise_bw_atv[0] = params[PARAM_NOISE_BW_ATV].value;

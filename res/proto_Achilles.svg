@@ -3627,7 +3627,7 @@
     </path>
     <path
        inkscape:connector-curvature="0"
-       id="noise_level_1"
+       id="noise_atv_1"
        d="M 222.5,190 A 9.9943184,10.000001 0 0 1 212.50567,180 9.9943184,10.000001 0 0 1 222.5,170 9.9943184,10.000001 0 0 1 232.49432,180 9.9943184,10.000001 0 0 1 222.5,190 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
@@ -3642,7 +3642,7 @@
     </path>
     <path
        inkscape:connector-curvature="0"
-       id="noise_level_0"
+       id="noise_atv_0"
        d="M 142.5,190 A 9.9943184,10.000001 0 0 1 132.50567,180 9.9943184,10.000001 0 0 1 142.5,170 9.9943184,10.000001 0 0 1 152.49432,180 9.9943184,10.000001 0 0 1 142.5,190 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
