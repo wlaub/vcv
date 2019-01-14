@@ -199,6 +199,8 @@ class Control(panel_config.ControlConfig):
                             raise KeyError(f'Un-indexed instance of {enum_base}')
                 self.enum_count = count+1
             count = self.enum_count
+        else:
+            count = 1
         return self.kind, self.create_enum.format(
                 name = enum_base, count= count
                 )
