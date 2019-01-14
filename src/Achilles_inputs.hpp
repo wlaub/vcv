@@ -1,5 +1,5 @@
 /* Declare vars */
-float input_env[3];
+float input_env[4];
 float input_match;
 float input_voct;
 float input_ext_env;
@@ -17,20 +17,20 @@ float input_bp_shape;
 float input_bp_bw;
 float input_hp_shape;
 float input_hp_bw;
-float input_aux_noise[1];
+float input_aux_noise[2];
 float input_noise_mix;
-float input_noise_shape[1];
-float input_noise_bw[1];
-float input_noise_slope[1];
+float input_noise_shape[2];
+float input_noise_bw[2];
+float input_noise_slope[2];
 float input_delay_clock;
 float output_delay_out;
 float output_env_gate;
 float output_env;
-float output_noise[1];
+float output_noise[2];
 float output_noise_out;
 float output_delay_in;
-float param_env_atv[3];
-float param_env_offset[3];
+float param_env_atv[4];
+float param_env_offset[4];
 float param_feedback_atv;
 float param_output_level;
 float param_voct_atv;
@@ -55,11 +55,11 @@ float param_hp_shape_atv;
 float param_hp_bw_atv;
 float param_hp_shape_offset;
 float param_hp_bw_offset;
-float param_noise_shape_atv[1];
-float param_noise_atv[1];
-float param_noise_bw_atv[1];
-float param_noise_slope_atv[1];
-float param_aux_noise_mix[1];
+float param_noise_shape_atv[2];
+float param_noise_atv[2];
+float param_noise_bw_atv[2];
+float param_noise_slope_atv[2];
+float param_aux_noise_mix[2];
 
 /* Read params */
 
