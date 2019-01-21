@@ -11,10 +11,15 @@ struct Achilles : Module {
     #include "Achilles_vars.hpp"
     /* -TRIGGER_VARS */
 
+    SchmittTrigger gate_trigger;
+
     int ready = 0;
 
     ttt::CircularBuffer* delay;
     float delay_tap = 10;
+
+    float env_timer = -1;
+    float env_length = 10;
 
     Achilles() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
     void step() override;
@@ -36,13 +41,80 @@ void Achilles::step() {
 
     /* GATE PROCESSING */
 
+    auto gate = gate_trigger.process(input_gate);
+
+    if(gate)
+    {
+        env_timer = 0;
+    }
+
+    {//This should happen on a gate
+        float voct;
+        voct = input_voct + input_fm;
+//        voct *= 1-input_match/100;
+
+        float period = 1/(deltaTime*261.626f * powf(2.0f, voct));
+        delay_tap = period;
+
+        env_length = period*(1 + input_match/10);
+    }
+
+
+
     /* ENVELOPE HANDLING */
 
-    float env; //TODO
-    env = input_gate;
-    output_env = env;
+    float env = 0; //TODO
+    output_env = 0;
     if(! inputs[INPUT_EXT_ENV].active)
     {
+        if(env_timer >= 0)
+        {
+            float skew = .5*(1+input_env[0]/10);
+            float sym = input_env[3]/10;
+            float beta = sym > 0 ? sym : -sym; // idk why abs floors...
+
+            float shape = (1-beta)*input_env[1]/10;
+            float alpha;
+
+            if(env_timer < skew)
+            {
+                alpha = env_timer/skew;
+                if(sym < 0)
+                    shape -= beta;
+                else
+                    shape += beta;
+            }
+            else
+            {
+                alpha = 1-(env_timer-skew)/(1-skew);
+                if(sym < 0)
+                    shape += beta;
+                else
+                    shape -= beta;
+            }
+
+            output_noise[0] = beta;
+
+            if(shape < -1)
+            {
+                shape = -1;
+            }
+            if(shape > 0)
+            {
+                shape*=(1+3*input_env[2]/5);
+            }
+
+            env=pow(alpha, 1+shape);
+
+            env_timer += 1/env_length;
+            if(env_timer >= 1)
+            {
+                env_timer = -1;
+            }
+        }
+        env*=10;
+        output_env = env;
+
     }
     else
     {
@@ -76,15 +148,6 @@ void Achilles::step() {
     }
 
     //Compute delay tap from inputs
-
-    {//This should happen on a gate
-        float voct;
-        voct = input_voct + input_fm;
-        voct *= 1-input_match/100;
-
-        float period = 1/(deltaTime*261.626f * powf(2.0f, voct));
-        delay_tap = period;
-    }
 
     /* FEEDBACK FILTER */
 

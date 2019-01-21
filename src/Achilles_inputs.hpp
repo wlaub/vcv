@@ -115,7 +115,7 @@ if (!inputs[INPUT_ENV].active)
 }
 input_env[0] *= param_env_atv[0];
 input_env[0] += 0+10*param_env_offset[0];
-input_env[0] = clamp(input_env[0], 0.0f, 10.0f);
+input_env[0] = clamp(input_env[0], -10.0f, 10.0f);
 input_env[3] = inputs[INPUT_ENV+3].value;
 if (!inputs[INPUT_ENV+3].active) 
 {
@@ -123,7 +123,7 @@ if (!inputs[INPUT_ENV+3].active)
 }
 input_env[3] *= param_env_atv[3];
 input_env[3] += 0+10*param_env_offset[3];
-input_env[3] = clamp(input_env[3], 0.0f, 10.0f);
+input_env[3] = clamp(input_env[3], -10.0f, 10.0f);
 input_env[1] = inputs[INPUT_ENV+1].value;
 if (!inputs[INPUT_ENV+1].active) 
 {
@@ -131,7 +131,7 @@ if (!inputs[INPUT_ENV+1].active)
 }
 input_env[1] *= param_env_atv[1];
 input_env[1] += 0+10*param_env_offset[1];
-input_env[1] = clamp(input_env[1], 0.0f, 10.0f);
+input_env[1] = clamp(input_env[1], -10.0f, 10.0f);
 input_env[2] = inputs[INPUT_ENV+2].value;
 if (!inputs[INPUT_ENV+2].active) 
 {

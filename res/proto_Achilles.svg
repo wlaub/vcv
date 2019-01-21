@@ -180,7 +180,7 @@
      inkscape:cx="349.82856"
      inkscape:cy="217.55132"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -2738,7 +2738,7 @@
       <desc
          id="desc6853">{
 'class':'atv_offset_input',
-'clip': [0, 10],
+'clip': [-10, 10],
 }</desc>
     </path>
     <path
@@ -2750,7 +2750,7 @@
       <desc
          id="desc6859">{
 'class':'atv_offset_input',
-'clip': [0, 10],
+'clip': [-10, 10],
 }</desc>
     </path>
     <path
@@ -2762,7 +2762,7 @@
       <desc
          id="desc6855">{
 'class':'atv_offset_input',
-'clip': [0, 10],
+'clip': [-10, 10],
 }</desc>
     </path>
     <path
@@ -3158,7 +3158,7 @@
        inkscape:label="param">
       <desc
          id="desc5112-1-8-1">{
-'min':0,
+'min':-1,
 'max':1,
 'default':0,
 }</desc>
@@ -3173,7 +3173,7 @@
        inkscape:label="param">
       <desc
          id="desc5112-1-8-6">{
-'min':0,
+'min':-1,
 'max':1,
 'default':0,
 }</desc>
@@ -3233,7 +3233,7 @@
        inkscape:label="param">
       <desc
          id="desc5112-1-8-95">{
-'min':0,
+'min':-1,
 'max':1,
 'default':0
 }</desc>
@@ -5147,7 +5147,7 @@
            height="102.7882"
            x="553.02948"
            y="44.128693" /></flowRegion><flowPara
-         id="flowPara6989"></flowPara></flowRoot>    <text
+         id="flowPara6989" /></flowRoot>    <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="409.70505"
@@ -5241,7 +5241,7 @@
          sodipodi:role="line"
          x="409.70505"
          y="338.95612"
-         id="tspan7035"></tspan><tspan
+         id="tspan7035" /><tspan
          sodipodi:role="line"
          x="409.70505"
          y="354.58112"
