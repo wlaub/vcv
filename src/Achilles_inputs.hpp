@@ -279,12 +279,12 @@ if (!inputs[INPUT_NOISE_SLOPE+1].active)
     input_noise_slope[1] = 10;
 }
 input_noise_slope[1] *= param_noise_slope_atv[1];
-input_noise_slope[1] = clamp(input_noise_slope[1], 0.0f, 10.0f);
+input_noise_slope[1] = clamp(input_noise_slope[1], -10.0f, 10.0f);
 input_noise_slope[0] = inputs[INPUT_NOISE_SLOPE].value;
 if (!inputs[INPUT_NOISE_SLOPE].active) 
 {
     input_noise_slope[0] = 10;
 }
 input_noise_slope[0] *= param_noise_slope_atv[0];
-input_noise_slope[0] = clamp(input_noise_slope[0], 0.0f, 10.0f);
+input_noise_slope[0] = clamp(input_noise_slope[0], -10.0f, 10.0f);
 input_delay_clock = inputs[INPUT_DELAY_CLOCK].value;

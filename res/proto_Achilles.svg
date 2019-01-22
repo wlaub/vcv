@@ -3045,7 +3045,7 @@
       <desc
          id="desc6935">{
 'class':'auto_atv',
-'clip':[0,10],
+'clip':[-10,10],
 }</desc>
     </path>
     <path
@@ -3057,7 +3057,7 @@
       <desc
          id="desc6925">{
 'class':'auto_atv',
-'clip':[0,10],
+'clip':[-10,10],
 }</desc>
     </path>
     <path
@@ -3715,7 +3715,7 @@
          id="desc5112-1-8-6-68-1-1">{
 'min':-1,
 'max':1,
-'default':1,
+'default':0,
 }</desc>
       <title
          id="title4026-5-1-5-82-2-2">RoundTinyBlackKnob</title>
@@ -3760,7 +3760,7 @@
          id="desc5112-1-8-97-0-6-5-0-3-1-4-9">{
 'min':-1,
 'max':1,
-'default':-1,
+'default':0,
 }</desc>
       <title
          id="title4026-5-1-6-0-3-0-5-5-5-9-8">RoundTinyBlackKnob</title>

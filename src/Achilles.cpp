@@ -24,6 +24,11 @@ struct Achilles : Module {
     float sh_phase[2] = {0};
     float sh_val[2] = {0};
 
+    float smpl_phase[2] = {0};
+    float smpl_val[2] = {0};
+
+
+
     Achilles() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
     void step() override;
 
@@ -153,13 +158,41 @@ void Achilles::step() {
             sh_phase[i] += deltaTime*sh_freq;
             if(sh_phase[i] >= 1)
             {
-                sh_phase[i] -= 1;
+                sh_phase[i] -= floor(sh_phase[i]);
                 sh_val[i] = noise;
             }
             noise = sh_val[i];
         }
 
         //TODO: Filtering
+
+
+        if (input_noise_bw[i] > 0.5)
+        {
+            float smpl_voct = 8-1*input_noise_bw[i];
+            float smpl_freq = 261.626f * powf(2.0f, smpl_voct);
+
+
+            smpl_phase[i] += deltaTime*smpl_freq;
+            float noise_smpl=0;
+            if(smpl_phase[i] >= 1)
+            {
+                smpl_phase[i] -= floor(smpl_phase[i]);
+                smpl_val[i] = noise;
+                noise_smpl = smpl_val[i];
+            }
+
+            float noise_slope = input_noise_slope[i]/10;
+            float noise_low = (1-noise_slope)/2;
+            float noise_high = (1+noise_slope)/2;
+            noise = 0;
+            noise = smpl_val[i]*noise_low;
+            noise += noise_smpl*noise_high;
+
+        }
+        else
+        {
+        }
 
         //Aux noise mix
 
