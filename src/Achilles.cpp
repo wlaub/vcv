@@ -132,8 +132,6 @@ void Achilles::step() {
 
     for(int i = 0; i < 2; ++ i)
     {
-        float noise_aux = input_aux_noise[i];
-
         u = randomUniform()*2-1;
 
         if(input_noise_shape[i] < 0) //Logistic curve
@@ -163,9 +161,11 @@ void Achilles::step() {
 
         //TODO: Filtering
 
-        //TODO: Noise mix
+        //Aux noise mix
 
-        output_noise[i] = noise;
+        float aux_mix = param_aux_noise_mix[i]/2+.5;
+
+        output_noise[i] = noise*(1-aux_mix)+input_aux_noise[i]*aux_mix;
     }
 
     output_noise_out = output_noise[0];
