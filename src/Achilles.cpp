@@ -125,10 +125,43 @@ void Achilles::step() {
     /* NOISE GENERATION */
 
     float noise;
-    if(! inputs[INPUT_NOISE_INPUT].active)
+    float u;
+
+    //TODO S&H Clock
+
+    for(int i = 0; i < 2; ++ i)
     {
-        noise = randomNormal()*10;
+        float noise_aux = input_aux_noise[i];
+
+        u = randomUniform()*2-1;
+
+        if(input_noise_shape[i] < 0) //Logistic curve
+        {
+            float k = -2*input_noise_shape[i]/10;
+            float L = 1/(.5 - 1/(1+exp(10*k)));
+
+            noise = -(1/k)*log((L+2*u)/(L-2*u));
+ 
+        }
+        else //TODO:S&H
+        {
+            noise = u*10;
+        }
+
+        //TODO: Filtering
+
+        //TODO: Noise mix
+
+        output_noise[i] = noise;
     }
+
+    output_noise_out = output_noise[0];
+    //TODO: generate noise mix here
+
+    if(! inputs[INPUT_NOISE_INPUT].active)
+    { //select internal noise source
+        noise = output_noise_out;
+    } 
     else
     {
         noise = input_noise_input;
