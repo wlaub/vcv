@@ -21,6 +21,9 @@ struct Achilles : Module {
     float env_timer = -1;
     float env_length = 10;
 
+    float sh_phase[2] = {0};
+    float sh_val[2] = {0};
+
     Achilles() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
     void step() override;
 
@@ -127,8 +130,6 @@ void Achilles::step() {
     float noise;
     float u;
 
-    //TODO S&H Clock
-
     for(int i = 0; i < 2; ++ i)
     {
         float noise_aux = input_aux_noise[i];
@@ -143,9 +144,21 @@ void Achilles::step() {
             noise = -(1/k)*log((L+2*u)/(L-2*u));
  
         }
-        else //TODO:S&H
+        else //S&H
         {
             noise = u*10;
+
+            //32kHz -> 2.04Hz
+            float sh_voct = 7-1.4*input_noise_shape[i];
+            float sh_freq = 261.626f * powf(2.0f, sh_voct);
+
+            sh_phase[i] += deltaTime*sh_freq;
+            if(sh_phase[i] >= 1)
+            {
+                sh_phase[i] -= 1;
+                sh_val[i] = noise;
+            }
+            noise = sh_val[i];
         }
 
         //TODO: Filtering
