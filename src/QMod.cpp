@@ -37,25 +37,47 @@ void QMod::step() {
     for(int i = 0; i < 4; ++i)
     {
         float pitch = input_freq[i];
-        float dp = 2*M_PI*261.626f * powf(2.0f, pitch);
-        phase[i] += dp*deltaTime;
+        float dp = 2*M_PI*261.626f * powf(2.0f, pitch) * deltaTime;
+        dp = min(dp, M_PI);
+
+        phase[i] += dp;
         if(phase[i] > 2*M_PI)
         {
             phase[i] -= 2*M_PI;
         }
     }
 
-    //TODO: I/Q carrier source selection
-    for(int i = 0; i < 4; ++i)
+    //I carrier
+    if(inputs[INPUT_AUX_I].active)
     {
-        i_clk[i] = sin(phase[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            i_clk[i] = input_aux_i;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            i_clk[i] = sin(phase[i]);
+        }
     }
 
-    for(int i = 0; i < 4; ++i)
+    //Q carrier
+    if(inputs[INPUT_AUX_Q].active)
     {
-        q_clk[i] = sin(phase[i]+3.14/2);       
+        for(int i = 0; i < 4; ++i)
+        {
+            q_clk[i] = input_aux_q;
+        }
     }
-
+    else
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            q_clk[i] = cos(phase[i]);
+        }
+    }
     //Modulation
 
     for(int i = 0; i < 4; ++i)    
