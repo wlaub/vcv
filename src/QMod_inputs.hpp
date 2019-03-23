@@ -39,7 +39,7 @@ if (!inputs[INPUT_FREQ].active)
     input_freq[0] = 10;
 }
 input_freq[0] *= param_freq_atv[0];
-input_freq[0] += 0+10*param_freq_offset[0];
+input_freq[0] += 0+1*param_freq_offset[0];
 input_freq[0] = clamp(input_freq[0], -10.0f, 10.0f);
 input_mod_in[0] = inputs[INPUT_MOD_IN].value;
 input_mod_in[0] = clamp(input_mod_in[0], -10.0f, 10.0f);
@@ -49,7 +49,7 @@ if (!inputs[INPUT_FREQ+1].active)
     input_freq[1] = 10;
 }
 input_freq[1] *= param_freq_atv[1];
-input_freq[1] += 0+10*param_freq_offset[1];
+input_freq[1] += 0+1*param_freq_offset[1];
 input_freq[1] = clamp(input_freq[1], -10.0f, 10.0f);
 input_mod_in[1] = inputs[INPUT_MOD_IN+1].value;
 input_mod_in[1] = clamp(input_mod_in[1], -10.0f, 10.0f);
@@ -63,7 +63,7 @@ if (!inputs[INPUT_FREQ+2].active)
     input_freq[2] = 10;
 }
 input_freq[2] *= param_freq_atv[2];
-input_freq[2] += 0+10*param_freq_offset[2];
+input_freq[2] += 0+1*param_freq_offset[2];
 input_freq[2] = clamp(input_freq[2], -10.0f, 10.0f);
 input_mod_in[2] = inputs[INPUT_MOD_IN+2].value;
 input_mod_in[2] = clamp(input_mod_in[2], -10.0f, 10.0f);
@@ -73,7 +73,7 @@ if (!inputs[INPUT_FREQ+3].active)
     input_freq[3] = 10;
 }
 input_freq[3] *= param_freq_atv[3];
-input_freq[3] += 0+10*param_freq_offset[3];
+input_freq[3] += 0+1*param_freq_offset[3];
 input_freq[3] = clamp(input_freq[3], -10.0f, 10.0f);
 input_mod_in[3] = inputs[INPUT_MOD_IN+3].value;
 input_mod_in[3] = clamp(input_mod_in[3], -10.0f, 10.0f);
