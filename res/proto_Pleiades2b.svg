@@ -177,10 +177,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.25"
-     inkscape:cx="191.30546"
-     inkscape:cy="230.08308"
+     inkscape:cx="149.30546"
+     inkscape:cy="220.62594"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer8"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="996"
@@ -231,7 +231,8 @@
      inkscape:groupmode="layer"
      id="layer17"
      inkscape:label="V_Lines"
-     style="display:none">
+     style="display:none"
+     sodipodi:insensitive="true">
     <rect
        x="0"
        y="2.0546875e-05"
@@ -605,7 +606,8 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-672.36204)"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <rect
        style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.02053547;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect17698"
@@ -2012,8 +2014,8 @@
      inkscape:groupmode="layer"
      id="layer15"
      inkscape:label="BG 2"
-     sodipodi:insensitive="true"
-     style="display:none">
+     style="display:none"
+     sodipodi:insensitive="true">
     <g
        id="g8950">
       <path
@@ -7758,7 +7760,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer10"
-     inkscape:label="Metadata">
+     inkscape:label="Metadata"
+     sodipodi:insensitive="true">
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
