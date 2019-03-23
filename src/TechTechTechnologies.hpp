@@ -193,3 +193,5 @@ extern Model* modelMneme;
 extern Model* modelAthena;
 
 extern Model* modelAchilles;
+
+extern Model* modelQMod;
