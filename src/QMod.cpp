@@ -90,10 +90,12 @@ void QMod::step() {
 
     //Demodulation
 
-    //TODO: Select passthrough
-
     for(int i = 0; i < 4; ++i)
     {
+        if(!inputs[INPUT_MOD_IN+i].active)
+        {
+            input_mod_in[i] = output_mod_out[i];
+        }
         input_mod_in[i] *= param_in_gain[i];
         output_i_out[i] = input_mod_in[i] * i_clk[i];
         output_q_out[i] = input_mod_in[i] * q_clk[i];
