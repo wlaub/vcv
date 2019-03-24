@@ -306,7 +306,7 @@
         
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
-        Vec(201.0, 201.0), 
+        Vec(245.0, 201.0), 
         module, QMod::PARAM_IN_GAIN+2,
         -1, 1, 0
     );
@@ -315,7 +315,7 @@
         
 
     param = ParamWidget::create<RoundTinyBlackKnob>(
-        Vec(245.0, 201.0), 
+        Vec(201.0, 201.0), 
         module, QMod::PARAM_IN_GAIN+3,
         -1, 1, 0
     );
