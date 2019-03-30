@@ -38,7 +38,7 @@ struct Convo : Module {
 void Convo::step() {
     float deltaTime = engineGetSampleTime();
 
-
+    if(ready == 0) return;
     /*  +INPUT_PROCESSING */
     #include "Convo_inputs.hpp"
     /*  -INPUT_PROCESSING */
@@ -137,6 +137,8 @@ struct ConvoWidget : ModuleWidget {
         /* +CONTROL INSTANTIATION */
         #include "Convo_panel.hpp"
         /* -CONTROL INSTANTIATION */
+
+        module->ready = 1;
     }
 };
 
