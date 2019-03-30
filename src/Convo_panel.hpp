@@ -73,7 +73,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(75.0, 68.999995), 
         module, Convo::PARAM_KERNEL_GAIN,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
@@ -127,7 +127,7 @@
     param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(75.0, 333.0), 
         module, Convo::PARAM_KERNEL_GAIN+1,
-        0, 1, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);
