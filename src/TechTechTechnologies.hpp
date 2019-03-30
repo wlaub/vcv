@@ -195,3 +195,5 @@ extern Model* modelAthena;
 extern Model* modelAchilles;
 
 extern Model* modelQMod;
+
+extern Model* modelConvo;

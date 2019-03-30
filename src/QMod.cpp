@@ -34,6 +34,7 @@ void QMod::step() {
     float i_clk[4];
     float q_clk[4];
 
+    //TODO: Set clock frequency default to quarter sample rate
     for(int i = 0; i < 4; ++i)
     {
         float pitch = input_freq[i];
