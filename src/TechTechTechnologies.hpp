@@ -2,6 +2,9 @@
 #include "dsp/digital.hpp"
 #include "dsp/functions.hpp"
 #include "DSP.hpp"
+#include "window.hpp"
+
+#include <GLFW/glfw3.h>
 
 #define OUTPORT(x,y,modname,param, offset)\
     auto *param = Port::create<PJ301MPort>(\
@@ -162,6 +165,68 @@ struct DWhiteLatch : SVGSwitch, ToggleSwitch {
 };
 
 
+static const float KNOB_SENSITIVITY = 0.0015f;
+
+struct TTTEncoder : RoundBlackKnob {
+    TTTEncoder() {
+        setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
+        minAngle=0;
+        maxAngle=2*M_PI;
+        snap=true;
+    }
+
+    void onDragMove(EventDragMove &e) {
+        float range;
+        if (isfinite(minValue) && isfinite(maxValue)) {
+            range = maxValue - minValue;
+        }
+        else {
+            // Continuous encoders scale as if their limits are +/-1
+            range = 1.f - (-1.f);
+        }
+        float delta = KNOB_SENSITIVITY * -e.mouseRel.y * speed * range;
+
+        // Drag slower if Mod is held
+        if (windowIsModPressed())
+            delta /= 16.f;
+        dragValue += delta;
+//        dragValue = clamp2(dragValue, minValue, maxValue);
+        if (dragValue > maxValue)      
+        {
+            dragValue += minValue - maxValue;
+        }
+        else if (dragValue < minValue)
+        {
+            dragValue += maxValue - minValue;
+        }
+        if (snap)
+            setValue(roundf(dragValue));
+        else
+            setValue(dragValue);
+    }
+/*
+    void step() {
+        // Re-transform TransformWidget if dirty
+        if (dirty) {
+            float angle;
+            if (isfinite(minValue) && isfinite(maxValue)) {
+                angle = rescale(round(value), minValue, maxValue, minAngle, maxAngle);
+            }
+            else {
+                angle = rescale(round(value), -1.0, 1.0, minAngle, maxAngle);
+                angle = fmodf(angle, 2*M_PI);
+            }
+            tw->identity();
+            // Rotate SVG
+            Vec center = sw->box.getCenter();
+            tw->translate(center);
+            tw->rotate(angle);
+            tw->translate(center.neg());
+        }
+        FramebufferWidget::step();
+    }    */
+};
+ 
 
 ////////////////////
 // module widgets
