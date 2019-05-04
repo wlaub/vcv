@@ -262,3 +262,5 @@ extern Model* modelAchilles;
 extern Model* modelQMod;
 
 extern Model* modelConvo;
+
+extern Model* modelPleiades;
