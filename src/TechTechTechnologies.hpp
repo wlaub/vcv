@@ -207,6 +207,7 @@ struct TTTEncoder : RoundBlackKnob {
     }
 
     void step() {
+        //TODO: Fix ghost step
         // Re-transform TransformWidget if dirty
         if (dirty) {
             float angle;

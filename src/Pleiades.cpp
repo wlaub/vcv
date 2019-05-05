@@ -1,7 +1,9 @@
 
 #include "TechTechTechnologies.hpp"
 
-#define DEPTH 3
+#define DEPTH 2
+
+#define DPRINT printf
 
 struct Step
 {
@@ -12,7 +14,7 @@ struct Step
     // 4 : trigger
     // 5 : secondary tone 
     // 6 : secondary octave
-    unsigned char values[7]={0};
+    unsigned char values[7]={0,0,0,0,0,0,0};
 
     float getValue(Step triggerStep, int index, int subindex, float* tones, float prevTone)
     {
@@ -55,8 +57,32 @@ struct Step
         tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0;
         tone_values[1] = values[6]+tones[values[5]];
         unsigned char trigger = triggerStep.values[4];
-        unsigned char triggerIndex = (8-index)%(trigger+1) == 0 ? 0 : 1;
-        float alpha = min(1,subindex/(values[0]+1));
+    trigger = values[4];
+
+        unsigned char tlast = trigger+1;
+        unsigned char tfirst = 8-index;
+
+        unsigned char triggerIndex = tfirst%tlast;
+
+        DPRINT("    %i%%%i = %i\n", tfirst, tlast, triggerIndex);
+
+        triggerIndex= triggerIndex ==0 ? 0: 1;
+
+        DPRINT("    ");
+        for(int i = 0; i < 7; ++i)
+        {
+            DPRINT("%i ", values[i]);
+        }
+        DPRINT("\n");
+        DPRINT("    Param: %i, %i, %f\n", index, subindex, prevTone);
+        DPRINT("    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
+
+
+        if(!isfinite(prevTone)) return tone_values[triggerIndex];
+
+        float alpha = min(1.0,float(subindex)/(values[0]+1));
+
+        DPRINT("    %i/%i -> %f\n", subindex-1, values[0]+1, alpha);
 
         return tone_values[triggerIndex]*alpha+prevTone*(1-alpha);
     }
@@ -90,7 +116,7 @@ struct Address
             if(digits[revidx] == 8) 
             {
                 digits[revidx] = 1;
-                result |= (1<<i);
+                result |= (1<<revidx);
             }
             else
             {
@@ -103,11 +129,7 @@ struct Address
 
     void print()
     {
-        for (int i = 0; i < DEPTH; ++i)
-        {
-            printf("%1i", digits[i]);
-        }
-        printf("\n");
+        DPRINT("0o%07o\n",get_address(DEPTH+1));
     }
 
     int get_address(int depth)
@@ -137,16 +159,73 @@ struct Address
 
 struct Sequence
 {
-    Address address;
-    Step steps[49];
-    unsigned long index = 0;
-    float prevTone = 0;
+    struct Address address;
+    struct Step steps[(1<<3*DEPTH)];
+    
+    float prevTone[DEPTH] = {0};
+    float prevValue[DEPTH] = {0};
 
-    float step()
+    Sequence()
     {
-        index += 1;
-        
+        for (int i = 0; i < DEPTH; ++i)
+        {
+            prevTone[i] = 0;
+            prevValue[i] = 0;
+        }
+    }
 
+    int step()
+    {
+        int rolls = address.step();
+        for (int i = 0; i < DEPTH; ++i)
+        {
+            if (rolls & (1<<(i+1)))
+            {
+                prevTone[i] = prevValue[i];
+                DPRINT("Rolled %i : %f -> %f\n", i, prevValue[i], prevTone[i]);
+            }
+        } 
+
+        return 0;
+    }
+
+    float get_value(Address fromAdd, Sequence triggerSeq)
+    {
+        float result = 0;
+
+        float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7}; //TODO: Temporary
+
+        fromAdd.print();
+
+        for (int i = -1; i < DEPTH; ++i)
+        {
+            int index = 1;
+            int subindex = 7;
+            if(i < DEPTH-1)
+                index = address.digits[i+1];
+            if(i < DEPTH-2)
+                subindex = address.digits[i+2];
+            int addIdx = fromAdd.get_address(i+1);
+            Step mainStep = steps[addIdx];
+            Step triggerStep = triggerSeq.steps[addIdx];
+
+            float prevToneLocal = NAN;
+            if (i < DEPTH-1)
+                prevToneLocal = prevTone[i+1];
+
+            DPRINT("0o%07o:\n", addIdx);
+            float stepVal = mainStep.getValue(
+                triggerStep, index, subindex, 
+                tones, prevToneLocal
+                );
+            prevValue[i+1] = stepVal;
+            result += stepVal;
+            DPRINT("  %i: %f / %f\n", i, stepVal, prevToneLocal);
+//    float getValue(Step triggerStep, int index, int subindex, float* tones, float prevTone)
+ 
+        }
+        DPRINT("\n");
+        return result;
     }
 
 };
@@ -160,11 +239,13 @@ struct Pleiades : Module {
     #include "Pleiades_vars.hpp"
     /* -TRIGGER_VARS */
 
-    Sequence sequences[7];
+    struct Sequence sequences[7];
+    int seq_idx = 0; //currently selected sequence
 
-    Address address;
+    struct Address address;
 
     int counter = 0;
+
 
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
     void step() override;
@@ -184,6 +265,41 @@ void Pleiades::step() {
     #include "Pleiades_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
+    ++counter;
+    if (counter < 100) return;
+    counter = 0;
+
+    int N = 1;
+
+    
+    for(int i = 0; i < N; ++i)
+    {
+        Step* tstep = &(sequences[i].steps[0]);
+
+//        tstep->values[3] = 1;        
+        for (int i = 0; i < 7; ++i)
+        {
+            tstep->values[i] = char(param_mode[i]);
+        }
+
+    }
+    
+
+
+    for(int i = 0; i < N; ++ i)
+    {
+        sequences[i].step();
+    }
+
+    for(int i = 0; i < N; ++ i)
+    {
+        float val =sequences[i].get_value(sequences[i].address, sequences[(i+1)%7]);
+        output_out[i] = val;
+        DPRINT("=%f\n", val);
+    }
+    DPRINT("\n");
+
+    /*
     if(counter < 49*7+2)
     {
         ++counter;
@@ -206,7 +322,7 @@ void Pleiades::step() {
             printf("%08x\n", address.get_address(i));
         }
     }   
-
+    */
     /*  +OUTPUT_PROCESSING */
     #include "Pleiades_outputs.hpp"
     /*  -OUTPUT_PROCESSING */
