@@ -177,10 +177,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.25"
-     inkscape:cx="311.70546"
+     inkscape:cx="168.90546"
      inkscape:cy="220.62594"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer3"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -2639,7 +2639,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Inputs"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        inkscape:connector-curvature="0"
        id="clock"
@@ -2954,7 +2955,7 @@
         <desc
            id="desc5112-1-8-1-9-3-85">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3033,7 +3034,7 @@
         <desc
            id="desc5112-1-8-1-9-3-5">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3112,7 +3113,7 @@
         <desc
            id="desc5112-1-8-1-9-3-26">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3191,7 +3192,7 @@
         <desc
            id="desc5112-1-8-1-9-3-96">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3270,7 +3271,7 @@
         <desc
            id="desc5112-1-8-1-9-3-08">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3349,7 +3350,7 @@
         <desc
            id="desc5112-1-8-1-9-3-082">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3428,7 +3429,7 @@
         <desc
            id="desc5112-1-8-1-9-3-7">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3507,7 +3508,7 @@
         <desc
            id="desc5112-1-8-1-9-3-84">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3586,7 +3587,7 @@
         <desc
            id="desc5112-1-8-1-9-3-21">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3665,7 +3666,7 @@
         <desc
            id="desc5112-1-8-1-9-3-71">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3744,7 +3745,7 @@
         <desc
            id="desc5112-1-8-1-9-3-42">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3823,7 +3824,7 @@
         <desc
            id="desc5112-1-8-1-9-3-48">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3902,7 +3903,7 @@
         <desc
            id="desc5112-1-8-1-9-3-94">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -3981,7 +3982,7 @@
         <desc
            id="desc5112-1-8-1-9-3-68">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4054,7 +4055,7 @@
         <desc
            id="desc5112-1-8-1-9-3-20">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4133,7 +4134,7 @@
         <desc
            id="desc5112-1-8-1-9-3-10">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4212,7 +4213,7 @@
         <desc
            id="desc5112-1-8-1-9-3-840">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4291,7 +4292,7 @@
         <desc
            id="desc5112-1-8-1-9-3-30">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4370,7 +4371,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4449,7 +4450,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-1">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4528,7 +4529,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-5">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4601,7 +4602,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-8">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4680,7 +4681,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-3">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4759,7 +4760,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-24">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4838,7 +4839,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-18">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4917,7 +4918,7 @@
         <desc
            id="desc5112-1-8-1-9-3-60-25">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4934,7 +4935,7 @@
         <desc
            id="desc11898">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4948,7 +4949,7 @@
         <desc
            id="desc11893">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4967,7 +4968,7 @@
         <desc
            id="desc11583">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4981,7 +4982,7 @@
         <desc
            id="desc11623">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -4995,7 +4996,7 @@
         <desc
            id="desc11618">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5019,7 +5020,7 @@
         <desc
            id="desc11898-9">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5033,7 +5034,7 @@
         <desc
            id="desc11893-6">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5047,7 +5048,7 @@
         <desc
            id="desc11882-0">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5066,7 +5067,7 @@
         <desc
            id="desc11898-1">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5080,7 +5081,7 @@
         <desc
            id="desc11893-9">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5099,7 +5100,7 @@
         <desc
            id="desc11898-8">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5113,7 +5114,7 @@
         <desc
            id="desc11893-3">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5132,7 +5133,7 @@
         <desc
            id="desc11898-0">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5146,7 +5147,7 @@
         <desc
            id="desc11893-0">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5165,7 +5166,7 @@
         <desc
            id="desc11898-6">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5179,7 +5180,7 @@
         <desc
            id="desc11893-8">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5198,7 +5199,7 @@
         <desc
            id="desc11898-90">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5212,7 +5213,7 @@
         <desc
            id="desc11893-7">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5231,7 +5232,7 @@
         <desc
            id="desc11898-2">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5245,7 +5246,7 @@
         <desc
            id="desc11893-87">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5264,7 +5265,7 @@
         <desc
            id="desc11898-4">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5278,7 +5279,7 @@
         <desc
            id="desc11893-4">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
         <title
@@ -5290,8 +5291,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Params"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="center"
@@ -5301,7 +5301,7 @@
       <desc
          id="desc5112-1-8-1-9">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5316,7 +5316,7 @@
       <desc
          id="desc5112-1-8-1-9-49">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5331,7 +5331,7 @@
       <desc
          id="desc5112-1-8-1-9-5">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5346,7 +5346,7 @@
       <desc
          id="desc5112-1-8-1-9-2">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5361,7 +5361,7 @@
       <desc
          id="desc5112-1-8-1-9-7">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5376,7 +5376,7 @@
       <desc
          id="desc5112-1-8-1-9-6">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5391,7 +5391,7 @@
       <desc
          id="desc5112-1-8-1-9-62">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5406,7 +5406,7 @@
       <desc
          id="desc5112-1-8-1-9-626">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5421,11 +5421,11 @@
       <desc
          id="desc5112-1-8-1-9-6-8">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-7">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-7">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5436,7 +5436,7 @@
       <desc
          id="desc5112-1-8-1-9-6-6">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
@@ -5451,11 +5451,11 @@
       <desc
          id="desc5112-1-8-1-9-6-3">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-3">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-3">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5466,11 +5466,11 @@
       <desc
          id="desc5112-1-8-1-9-6-2">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-1">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-1">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5481,11 +5481,11 @@
       <desc
          id="desc5112-1-8-1-9-6-81">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-0">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-0">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5496,11 +5496,11 @@
       <desc
          id="desc5112-1-8-1-9-6-62">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-52">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-52">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5511,11 +5511,11 @@
       <desc
          id="desc5112-1-8-1-9-6-29">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-2">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5526,11 +5526,11 @@
       <desc
          id="desc5112-1-8-1-9-6-7">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-55">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-55">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5541,11 +5541,11 @@
       <desc
          id="desc5112-1-8-1-9-6-4">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-15">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-15">ITTTEncoder</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -5556,11 +5556,11 @@
       <desc
          id="desc5112-1-8-1-9-6-0">{
 'min':0,
-'max':6,
+'max':7,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-29">TTTEncoder</title>
+         id="title4026-5-1-2-6-8-29">ITTTEncoder</title>
     </path>
   </g>
   <g

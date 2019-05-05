@@ -168,6 +168,7 @@ struct DWhiteLatch : SVGSwitch, ToggleSwitch {
 static const float KNOB_SENSITIVITY = 0.0015f;
 
 struct TTTEncoder : RoundBlackKnob {
+    bool flip=false;
     TTTEncoder() {
         setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
         minAngle=0;
@@ -204,7 +205,7 @@ struct TTTEncoder : RoundBlackKnob {
         else
             setValue(dragValue);
     }
-/*
+
     void step() {
         // Re-transform TransformWidget if dirty
         if (dirty) {
@@ -216,6 +217,10 @@ struct TTTEncoder : RoundBlackKnob {
                 angle = rescale(round(value), -1.0, 1.0, minAngle, maxAngle);
                 angle = fmodf(angle, 2*M_PI);
             }
+            if(flip)
+            {
+                angle+=M_PI;
+            }
             tw->identity();
             // Rotate SVG
             Vec center = sw->box.getCenter();
@@ -224,9 +229,15 @@ struct TTTEncoder : RoundBlackKnob {
             tw->translate(center.neg());
         }
         FramebufferWidget::step();
-    }    */
+    } 
 };
- 
+
+struct ITTTEncoder : TTTEncoder {
+    ITTTEncoder() {
+        flip=true;
+    }
+};
+
 
 ////////////////////
 // module widgets

@@ -78,7 +78,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(163.999995, 204.0), 
         module, Pleiades::PARAM_CENTER,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -87,7 +87,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(163.999995, 116.0), 
         module, Pleiades::PARAM_STEP+3,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -96,7 +96,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(233.08792499999998, 149.49441000000002), 
         module, Pleiades::PARAM_STEP+4,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -105,7 +105,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(249.793705, 223.58164), 
         module, Pleiades::PARAM_STEP+5,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -114,7 +114,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(202.181375, 283.28545), 
         module, Pleiades::PARAM_STEP+6,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -123,7 +123,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(125.818625, 283.28545), 
         module, Pleiades::PARAM_STEP,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -132,7 +132,7 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(78.20629600000001, 223.58163000000002), 
         module, Pleiades::PARAM_STEP+1,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -141,16 +141,16 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(94.912082, 149.49440000000004), 
         module, Pleiades::PARAM_STEP+2,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(60.369806, 285.75405), 
         module, Pleiades::PARAM_MODE+2,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
@@ -159,79 +159,79 @@
     param = ParamWidget::create<TTTEncoder>(
         Vec(25.824171000000003, 313.01119), 
         module, Pleiades::PARAM_CONFIG,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(267.63358500000004, 285.75403), 
         module, Pleiades::PARAM_MODE+4,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(164.00169499999998, 335.99563), 
         module, Pleiades::PARAM_MODE+3,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(292.692285, 174.62319000000002), 
         module, Pleiades::PARAM_MODE+5,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(35.31114600000001, 174.62318), 
         module, Pleiades::PARAM_MODE+1,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(283.261275, 55.215543), 
         module, Pleiades::PARAM_CONFIG+2,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(221.273775, 85.06745699999999), 
         module, Pleiades::PARAM_MODE+6,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(106.729635, 85.0674405), 
         module, Pleiades::PARAM_MODE,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
         
 
-    param = ParamWidget::create<TTTEncoder>(
+    param = ParamWidget::create<ITTTEncoder>(
         Vec(44.7421, 55.21555600000001), 
         module, Pleiades::PARAM_CONFIG+1,
-        0, 6, 0
+        0, 7, 0
     );
     center(param,1,1);
     addParam(param);
