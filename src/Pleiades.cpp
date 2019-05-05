@@ -14,7 +14,7 @@ struct Step
     // 4 : trigger
     // 5 : secondary tone 
     // 6 : secondary octave
-    unsigned char values[7]={0,0,0,0,0,0,0};
+    unsigned char values[7]={0,0,0,3,0,0,3};
 
     float getValue(Step triggerStep, int index, int subindex, float* tones, float prevTone)
     {
@@ -54,8 +54,8 @@ struct Step
         //
 
         float tone_values[2];
-        tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0;
-        tone_values[1] = values[6]+tones[values[5]];
+        tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 -3;
+        tone_values[1] = values[6]+tones[values[5]] -3;
         unsigned char trigger = triggerStep.values[4];
     trigger = values[4];
 
