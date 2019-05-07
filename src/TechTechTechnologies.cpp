@@ -88,6 +88,53 @@ void NumField::onTextChange()
 }
 
 
+void TTTEncoder::onDragMove(EventDragMove &e) {
+    float range;
+    if (isfinite(minValue) && isfinite(maxValue)) {
+        range = maxValue - minValue;
+    }
+    else {
+        // Continuous encoders scale as if their limits are +/-1
+        range = 1.f - (-1.f);
+    }
+    float delta = KNOB_SENSITIVITY * -e.mouseRel.y * speed * range;
+
+    // Drag slower if Mod is held
+    if (windowIsModPressed())
+        delta /= 16.f;
+    dragValue += delta;
+
+    if(floor(dragValue) > floor(dragValue+delta))
+    {
+        controller->update(-1);
+        dragValue = value;
+    }
+    if(floor(dragValue) < floor(dragValue+delta))
+    {
+        controller->update(1);
+        dragValue = value;
+    }
+
+    //        dragValue = clamp2(dragValue, minValue, maxValue);
+    if (dragValue > maxValue)      
+    {
+        dragValue += minValue - maxValue;
+    }
+    else if (dragValue < minValue)
+    {
+        dragValue += maxValue - minValue;
+    }
+    /*
+    if (snap)
+        setValue(floor(dragValue));
+    else
+        setValue(dragValue);
+        */
+}
+
+
+
+
 // The plugin-wide instance of the Plugin class
 Plugin *plugin;
 

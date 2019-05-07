@@ -3,7 +3,7 @@
 
 #define DEPTH 2
 
-#define DPRINT printf
+#define DPRINT ;//printf
 
 struct Step
 {
@@ -57,7 +57,6 @@ struct Step
         tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 -3;
         tone_values[1] = values[6]+tones[values[5]] - 1;
         unsigned char trigger = triggerStep.values[4];
-    trigger = values[4];
 
         unsigned char tlast = trigger+1;
         unsigned char tfirst = 8-index;
@@ -245,8 +244,11 @@ struct Pleiades : Module {
 
     struct Address address;
 
+    struct EncoderController* encoders[NUM_PARAMS];
+
     int counter = 0;
 
+    bool ready = false;
 
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
     void step() override;
@@ -259,8 +261,24 @@ struct Pleiades : Module {
 
 
 void Pleiades::step() {
+    if(!ready) return;
+
     float deltaTime = engineGetSampleTime();
 
+        /*
+    TTTEncoder* knob = &(params[PARAM_CENTER]);
+    bool snap = knob->snap;
+
+    bool snap = (Knob)(params[PARAM_CENTER]).snap;
+
+    if (params[PARAM_MODE+5].changed)
+    {
+        params[PARAM_CENTER].setIndex(params[PARAM_MODE+5].value);
+        params[PARAM_MODE+5].changed = false;
+    }
+ */
+    encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
+    
 
     /*  +INPUT_PROCESSING */
     #include "Pleiades_inputs.hpp"
@@ -270,9 +288,10 @@ void Pleiades::step() {
     if (counter < 100) return;
     counter = 0;
 
-    int N = 1;
+    int N = 2;
 
-    
+  
+
     for(int i = 0; i < N; ++i)
     {
         Step* tstep = &(sequences[i].steps[0]);
@@ -334,6 +353,14 @@ void Pleiades::step() {
 
 
 struct PleiadesWidget : ModuleWidget {
+      
+    void addParam(ParamWidget *param) {
+        params.push_back(param);
+        addChild(param);
+        const unsigned char defs[7] = {0,0,0,0,0,0,0};
+        ((Pleiades*)(module))->encoders[param->paramId] = new EncoderController((TTTEncoder*)param, defs);
+    }
+
     PleiadesWidget(Pleiades *module) : ModuleWidget(module) {
         box.size = Vec(22.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
@@ -351,10 +378,16 @@ struct PleiadesWidget : ModuleWidget {
         addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
         addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
+        
+
         /* +CONTROL INSTANTIATION */
         #include "Pleiades_panel.hpp"
         /* -CONTROL INSTANTIATION */
+
+        module->ready = true;
     }
+
+
 };
 
 #include "Pleiades_instance.hpp"

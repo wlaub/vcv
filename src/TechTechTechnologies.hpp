@@ -167,55 +167,56 @@ struct DWhiteLatch : SVGSwitch, ToggleSwitch {
 
 static const float KNOB_SENSITIVITY = 0.0015f;
 
+struct EncoderController;
+
 struct TTTEncoder : RoundBlackKnob {
     bool flip=false;
+
+    unsigned char values[7];
+    unsigned char index = 0;
+    bool changed = false;
+
+    EncoderController* controller;
+
     TTTEncoder() {
         setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
         minAngle=0;
         maxAngle=2*M_PI;
         snap=true;
+        controller = 0;
     }
 
-    void onDragMove(EventDragMove &e) {
-        float range;
-        if (isfinite(minValue) && isfinite(maxValue)) {
-            range = maxValue - minValue;
-        }
-        else {
-            // Continuous encoders scale as if their limits are +/-1
-            range = 1.f - (-1.f);
-        }
-        float delta = KNOB_SENSITIVITY * -e.mouseRel.y * speed * range;
-
-        // Drag slower if Mod is held
-        if (windowIsModPressed())
-            delta /= 16.f;
-        dragValue += delta;
-//        dragValue = clamp2(dragValue, minValue, maxValue);
-        if (dragValue > maxValue)      
+    
+    void setValue(float v)
+    {
+        value = v;
+        if (values[index] != value)
         {
-            dragValue += minValue - maxValue;
+            values[index] =  char(value);
+            changed = true;
         }
-        else if (dragValue < minValue)
-        {
-            dragValue += maxValue - minValue;
-        }
-        if (snap)
-            setValue(roundf(dragValue));
-        else
-            setValue(dragValue);
+        EventChange e;
+        onChange(e);
     }
+
+    void setIndex(int i)
+    {
+        index = i;
+        value = values[index];
+        dirty=true;
+    }
+    
+    void onDragMove(EventDragMove &e);
 
     void step() {
-        //TODO: Fix ghost step
         // Re-transform TransformWidget if dirty
         if (dirty) {
             float angle;
             if (isfinite(minValue) && isfinite(maxValue)) {
-                angle = rescale(round(value), minValue, maxValue, minAngle, maxAngle);
+                angle = rescale(value, minValue, maxValue, minAngle, maxAngle);
             }
             else {
-                angle = rescale(round(value), -1.0, 1.0, minAngle, maxAngle);
+                angle = rescale(value, -1.0, 1.0, minAngle, maxAngle);
                 angle = fmodf(angle, 2*M_PI);
             }
             if(flip)
@@ -237,6 +238,53 @@ struct ITTTEncoder : TTTEncoder {
     ITTTEncoder() {
         flip=true;
     }
+};
+
+struct EncoderController {
+    unsigned char values[7];
+    unsigned char defaults[7];
+    TTTEncoder* widget;
+    unsigned char index;
+
+    EncoderController(TTTEncoder* w, const unsigned char* defs)
+    {
+        widget = w;
+        widget->controller = this;
+        for (int i = 0; i < 7; ++i)
+        {
+            defaults[i] = defs[i];
+        }
+        reset();
+        setIndex(0);
+    }
+
+    void reset()
+    {
+         for (int i = 0; i < 7; ++i)
+        {
+            values[i] = defaults[i];
+        }
+    }
+
+    void reset(unsigned char i)
+    { //TODO: Should be called when the widget gets reset
+        values[i] = defaults[i];
+    }
+
+    void setIndex(unsigned char idx)
+    { //Changes current index and sets the widget accordingly
+        index = idx;
+        widget->setValue(values[idx]);
+    }
+
+    void update(int amount)
+    { //TODO: Called by the widget to increment or decrement
+        values[index] += amount;
+        if(values[index] == 255) values[index] = 7;
+        else if(values[index] == 8) values[index] = 0;
+        widget->setValue(values[index]);
+    }
+
 };
 
 
