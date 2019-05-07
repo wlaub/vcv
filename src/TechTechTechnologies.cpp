@@ -87,6 +87,72 @@ void NumField::onTextChange()
     }
 }
 
+TTTEncoder::TTTEncoder() {
+    setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
+    minAngle=0;
+    maxAngle=2*M_PI;
+    snap=true;
+    controller = 0;
+}
+
+void TTTEncoder::configureLights()
+{
+    float xpos = box.size.x/2;
+    float ypos = box.size.y/2;
+    float rad = 15;
+    float angle = 0;
+    if(flip) angle=M_PI;
+    for(int i = 0; i < 7; ++i)
+    {
+        lights[i] = createLightCentered<SmallLight<GreenLight>>(
+            Vec(xpos+-rad*sin(2*M_PI*i/7+angle), ypos+rad*cos(2*M_PI*i/7+angle)), 
+//            Vec(0, 0),
+            module, 0);
+//        addChild(lights[i]);
+    }
+    lights_ready=true;
+//    setValue(values[index]);
+}
+
+void TTTEncoder::reset()
+{
+    controller->reset();
+}
+
+void TTTEncoder::draw(NVGcontext *vg)
+{
+    RoundBlackKnob::draw(vg);
+    
+    for (int i = 0; i < 7; ++i)
+    {
+        nvgSave(vg);
+        nvgTranslate(vg, lights[i]->box.pos.x, lights[i]->box.pos.y);
+        lights[i]->draw(vg);
+        nvgRestore(vg);
+    }
+}
+
+void TTTEncoder::setValue(float v)
+{
+//    lights[char(value)]->color = nvgRGBAf(0,0,0,0);
+    value = v;
+//    if (value != 0)
+//        printf("%i\n", char(value));
+    if (lights_ready)
+    {
+        for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
+        lights[char(value)]->color = nvgRGBAf(1,1,1,1);
+    }
+    if (values[index] != value)
+    {
+        values[index] =  char(value);
+        changed = true;
+    }
+    EventChange e;
+    onChange(e);
+}
+
+
 
 void TTTEncoder::onDragMove(EventDragMove &e) {
     float range;
@@ -132,6 +198,44 @@ void TTTEncoder::onDragMove(EventDragMove &e) {
         */
 }
 
+
+void TTTEncoder::step() {
+    // Re-transform TransformWidget if dirty
+/*    for (int i = 0; i < 7; ++i)
+    {
+        lights[i]->step();
+    }*/
+    if (dirty) {
+        float angle;
+        if (isfinite(minValue) && isfinite(maxValue)) {
+            angle = rescale(value, minValue, maxValue, minAngle, maxAngle);
+        }
+        else {
+            angle = rescale(value, -1.0, 1.0, minAngle, maxAngle);
+            angle = fmodf(angle, 2*M_PI);
+        }
+        if(flip)
+        {
+            angle+=M_PI;
+        }
+        tw->identity();
+        // Rotate SVG
+        Vec center = sw->box.getCenter();
+        tw->translate(center);
+        tw->rotate(angle);
+        tw->translate(center.neg());
+    }
+    FramebufferWidget::step();
+}
+
+
+void EncoderController::update(int amount)
+{ //TODO: Called by the widget to increment or decrement
+    values[index] += amount;
+    if(values[index] == 255) values[index] = 6;
+    else if(values[index] == 7) values[index] = 0;
+    widget->setValue(values[index]);
+}
 
 
 

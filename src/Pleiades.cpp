@@ -359,6 +359,7 @@ struct PleiadesWidget : ModuleWidget {
         addChild(param);
         const unsigned char defs[7] = {0,0,0,0,0,0,0};
         ((Pleiades*)(module))->encoders[param->paramId] = new EncoderController((TTTEncoder*)param, defs);
+        ((TTTEncoder*)param)->configureLights();
     }
 
     PleiadesWidget(Pleiades *module) : ModuleWidget(module) {

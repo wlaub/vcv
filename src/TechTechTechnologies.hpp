@@ -171,6 +171,7 @@ struct EncoderController;
 
 struct TTTEncoder : RoundBlackKnob {
     bool flip=false;
+    bool lights_ready = false;
 
     unsigned char values[7];
     unsigned char index = 0;
@@ -178,26 +179,13 @@ struct TTTEncoder : RoundBlackKnob {
 
     EncoderController* controller;
 
-    TTTEncoder() {
-        setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
-        minAngle=0;
-        maxAngle=2*M_PI;
-        snap=true;
-        controller = 0;
-    }
+    TTTEncoder();
+   
+    ModuleLightWidget* lights[7];
 
-    
-    void setValue(float v)
-    {
-        value = v;
-        if (values[index] != value)
-        {
-            values[index] =  char(value);
-            changed = true;
-        }
-        EventChange e;
-        onChange(e);
-    }
+    void configureLights();
+
+    void setValue(float v);
 
     void setIndex(int i)
     {
@@ -207,31 +195,11 @@ struct TTTEncoder : RoundBlackKnob {
     }
     
     void onDragMove(EventDragMove &e);
+    void reset();
+    void draw(NVGcontext *vg);
+    void step();
 
-    void step() {
-        // Re-transform TransformWidget if dirty
-        if (dirty) {
-            float angle;
-            if (isfinite(minValue) && isfinite(maxValue)) {
-                angle = rescale(value, minValue, maxValue, minAngle, maxAngle);
-            }
-            else {
-                angle = rescale(value, -1.0, 1.0, minAngle, maxAngle);
-                angle = fmodf(angle, 2*M_PI);
-            }
-            if(flip)
-            {
-                angle+=M_PI;
-            }
-            tw->identity();
-            // Rotate SVG
-            Vec center = sw->box.getCenter();
-            tw->translate(center);
-            tw->rotate(angle);
-            tw->translate(center.neg());
-        }
-        FramebufferWidget::step();
-    } 
+ 
 };
 
 struct ITTTEncoder : TTTEncoder {
@@ -277,14 +245,7 @@ struct EncoderController {
         widget->setValue(values[idx]);
     }
 
-    void update(int amount)
-    { //TODO: Called by the widget to increment or decrement
-        values[index] += amount;
-        if(values[index] == 255) values[index] = 7;
-        else if(values[index] == 8) values[index] = 0;
-        widget->setValue(values[index]);
-    }
-
+    void update(int amount);
 };
 
 
