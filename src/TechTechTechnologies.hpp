@@ -173,9 +173,7 @@ struct TTTEncoder : RoundBlackKnob {
     bool flip=false;
     bool lights_ready = false;
 
-    unsigned char values[7];
-    unsigned char index = 0;
-    bool changed = false;
+    NVGcolor color = nvgRGBAf(1,1,1,1);
 
     EncoderController* controller;
 
@@ -186,20 +184,13 @@ struct TTTEncoder : RoundBlackKnob {
     void configureLights();
 
     void setValue(float v);
-
-    void setIndex(int i)
-    {
-        index = i;
-        value = values[index];
-        dirty=true;
-    }
-    
+   
     void onDragMove(EventDragMove &e);
     void reset();
     void draw(NVGcontext *vg);
     void step();
+    void fromJson(json_t *rootJ);
 
- 
 };
 
 struct ITTTEncoder : TTTEncoder {
@@ -212,7 +203,7 @@ struct EncoderController {
     unsigned char values[7];
     unsigned char defaults[7];
     TTTEncoder* widget;
-    unsigned char index;
+    unsigned char index = 0;
 
     EncoderController(TTTEncoder* w, const unsigned char* defs)
     {
@@ -226,17 +217,23 @@ struct EncoderController {
         setIndex(0);
     }
 
+    void setColor(EncoderController* src);
+    void setColor(float r,float g, float b);
+
+
     void reset()
     {
          for (int i = 0; i < 7; ++i)
         {
             values[i] = defaults[i];
         }
+        update(0);
     }
 
     void reset(unsigned char i)
     { //TODO: Should be called when the widget gets reset
         values[i] = defaults[i];
+        update(0);
     }
 
     void setIndex(unsigned char idx)

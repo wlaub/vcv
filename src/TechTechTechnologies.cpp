@@ -111,7 +111,7 @@ void TTTEncoder::configureLights()
 //        addChild(lights[i]);
     }
     lights_ready=true;
-//    setValue(values[index]);
+    controller->update(0);
 }
 
 void TTTEncoder::reset()
@@ -132,21 +132,20 @@ void TTTEncoder::draw(NVGcontext *vg)
     }
 }
 
+void TTTEncoder::fromJson(json_t *rootJ) {
+    json_t *valueJ = json_object_get(rootJ, "value");
+    if (valueJ)
+        controller->values[controller->index] = char(json_number_value(valueJ));
+        setValue(json_number_value(valueJ));
+}
+
 void TTTEncoder::setValue(float v)
 {
-//    lights[char(value)]->color = nvgRGBAf(0,0,0,0);
     value = v;
-//    if (value != 0)
-//        printf("%i\n", char(value));
     if (lights_ready)
     {
         for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
-        lights[char(value)]->color = nvgRGBAf(1,1,1,1);
-    }
-    if (values[index] != value)
-    {
-        values[index] =  char(value);
-        changed = true;
+        lights[char(value)]->color = color;
     }
     EventChange e;
     onChange(e);
@@ -237,7 +236,17 @@ void EncoderController::update(int amount)
     widget->setValue(values[index]);
 }
 
+void EncoderController::setColor(EncoderController* src)
+{
+    widget->color = src->widget->color;
+    update(0);
+}
 
+void EncoderController::setColor(float r, float g, float b)
+{
+    widget->color = nvgRGBAf(r,g,b,1);
+    update(0);
+}
 
 // The plugin-wide instance of the Plugin class
 Plugin *plugin;

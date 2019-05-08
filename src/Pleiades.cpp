@@ -385,6 +385,21 @@ struct PleiadesWidget : ModuleWidget {
         #include "Pleiades_panel.hpp"
         /* -CONTROL INSTANTIATION */
 
+        module->encoders[Pleiades::PARAM_MODE+0]->setColor(0,0,1);
+        module->encoders[Pleiades::PARAM_MODE+1]->setColor(0,1,0);
+        module->encoders[Pleiades::PARAM_MODE+2]->setColor(0,1,1);
+        module->encoders[Pleiades::PARAM_MODE+3]->setColor(1,0,0);
+        module->encoders[Pleiades::PARAM_MODE+4]->setColor(1,0,1);
+        module->encoders[Pleiades::PARAM_MODE+5]->setColor(1,1,0);
+        module->encoders[Pleiades::PARAM_MODE+6]->setColor(1,1,1);
+
+        module->encoders[Pleiades::PARAM_CENTER]->setColor(module->encoders[Pleiades::PARAM_MODE+5]);
+        for(int i = 0; i < 7; ++i)
+        {
+            module->encoders[Pleiades::PARAM_STEP+i]->setColor(
+                module->encoders[Pleiades::PARAM_MODE+1]);
+        }
+
         module->ready = true;
     }
 
