@@ -278,7 +278,10 @@ void Pleiades::step() {
     }
  */
     encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
-    
+    for(int i = 0; i < 7; ++i) 
+    {
+        encoders[PARAM_STEP+i]->setIndex(params[PARAM_MODE+1].value);
+    }
 
     /*  +INPUT_PROCESSING */
     #include "Pleiades_inputs.hpp"
@@ -393,7 +396,8 @@ struct PleiadesWidget : ModuleWidget {
         module->encoders[Pleiades::PARAM_MODE+5]->setColor(1,1,0);
         module->encoders[Pleiades::PARAM_MODE+6]->setColor(1,1,1);
 
-        module->encoders[Pleiades::PARAM_CENTER]->setColor(module->encoders[Pleiades::PARAM_MODE+5]);
+        module->encoders[Pleiades::PARAM_CENTER]->setColor(
+            module->encoders[Pleiades::PARAM_MODE+5]);
         for(int i = 0; i < 7; ++i)
         {
             module->encoders[Pleiades::PARAM_STEP+i]->setColor(

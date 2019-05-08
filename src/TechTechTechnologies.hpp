@@ -173,7 +173,7 @@ struct TTTEncoder : RoundBlackKnob {
     bool flip=false;
     bool lights_ready = false;
 
-    NVGcolor color = nvgRGBAf(1,1,1,1);
+    NVGcolor color = nvgRGBAf(0,0,0,1);
 
     EncoderController* controller;
 

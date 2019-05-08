@@ -100,8 +100,8 @@ void TTTEncoder::configureLights()
     float xpos = box.size.x/2;
     float ypos = box.size.y/2;
     float rad = 15;
-    float angle = 0;
-    if(flip) angle=M_PI;
+    float angle = M_PI/7;
+    if(flip) angle= -6*M_PI/7;
     for(int i = 0; i < 7; ++i)
     {
         lights[i] = createLightCentered<SmallLight<GreenLight>>(
