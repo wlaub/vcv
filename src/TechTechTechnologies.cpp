@@ -217,6 +217,20 @@ void TTTEncoder::step() {
         {
             angle+=M_PI;
         }
+        if(abs(angle-lastAngle) > M_PI) //Angle wrapping
+        {
+            if(angle > lastAngle)
+            {
+                lastAngle += 2*M_PI;
+            }
+            else if(angle < lastAngle)
+            {
+                lastAngle -= 2*M_PI;
+            }
+        }
+
+        angle = (angle+lastAngle)/2; //Knob slew
+        lastAngle = angle;
         tw->identity();
         // Rotate SVG
         Vec center = sw->box.getCenter();
