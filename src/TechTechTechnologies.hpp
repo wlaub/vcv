@@ -172,6 +172,7 @@ struct EncoderController;
 struct TTTEncoder : RoundBlackKnob {
     bool flip=false;
     bool lights_ready = false;
+    bool spinning = false;
 
     float lastAngle = 0;
 
@@ -187,16 +188,17 @@ struct TTTEncoder : RoundBlackKnob {
 
     void setValue(float v);
    
-    void onDragMove(EventDragMove &e);
-    void reset();
-    void draw(NVGcontext *vg);
-    void step();
+    void onDragMove(EventDragMove &e) override;
+    void reset() override;
+    void draw(NVGcontext *vg) override;
+    void step() override;
     void fromJson(json_t *rootJ);
 
 };
 
 struct ITTTEncoder : TTTEncoder {
     ITTTEncoder() {
+        TTTEncoder();
         flip=true;
     }
 };
@@ -240,6 +242,7 @@ struct EncoderController {
 
     void setIndex(unsigned char idx)
     { //Changes current index and sets the widget accordingly
+        if(index == idx) return;
         index = idx;
         widget->setValue(values[idx]);
     }

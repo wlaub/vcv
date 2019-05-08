@@ -1,7 +1,7 @@
 
 #include "TechTechTechnologies.hpp"
 
-#define DEPTH 2
+#define DEPTH 7
 
 #define DPRINT ;//printf
 
@@ -159,13 +159,15 @@ struct Address
 struct Sequence
 {
     struct Address address;
-    struct Step steps[(1<<3*DEPTH)];
+    struct Step* steps;
+    //struct Step steps[(1<<3*DEPTH)];
     
-    float prevTone[DEPTH] = {0};
-    float prevValue[DEPTH] = {0};
+    float prevTone[DEPTH+1] = {0};
+    float prevValue[DEPTH+1] = {0};
 
     Sequence()
     {
+        steps = new struct Step[(1<<(3*DEPTH))];
         for (int i = 0; i < DEPTH; ++i)
         {
             prevTone[i] = 0;
@@ -234,7 +236,13 @@ struct Pleiades : Module {
     /* +ENUMS */
     #include "Pleiades_enums.hpp"
     /* -ENUMS */
-    
+    enum LightIds {
+        ENUMS(LIGHT_PORT, 7),
+        ENUMS(LIGHT_ADDRESS, 7*DEPTH),
+        NUM_LIGHTS
+    };
+ 
+
     /* +TRIGGER_VARS */
     #include "Pleiades_vars.hpp"
     /* -TRIGGER_VARS */
@@ -291,7 +299,7 @@ void Pleiades::step() {
     if (counter < 100) return;
     counter = 0;
 
-    int N = 2;
+    int N = 7;
 
   
 
@@ -313,6 +321,17 @@ void Pleiades::step() {
     {
         sequences[i].step();
     }
+
+    Address add = sequences[0].address;
+    for(int i = 0; i < DEPTH; ++i)
+    {
+        for (int j = 0; j < 7; ++j)
+        {
+            lights[LIGHT_ADDRESS+i*7+j].value= (j+1 == add.digits[i]?1:0);
+
+        }
+    }
+
 
     for(int i = 0; i < N; ++ i)
     {
@@ -387,13 +406,39 @@ struct PleiadesWidget : ModuleWidget {
         /* +CONTROL INSTANTIATION */
         #include "Pleiades_panel.hpp"
         /* -CONTROL INSTANTIATION */
+//        Vec(163.999995, 204.0), 
+        Rect cbox = module->encoders[Pleiades::PARAM_CENTER]->widget->box;
+
+        //        float ypos = ;
+        for (int i = 0; i < DEPTH; ++i)
+        {
+            float radius = 25 + 7*(i);
+            for (int j =0; j < 7; ++j)
+            {   //i = depth,  j = idx
+                //id = depth*7 + index
+                float angle = (j+.5)*2*M_PI/7;
+                light = createLightCentered<TinyLight<GreenLight>>(
+                    Vec(-radius*sin(angle)+cbox.pos.x+cbox.size.x/2,
+                         radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
+                    module, Pleiades::LIGHT_ADDRESS+i*7+j
+                );
+                int k = i+1;
+                ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
+                        (k&1),
+                        (k&2)>>1,
+                        (k&4)>>2,
+                        1)); 
+                addChild(light);
+            }
+        }
+
 
         module->encoders[Pleiades::PARAM_MODE+0]->setColor(0,0,1);
         module->encoders[Pleiades::PARAM_MODE+1]->setColor(0,1,0);
         module->encoders[Pleiades::PARAM_MODE+2]->setColor(0,1,1);
         module->encoders[Pleiades::PARAM_MODE+3]->setColor(1,0,0);
-        module->encoders[Pleiades::PARAM_MODE+4]->setColor(1,0,1);
-        module->encoders[Pleiades::PARAM_MODE+5]->setColor(1,1,0);
+        module->encoders[Pleiades::PARAM_MODE+4]->setColor(1,1,0);
+        module->encoders[Pleiades::PARAM_MODE+5]->setColor(1,0,1);
         module->encoders[Pleiades::PARAM_MODE+6]->setColor(1,1,1);
 
         module->encoders[Pleiades::PARAM_CENTER]->setColor(

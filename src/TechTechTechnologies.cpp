@@ -180,7 +180,7 @@ void TTTEncoder::onDragMove(EventDragMove &e) {
         dragValue = value;
     }
 
-    //        dragValue = clamp2(dragValue, minValue, maxValue);
+    //Looping effect
     if (dragValue > maxValue)      
     {
         dragValue += minValue - maxValue;
@@ -189,22 +189,12 @@ void TTTEncoder::onDragMove(EventDragMove &e) {
     {
         dragValue += maxValue - minValue;
     }
-    /*
-    if (snap)
-        setValue(floor(dragValue));
-    else
-        setValue(dragValue);
-        */
 }
 
 
 void TTTEncoder::step() {
     // Re-transform TransformWidget if dirty
-/*    for (int i = 0; i < 7; ++i)
-    {
-        lights[i]->step();
-    }*/
-    if (dirty) {
+    if (spinning or dirty) {
         float angle;
         if (isfinite(minValue) && isfinite(maxValue)) {
             angle = rescale(value, minValue, maxValue, minAngle, maxAngle);
@@ -217,7 +207,8 @@ void TTTEncoder::step() {
         {
             angle+=M_PI;
         }
-        if(abs(angle-lastAngle) > M_PI) //Angle wrapping
+
+        if(fabsf(angle-lastAngle) > M_PI) //Angle wrapping
         {
             if(angle > lastAngle)
             {
@@ -229,13 +220,25 @@ void TTTEncoder::step() {
             }
         }
 
-        angle = (angle+lastAngle)/2; //Knob slew
-        lastAngle = angle;
+        lastAngle = angle*.5+lastAngle*.5; //Knob slew
+        spinning = true;
+
+        if(fabsf(lastAngle-angle)<.0001)
+        {
+            lastAngle = angle;
+            spinning = false;
+        }
+        else
+        {
+            dirty = true;
+        }
+        angle = lastAngle;
+
         tw->identity();
         // Rotate SVG
         Vec center = sw->box.getCenter();
         tw->translate(center);
-        tw->rotate(angle);
+        tw->rotate(lastAngle);
         tw->translate(center.neg());
     }
     FramebufferWidget::step();
