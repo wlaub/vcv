@@ -88,7 +88,7 @@ void NumField::onTextChange()
 }
 
 TTTEncoder::TTTEncoder() {
-    setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
+    setSVG(SVG::load(assetPlugin(plugin, "res/Components/TTTEncoder.svg")));
     minAngle=0;
     maxAngle=2*M_PI;
     snap=true;
