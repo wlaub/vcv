@@ -254,7 +254,14 @@ struct Pleiades : Module {
 
     struct EncoderController* encoders[NUM_PARAMS];
 
+    SchmittTrigger clockTrigger;
     int counter = 0;
+    int clockCounter = 0;
+    float basePeriod = 49;
+    float scalePeriod = 1.0/49;
+    float clockPeriod = 49;
+
+    int outputCounter = 0;
 
     bool ready = false;
 
@@ -295,88 +302,119 @@ void Pleiades::step() {
     #include "Pleiades_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
-    ++counter;
-    if (counter < 1) return;
-    counter = 0;
-
-    int N = 7;
-
-  
-
-    for(int i = 0; i < N; ++i)
+    if(inputs[INPUT_CLOCK].active)
     {
-        Step* tstep = &(sequences[i].steps[0]);
-
-//        tstep->values[3] = 1;        
-        for (int i = 0; i < 7; ++i)
+        if(param_mode[6] == 0)
         {
-            tstep->values[i] = char(param_mode[i]);
-        }
-
-    }
-    
-
-
-    for(int i = 0; i < N; ++ i)
-    {
-        sequences[i].step();
-    }
-
-    Address add = sequences[0].address;
-    int prev = 1;
-    for(int i = 0; i < DEPTH; ++i)
-    {
-        for (int j = 0; j < 7; ++j)
-        {
-            lights[LIGHT_ADDRESS+i*7+j].value= 
-                ( 
-                 (j+1 <= add.digits[i] and j+1 >= prev) or
-                 (j+1 >= add.digits[i] and j+1 <= prev)
-                  ?.1:0);
-            if(j+1 == add.digits[i])
-                lights[LIGHT_ADDRESS+i*7+j].value= 1;
-        }
-        prev =  add.digits[i];
-    }
-
-    for(int i = 0; i < N; ++i)
-    {
-        lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0);
-        lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0);
-    }
-
-    for(int i = 0; i < N; ++ i)
-    {
-        float val =sequences[i].get_value(sequences[i].address, sequences[(i+1)%7]);
-        output_out[i] = val;
-        DPRINT("=%f\n", val);
-    }
-    DPRINT("\n");
-
-    /*
-    if(counter < 49*7+2)
-    {
-        ++counter;
-        int res= address.step();
-        for (int i = 0 ; i < DEPTH; ++i)
-        {
-            if ((res&(1<<(DEPTH-i-1))) == 0)
+            if(clockTrigger.process(input_clock))
             {
-                printf(" ");
+                basePeriod = basePeriod*.5 + clockCounter*.5;
+                clockPeriod = basePeriod*scalePeriod;
+                clockCounter = 0;
+                counter = clockPeriod;
+                //TODO Implement address syncing with clock depth
             }
             else
             {
-                printf("V");
+                ++clockCounter;
             }
         }
-        printf("\n", res);
-        address.print();
-        for (int i = 0; i < DEPTH+1; ++i)
+    }
+    else
+    {
+        clockCounter = 0;
+    }
+
+    if (counter < clockPeriod)
+    {
+        ++counter;
+    }
+    else
+    {
+        counter = 0;
+
+        int N = 7;
+
+
+        for(int i = 0; i < N; ++i)
         {
-            printf("%08x\n", address.get_address(i));
+            Step* tstep = &(sequences[i].steps[0]);
+
+    //        tstep->values[3] = 1;        
+            for (int i = 0; i < 7; ++i)
+            {
+                tstep->values[i] = char(param_mode[i]);
+            }
+
         }
-    }   
+        
+        
+
+        for(int i = 0; i < N; ++ i)
+        {
+            sequences[i].step();
+        }
+
+        Address add = sequences[seq_idx].address;
+        int prev = 1;
+        for(int i = 0; i < DEPTH; ++i)
+        {
+            for (int j = 0; j < 7; ++j)
+            {
+                lights[LIGHT_ADDRESS+i*7+j].value= 
+                    ( 
+                     (j+1 <= add.digits[i] and j+1 >= prev) or
+                     (j+1 >= add.digits[i] and j+1 <= prev)
+                      ?.1:0);
+                if(j+1 == add.digits[i])
+                    lights[LIGHT_ADDRESS+i*7+j].value= 1;
+            }
+            prev =  add.digits[i];
+        }
+
+//        printf("%i\n", (unsigned char)(param_mode[4]));
+        output_out[7] = add.digits[(unsigned char)(param_mode[4])]-1;
+
+        for(int i = 0; i < N; ++i)
+        {
+            lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0);
+            lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0);
+        }
+
+        for(int i = 0; i < N; ++ i)
+        {
+            float val =sequences[i].get_value(sequences[i].address, sequences[(i+1)%7]);
+            output_out[i] = val;
+            DPRINT("=%f\n", val);
+        }
+        DPRINT("\n");
+
+        /*
+        if(counter < 49*7+2)
+        {
+            ++counter;
+            int res= address.step();
+            for (int i = 0 ; i < DEPTH; ++i)
+            {
+                if ((res&(1<<(DEPTH-i-1))) == 0)
+                {
+                    printf(" ");
+                }
+                else
+                {
+                    printf("V");
+                }
+            }
+            printf("\n", res);
+            address.print();
+            for (int i = 0; i < DEPTH+1; ++i)
+            {
+                printf("%08x\n", address.get_address(i));
+            }
+        }   
     */
+    }
+    
     /*  +OUTPUT_PROCESSING */
     #include "Pleiades_outputs.hpp"
     /*  -OUTPUT_PROCESSING */

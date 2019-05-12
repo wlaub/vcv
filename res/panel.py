@@ -283,14 +283,14 @@ class Control(panel_config.ControlConfig):
         Get the string that reads the value into the base variable
         Needs a list of all controls to look up other refs
         """
-        if self.kind != 'input' : return
+        if self.kind not in ['input', 'output'] : return
         result = []
         result.append( f'{self.get_variable_access()} = {self.get_vcv_access()}.value;')
-
-        result.append(self.get_norm_string())
-        result.append(self.get_gain_string(controls))
-        result.append(self.get_offset_string(controls))
-        result.append(self.get_clip_string())
+        if self.kind == 'input':
+            result.append(self.get_norm_string())
+            result.append(self.get_gain_string(controls))
+            result.append(self.get_offset_string(controls))
+            result.append(self.get_clip_string())
 
         result = list(filter(lambda x: x != None, result))
 

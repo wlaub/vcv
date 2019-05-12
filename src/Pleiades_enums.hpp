@@ -15,9 +15,8 @@
         ENUMS(OUTPUT_OUT,8),
         NUM_OUTPUTS
     };
-/*    enum LightIds {
-        ENUMS(LIGHT_PORT, 7),
-        ENUMS(LIGHT_ADDRESS, 7*DEPTH),
+  /*  enum LightIds {
+
         NUM_LIGHTS
     };*/
     
