@@ -104,14 +104,23 @@ struct Address
             digits[i] = 1;
     }
 
-    int step()
+    int step(int depth_index, bool sync = false)
     {//Increments the step and returns flags showing which indices rolled over
+     //Depth protects smaller indices from being incremented
         int result = 0;
-
-        for (int i = 0; i < DEPTH; ++i)
+        for (int i = 0; i < DEPTH-depth_index; ++i)
         {
             int revidx = DEPTH-1-i;
-            digits[revidx] += 1;
+            if(sync)
+            {
+                printf("SYNC\n");
+                digits[revidx] = 8;
+            }
+            else
+            {
+                digits[revidx] += 1;
+            }
+
             if(digits[revidx] == 8) 
             {
                 digits[revidx] = 1;
@@ -154,6 +163,35 @@ struct Address
         return result>>3;
     }
 
+    int get_sub_address(int depth, unsigned char index)
+    { //Returns the address of the step at the given depth by masking digits
+      //and reducing to an octal address using the masking scheme.
+      //
+      // digits  [ A, B, C, ... ]
+      // depth 0 [ 0, 0, 0, ... ]
+      // depth 1 [ A, 0, 0, ... ]
+      // depth 2 [ A, B, 0, ... ]
+      //
+      //And so on.
+
+        int result = 0;
+        for (int i = 0; i < DEPTH; ++i)
+        {
+            if(i < depth)
+            {
+                result |= digits[i];
+            }
+            else if(i == depth)
+            {
+                result |= index;
+            }
+            result <<= 3;
+        }
+        return result>>3;
+    }
+
+
+
 };
 
 struct Sequence
@@ -176,9 +214,8 @@ struct Sequence
         steps[0].values[6] = 6;
     }
 
-    int step()
+    int step(int rolls)
     {
-        int rolls = address.step();
         for (int i = 0; i < DEPTH; ++i)
         {
             if (rolls & (1<<(i+1)))
@@ -251,6 +288,7 @@ struct Pleiades : Module {
     int seq_idx = 0; //currently selected sequence
 
     struct Address address;
+    int depth_idx = 2;
 
     struct EncoderController* encoders[NUM_PARAMS];
 
@@ -279,6 +317,7 @@ void Pleiades::step() {
     if(!ready) return;
 
     float deltaTime = engineGetSampleTime();
+    int N = 7;
 
         /*
     TTTEncoder* knob = &(params[PARAM_CENTER]);
@@ -302,6 +341,7 @@ void Pleiades::step() {
     #include "Pleiades_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
+    bool sync = false;
     if(inputs[INPUT_CLOCK].active)
     {
         if(param_mode[6] == 0)
@@ -311,8 +351,8 @@ void Pleiades::step() {
                 basePeriod = basePeriod*.5 + clockCounter*.5;
                 clockPeriod = basePeriod*scalePeriod;
                 clockCounter = 0;
-                counter = clockPeriod;
-                //TODO Implement address syncing with clock depth
+                counter = clockPeriod+1;
+                sync = true;
             }
             else
             {
@@ -325,6 +365,16 @@ void Pleiades::step() {
         clockCounter = 0;
     }
 
+    Address* add = &(address);
+
+    //Load encoder values into selected step
+    for(int i = 0 ; i < 7; ++i)
+    {
+        int step_add = add->get_sub_address(depth_idx+1, i+1);
+        sequences[seq_idx].steps[step_add].values[(unsigned char)(param_mode[1])] = param_step[i];
+    }
+
+
     if (counter < clockPeriod)
     {
         ++counter;
@@ -332,10 +382,7 @@ void Pleiades::step() {
     else
     {
         counter = 0;
-
-        int N = 7;
-
-
+/* Root step config demo
         for(int i = 0; i < N; ++i)
         {
             Step* tstep = &(sequences[i].steps[0]);
@@ -347,15 +394,15 @@ void Pleiades::step() {
             }
 
         }
-        
-        
+  */      
 
+        int rolls = address.step(depth_idx+1, sync);
         for(int i = 0; i < N; ++ i)
         {
-            sequences[i].step();
+            sequences[i].step(rolls);
         }
 
-        Address add = sequences[seq_idx].address;
+
         int prev = 1;
         for(int i = 0; i < DEPTH; ++i)
         {
@@ -363,17 +410,17 @@ void Pleiades::step() {
             {
                 lights[LIGHT_ADDRESS+i*7+j].value= 
                     ( 
-                     (j+1 <= add.digits[i] and j+1 >= prev) or
-                     (j+1 >= add.digits[i] and j+1 <= prev)
+                     (j+1 <= add->digits[i] and j+1 >= prev) or
+                     (j+1 >= add->digits[i] and j+1 <= prev)
                       ?.1:0);
-                if(j+1 == add.digits[i])
+                if(j+1 == add->digits[i])
                     lights[LIGHT_ADDRESS+i*7+j].value= 1;
             }
-            prev =  add.digits[i];
+            prev =  add->digits[i];
         }
 
 //        printf("%i\n", (unsigned char)(param_mode[4]));
-        output_out[7] = add.digits[(unsigned char)(param_mode[4])]-1;
+        output_out[7] = add->digits[(unsigned char)(param_mode[4])]-1;
 
         for(int i = 0; i < N; ++i)
         {
@@ -383,7 +430,7 @@ void Pleiades::step() {
 
         for(int i = 0; i < N; ++ i)
         {
-            float val =sequences[i].get_value(sequences[i].address, sequences[(i+1)%7]);
+            float val =sequences[i].get_value(address, sequences[(i+1)%7]);
             output_out[i] = val;
             DPRINT("=%f\n", val);
         }
@@ -414,7 +461,40 @@ void Pleiades::step() {
         }   
     */
     }
-    
+
+    switch((unsigned char)(param_mode[5]))
+    {
+        case 0: //Step select
+            address.digits[depth_idx] = (unsigned char)(param_center)+1;
+        break;
+        case 1: //
+        break;
+        case 2:
+        break;
+        case 3:
+        break;
+        case 4:
+            seq_idx=param_center;
+        break;
+        case 5:
+        break;
+        case 6:
+        break;
+        case 7:
+        break;
+    }
+
+    /*
+    int edit_steps[7];
+    for(int i = 0 ; i < 7; ++i)
+    {
+        edit_steps[i] = address.get_address(depth_idx+1); //TODO: Wrong
+        encoders[PARAM_STEP+i]->setValues(
+            sequences[seq_idx].steps[edit_steps[i]].values);
+    }
+    */
+
+
     /*  +OUTPUT_PROCESSING */
     #include "Pleiades_outputs.hpp"
     /*  -OUTPUT_PROCESSING */

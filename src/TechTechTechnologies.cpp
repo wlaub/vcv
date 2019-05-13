@@ -152,7 +152,6 @@ void TTTEncoder::setValue(float v)
 }
 
 
-
 void TTTEncoder::onDragMove(EventDragMove &e) {
     float range;
     if (isfinite(minValue) && isfinite(maxValue)) {
@@ -252,6 +251,15 @@ void EncoderController::update(int amount)
     else if(values[index] == 7) values[index] = 0;
     widget->setValue(values[index]);
 }
+
+void EncoderController::setValues(unsigned char* v)
+{ //
+    for(int i = 0; i < 7; ++i)
+        values[i] = v[i];
+    widget->setValue(values[index]);
+}
+
+
 
 void EncoderController::setColor(EncoderController* src)
 {

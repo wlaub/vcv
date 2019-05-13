@@ -187,7 +187,7 @@ struct TTTEncoder : RoundBlackKnob {
     void configureLights();
 
     void setValue(float v);
-   
+
     void onDragMove(EventDragMove &e) override;
     void reset() override;
     void draw(NVGcontext *vg) override;
@@ -223,7 +223,7 @@ struct EncoderController {
 
     void setColor(EncoderController* src);
     void setColor(float r,float g, float b);
-
+    void setValues(unsigned char* v);
 
     void reset()
     {
