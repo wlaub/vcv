@@ -111,9 +111,8 @@ struct Address
         for (int i = 0; i < DEPTH-depth_index; ++i)
         {
             int revidx = DEPTH-1-i;
-            if(sync)
+            if(sync and revidx > depth_index)
             {
-                printf("SYNC\n");
                 digits[revidx] = 8;
             }
             else
@@ -348,7 +347,7 @@ void Pleiades::step() {
         {
             if(clockTrigger.process(input_clock))
             {
-                basePeriod = basePeriod*.5 + clockCounter*.5;
+                basePeriod = basePeriod*.75 + clockCounter*.25;
                 clockPeriod = basePeriod*scalePeriod;
                 clockCounter = 0;
                 counter = clockPeriod+1;
