@@ -208,6 +208,7 @@ struct EncoderController {
     unsigned char defaults[7];
     TTTEncoder* widget;
     unsigned char index = 0;
+    int delta = 0;
 
     EncoderController(TTTEncoder* w, const unsigned char* defs)
     {
@@ -221,9 +222,13 @@ struct EncoderController {
         setIndex(0);
     }
 
+    int process();
+
     void setColor(EncoderController* src);
     void setColor(float r,float g, float b);
     void setValues(unsigned char* v);
+
+    int getValue();
 
     void reset()
     {

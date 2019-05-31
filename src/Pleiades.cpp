@@ -2,8 +2,17 @@
 #include "TechTechTechnologies.hpp"
 
 #define DEPTH 6
+#define DMAIN true
+#define DSEQ false
 
-#define DPRINT ;//printf
+/*
+#define SDPRINT(DSEQ, x, ...) \
+#ifdef x \
+printf(...);        \
+#endif  \
+*/
+
+#define DPRINT(x, ...) if(x) printf(__VA_ARGS__);
 
 struct Step
 {
@@ -63,25 +72,25 @@ struct Step
 
         unsigned char triggerIndex = tfirst%tlast;
 
-        DPRINT("    %i%%%i = %i\n", tfirst, tlast, triggerIndex);
+        DPRINT(DSEQ, "    %i%%%i = %i\n", tfirst, tlast, triggerIndex);
 
         triggerIndex= triggerIndex ==0 ? 0: 1;
 
-        DPRINT("    ");
+        DPRINT(DSEQ, "    ");
         for(int i = 0; i < 7; ++i)
         {
-            DPRINT("%i ", values[i]);
+            DPRINT(DSEQ, "%i ", values[i]);
         }
-        DPRINT("\n");
-        DPRINT("    Param: %i, %i, %f\n", index, subindex, prevTone);
-        DPRINT("    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
+        DPRINT(DSEQ, "\n");
+        DPRINT(DSEQ, "    Param: %i, %i, %f\n", index, subindex, prevTone);
+        DPRINT(DSEQ, "    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
 
 
         if(!isfinite(prevTone)) return tone_values[triggerIndex];
 
         float alpha = min(1.0,float(subindex)/(values[0]+1));
 
-        DPRINT("    %i/%i -> %f\n", subindex-1, values[0]+1, alpha);
+        DPRINT(DSEQ, "    %i/%i -> %f\n", subindex-1, values[0]+1, alpha);
 
         return tone_values[triggerIndex]*alpha+prevTone*(1-alpha);
     }
@@ -136,7 +145,7 @@ struct Address
 
     void print()
     {
-        DPRINT("0o%07o\n",get_address(DEPTH+1));
+        DPRINT(DSEQ, "0o%07o\n",get_address(DEPTH+1));
     }
 
     int get_address(int depth)
@@ -220,7 +229,7 @@ struct Sequence
             if (rolls & (1<<(i+1)))
             {
                 prevTone[i] = prevValue[i];
-                DPRINT("Rolled %i : %f -> %f\n", i, prevValue[i], prevTone[i]);
+                DPRINT(DSEQ, "Rolled %i : %f -> %f\n", i, prevValue[i], prevTone[i]);
             }
         } 
 
@@ -251,18 +260,18 @@ struct Sequence
             if (i < DEPTH-1)
                 prevToneLocal = prevTone[i+1];
 
-            DPRINT("0o%07o:\n", addIdx);
+            DPRINT(DSEQ, "0o%07o:\n", addIdx);
             float stepVal = mainStep.getValue(
                 triggerStep, index, subindex, 
                 tones, prevToneLocal
                 );
             prevValue[i+1] = stepVal;
             result += stepVal;
-            DPRINT("  %i: %f / %f\n", i, stepVal, prevToneLocal);
+            DPRINT(DSEQ, "  %i: %f / %f\n", i, stepVal, prevToneLocal);
 //    float getValue(Step triggerStep, int index, int subindex, float* tones, float prevTone)
  
         }
-        DPRINT("\n");
+        DPRINT(DSEQ, "\n");
         return result;
     }
 
@@ -290,6 +299,7 @@ struct Pleiades : Module {
     int depth_idx = 2;
 
     struct EncoderController* encoders[NUM_PARAMS];
+    int encoder_delta[NUM_PARAMS];
 
     SchmittTrigger clockTrigger;
     int counter = 0;
@@ -300,6 +310,7 @@ struct Pleiades : Module {
 
     int outputCounter = 0;
 
+    bool update_steps = false;
     bool ready = false;
 
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
@@ -315,8 +326,133 @@ struct Pleiades : Module {
 void Pleiades::step() {
     if(!ready) return;
 
+    /* Assume that in any given step, only one knob can be turned. Otherwise,
+     * there can be race conditions when the meaning of a knob changes at the
+     * same time as its value. This should substantially simplify knob meta
+     * configuration and order of operations. All of the knob meta configuration
+     * can now take place at the top, knowing that it won't cause conflicts with
+     * the operation of the module, which comes second.
+     * */
+
     float deltaTime = engineGetSampleTime();
+
+    /*  +INPUT_PROCESSING */
+    #include "Pleiades_inputs.hpp"
+    /*  -INPUT_PROCESSING */
+
+
+
     int N = 7;
+
+    bool there_are_updates = false;
+    for(int i = 0; i < NUM_PARAMS; ++i)
+    {
+       encoder_delta[i] = encoders[i]->process(); 
+       if(encoder_delta[i] != 0) there_are_updates = true;
+    }
+
+    /***************************/
+    /* Knob Meta-Configuration */
+    /***************************/
+
+    if(there_are_updates)
+    {
+        DPRINT(DMAIN, "TICK\n");
+    }
+
+    //MODE 0
+    
+    //MODE 1 (Step knob function)
+    if(encoder_delta[PARAM_MODE+1] != 0)
+    {
+        int function_index = encoders[PARAM_MODE+1]->getValue();
+
+        DPRINT(DMAIN, "STEP FUNCTION CHANGED %i\n", function_index);
+        for(int i = 0; i < 7; ++i) 
+        {
+            encoders[PARAM_STEP+i]->setIndex(function_index);
+        }
+    }
+   
+    //MODE 2
+
+    //MODE 3
+    
+    //MODE 4
+
+    //MODE 5 (Center knob function)
+    if(encoder_delta[PARAM_MODE+5] != 0)
+    {
+        encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
+    }
+
+    //MODE 6
+
+    //STEP 0-6 (Sequence step configurations)
+    for(int i = 0 ; i < 7; ++i)
+    {
+        if(encoder_delta[PARAM_STEP+i] != 0)
+        {
+            int step_index = address.get_sub_address(depth_idx+1, i+1);
+            unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
+            sequences[seq_idx].steps[step_index].values[value_index] 
+                = encoders[PARAM_STEP+i]->getValue();
+
+            unsigned char* step_values = 
+                sequences[seq_idx].steps[step_index].values;
+            DPRINT(DMAIN, "PARAM CHANGE %o %i %i\n", step_index, value_index, step_values[value_index]);
+        }
+    }
+
+    //CENTER
+
+    if(encoder_delta[PARAM_CENTER] != 0)
+    {
+        int center_value = encoders[PARAM_CENTER]->getValue();
+        switch(encoders[PARAM_MODE+5]->getValue())
+        {
+            case 0: //Step select
+                address.digits[depth_idx] = center_value+1;
+                for(int i = 0 ; i < 7; ++i)
+                {
+                    int step_index = address.get_sub_address(depth_idx+1, i+1);
+                    unsigned char value_index = encoders[PARAM_MODE+1]->getValue();                   
+                    unsigned char* step_values = 
+                        sequences[seq_idx].steps[step_index].values;
+
+                    encoders[PARAM_STEP+i]->setValues(step_values);
+                    DPRINT(DMAIN, "STEP UPDATED %o %i %i\n", 
+                            step_index, value_index,
+                            step_values[value_index]
+                            );
+                }
+                        
+            break;
+            case 1: //
+            break;
+            case 2:
+            break;
+            case 3:
+            break;
+            case 4: //Sequence Select
+                seq_idx = center_value;
+            break;
+            case 5:
+            break;
+            case 6:
+            break;
+            case 7:
+            break;
+        }
+    }
+
+
+
+    //CONFIG 0
+    
+    //CONFIG 1
+    
+    //CONFIG 2
 
         /*
     TTTEncoder* knob = &(params[PARAM_CENTER]);
@@ -330,15 +466,11 @@ void Pleiades::step() {
         params[PARAM_MODE+5].changed = false;
     }
  */
-    encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
-    for(int i = 0; i < 7; ++i) 
-    {
-        encoders[PARAM_STEP+i]->setIndex(params[PARAM_MODE+1].value);
-    }
 
-    /*  +INPUT_PROCESSING */
-    #include "Pleiades_inputs.hpp"
-    /*  -INPUT_PROCESSING */
+
+
+
+
 
     bool sync = false;
     if(inputs[INPUT_CLOCK].active)
@@ -365,13 +497,6 @@ void Pleiades::step() {
     }
 
     Address* add = &(address);
-
-    //Load encoder values into selected step
-    for(int i = 0 ; i < 7; ++i)
-    {
-        int step_add = add->get_sub_address(depth_idx+1, i+1);
-        sequences[seq_idx].steps[step_add].values[(unsigned char)(param_mode[1])] = param_step[i];
-    }
 
 
     if (counter < clockPeriod)
@@ -414,7 +539,7 @@ void Pleiades::step() {
                       ?.1:0);
                 if(j+1 == add->digits[i])
                     lights[LIGHT_ADDRESS+i*7+j].value= 1;
-            }
+           }
             prev =  add->digits[i];
         }
 
@@ -431,9 +556,9 @@ void Pleiades::step() {
         {
             float val =sequences[i].get_value(address, sequences[(i+1)%7]);
             output_out[i] = val;
-            DPRINT("=%f\n", val);
+            DPRINT(DSEQ, "=%f\n", val);
         }
-        DPRINT("\n");
+        DPRINT(DSEQ, "\n");
 
         /*
         if(counter < 49*7+2)
@@ -461,37 +586,7 @@ void Pleiades::step() {
     */
     }
 
-    switch((unsigned char)(param_mode[5]))
-    {
-        case 0: //Step select
-            address.digits[depth_idx] = (unsigned char)(param_center)+1;
-        break;
-        case 1: //
-        break;
-        case 2:
-        break;
-        case 3:
-        break;
-        case 4:
-            seq_idx=param_center;
-        break;
-        case 5:
-        break;
-        case 6:
-        break;
-        case 7:
-        break;
-    }
-
-    /*
-    int edit_steps[7];
-    for(int i = 0 ; i < 7; ++i)
-    {
-        edit_steps[i] = address.get_address(depth_idx+1); //TODO: Wrong
-        encoders[PARAM_STEP+i]->setValues(
-            sequences[seq_idx].steps[edit_steps[i]].values);
-    }
-    */
+    //
 
 
     /*  +OUTPUT_PROCESSING */

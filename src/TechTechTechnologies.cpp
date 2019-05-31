@@ -247,6 +247,7 @@ void TTTEncoder::step() {
 void EncoderController::update(int amount)
 { //TODO: Called by the widget to increment or decrement
     values[index] += amount;
+    delta += amount;
     if(values[index] == 255) values[index] = 6;
     else if(values[index] == 7) values[index] = 0;
     widget->setValue(values[index]);
@@ -259,7 +260,19 @@ void EncoderController::setValues(unsigned char* v)
     widget->setValue(values[index]);
 }
 
+int EncoderController::process()
+{   //Used to obtain state info from within the module
+    //Returns the difference in encoder value since the last time process
+    //was called.
+    int result = delta;
+    delta = 0;
+    return result;
+}
 
+int EncoderController::getValue()
+{
+    return values[index];
+}
 
 void EncoderController::setColor(EncoderController* src)
 {
