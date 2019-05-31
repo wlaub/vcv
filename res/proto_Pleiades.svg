@@ -224,7 +224,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -779,9 +779,9 @@
        sodipodi:rx="22.3839"
        sodipodi:ry="22.3839"
        sodipodi:start="2.2439873"
-       sodipodi:end="3.5903866"
+       sodipodi:end="2.6927987"
        sodipodi:open="true"
-       d="M 21.355143,192.12373 A 22.3839,22.3839 0 0 1 15.1439,164.91128" />
+       d="M 21.355143,192.12373 A 22.3839,22.3839 0 0 1 15.1439,184.33509" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
        id="path13589"
@@ -790,10 +790,10 @@
        sodipodi:cy="174.62318"
        sodipodi:rx="22.300381"
        sodipodi:ry="22.300381"
-       sodipodi:start="4.039198"
+       sodipodi:start="3.1415927"
        sodipodi:end="4.487992"
        sodipodi:open="true"
-       d="m 21.407216,157.18794 a 22.300381,22.300381 0 0 1 8.941682,-4.30603" />
+       d="M 13.010765,174.62318 A 22.300381,22.300381 0 0 1 30.348898,152.88191" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
        id="path13591"
@@ -4088,8 +4088,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Params"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="center"

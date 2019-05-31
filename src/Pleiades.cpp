@@ -120,7 +120,7 @@ struct Address
         for (int i = 0; i < DEPTH-depth_index; ++i)
         {
             int revidx = DEPTH-1-i;
-            if(sync and revidx > depth_index)
+            if(false and sync and revidx > depth_index)
             {
                 digits[revidx] = 8;
             }
@@ -334,6 +334,23 @@ void Pleiades::step() {
      * the operation of the module, which comes second.
      * */
 
+    /* TODO: (Functional)
+     * Make knobs update appropriately on load/init
+     * Make knobs able to have reasonable default values depending on function
+     * Sync causes invalid stepping behavior at lower depth
+     * depth stepping needs to update center knob or allow for step targeting
+     * Something's wrong with triggering...
+     * Something's wrong with slew...
+     *
+     * */
+
+    /* TODO: (UI)
+     * Make address display not suck
+     * Implement mouse wheel control of encoder knobs
+     *
+     *
+     * */
+
     float deltaTime = engineGetSampleTime();
 
     /*  +INPUT_PROCESSING */
@@ -376,8 +393,14 @@ void Pleiades::step() {
    
     //MODE 2
 
-    //MODE 3
+    //MODE 3 (Temporary depth control)
     
+    if(encoder_delta[PARAM_MODE+3] != 0)
+    {
+        depth_idx += encoder_delta[PARAM_MODE+3];
+        DPRINT(DMAIN, "DEPTH INDEX CHANGED %i\n", depth_idx);
+    }
+
     //MODE 4
 
     //MODE 5 (Center knob function)
@@ -475,7 +498,7 @@ void Pleiades::step() {
     bool sync = false;
     if(inputs[INPUT_CLOCK].active)
     {
-        if(param_mode[6] == 0)
+        if(encoders[PARAM_MODE+6]->getValue() == 0)
         {
             if(clockTrigger.process(input_clock))
             {
@@ -495,8 +518,6 @@ void Pleiades::step() {
     {
         clockCounter = 0;
     }
-
-    Address* add = &(address);
 
 
     if (counter < clockPeriod)
@@ -520,13 +541,14 @@ void Pleiades::step() {
         }
   */      
 
+        //Step sequence
         int rolls = address.step(depth_idx+1, sync);
         for(int i = 0; i < N; ++ i)
         {
             sequences[i].step(rolls);
         }
 
-
+        //Update address lights
         int prev = 1;
         for(int i = 0; i < DEPTH; ++i)
         {
@@ -534,24 +556,27 @@ void Pleiades::step() {
             {
                 lights[LIGHT_ADDRESS+i*7+j].value= 
                     ( 
-                     (j+1 <= add->digits[i] and j+1 >= prev) or
-                     (j+1 >= add->digits[i] and j+1 <= prev)
+                     (j+1 <= address.digits[i] and j+1 >= prev) or
+                     (j+1 >= address.digits[i] and j+1 <= prev)
                       ?.1:0);
-                if(j+1 == add->digits[i])
+                if(j+1 == address.digits[i])
                     lights[LIGHT_ADDRESS+i*7+j].value= 1;
            }
-            prev =  add->digits[i];
+           prev =  address.digits[i];
         }
 
-//        printf("%i\n", (unsigned char)(param_mode[4]));
-        output_out[7] = add->digits[(unsigned char)(param_mode[4])]-1;
 
+//        printf("%i\n", (unsigned char)(param_mode[4]));
+        output_out[7] = address.digits[encoders[PARAM_MODE+4]->getValue()]-1;
+
+        //Update port lights
         for(int i = 0; i < N; ++i)
         {
             lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0);
             lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0);
         }
 
+        //Generate outputs
         for(int i = 0; i < N; ++ i)
         {
             float val =sequences[i].get_value(address, sequences[(i+1)%7]);
@@ -560,33 +585,7 @@ void Pleiades::step() {
         }
         DPRINT(DSEQ, "\n");
 
-        /*
-        if(counter < 49*7+2)
-        {
-            ++counter;
-            int res= address.step();
-            for (int i = 0 ; i < DEPTH; ++i)
-            {
-                if ((res&(1<<(DEPTH-i-1))) == 0)
-                {
-                    printf(" ");
-                }
-                else
-                {
-                    printf("V");
-                }
-            }
-            printf("\n", res);
-            address.print();
-            for (int i = 0; i < DEPTH+1; ++i)
-            {
-                printf("%08x\n", address.get_address(i));
-            }
-        }   
-    */
     }
-
-    //
 
 
     /*  +OUTPUT_PROCESSING */
