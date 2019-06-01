@@ -269,6 +269,13 @@ int EncoderController::process()
     return result;
 }
 
+void EncoderController::reset()
+{
+    delta += defaults[index]-values[index];
+    values[index] = defaults[index];
+    update(0);
+}
+
 int EncoderController::getValue()
 {
     return values[index];

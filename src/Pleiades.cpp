@@ -314,6 +314,9 @@ struct Pleiades : Module {
     bool ready = false;
 
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+
+    void updateStepKnobs();
+
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -322,6 +325,23 @@ struct Pleiades : Module {
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
+void Pleiades::updateStepKnobs()
+{
+    for(int i = 0 ; i < 7; ++i)
+    {
+        int step_index = address.get_sub_address(depth_idx+1, i+1);
+        unsigned char value_index = encoders[PARAM_MODE+1]->getValue();                   
+        unsigned char* step_values = 
+            sequences[seq_idx].steps[step_index].values;
+
+        encoders[PARAM_STEP+i]->setValues(step_values);
+        DPRINT(DMAIN, "STEP UPDATED %o %i %i\n", 
+                step_index, value_index,
+                step_values[value_index]
+                );
+    }
+
+}
 
 void Pleiades::step() {
     if(!ready) return;
@@ -341,6 +361,8 @@ void Pleiades::step() {
      * depth stepping needs to update center knob or allow for step targeting
      * Something's wrong with triggering...
      * Something's wrong with slew...
+     * Knob reset needs to update delta value. Should only reset current index.
+     *
      *
      * */
 
@@ -436,20 +458,7 @@ void Pleiades::step() {
         {
             case 0: //Step select
                 address.digits[depth_idx] = center_value+1;
-                for(int i = 0 ; i < 7; ++i)
-                {
-                    int step_index = address.get_sub_address(depth_idx+1, i+1);
-                    unsigned char value_index = encoders[PARAM_MODE+1]->getValue();                   
-                    unsigned char* step_values = 
-                        sequences[seq_idx].steps[step_index].values;
-
-                    encoders[PARAM_STEP+i]->setValues(step_values);
-                    DPRINT(DMAIN, "STEP UPDATED %o %i %i\n", 
-                            step_index, value_index,
-                            step_values[value_index]
-                            );
-                }
-                        
+                updateStepKnobs();
             break;
             case 1: //
             break;
@@ -459,6 +468,7 @@ void Pleiades::step() {
             break;
             case 4: //Sequence Select
                 seq_idx = center_value;
+                updateStepKnobs();
             break;
             case 5:
             break;
@@ -689,6 +699,8 @@ struct PleiadesWidget : ModuleWidget {
             module->encoders[Pleiades::PARAM_STEP+i]->setColor(
                 module->encoders[Pleiades::PARAM_MODE+1]);
         }
+
+        module->updateStepKnobs();
 
         module->ready = true;
     }

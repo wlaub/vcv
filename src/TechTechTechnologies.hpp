@@ -230,14 +230,7 @@ struct EncoderController {
 
     int getValue();
 
-    void reset()
-    {
-         for (int i = 0; i < 7; ++i)
-        {
-            values[i] = defaults[i];
-        }
-        update(0);
-    }
+    void reset();
 
     void reset(unsigned char i)
     { //TODO: Should be called when the widget gets reset
