@@ -71,7 +71,7 @@ struct Step
         float tone_values[2];
         tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 -3;
         tone_values[1] = values[6]+tones[values[5]] - 1;
-tone_values[1] = 10.0;
+
         unsigned char trigger = triggerStep->values[4];
 
         unsigned char tlast = trigger+1;
@@ -404,11 +404,14 @@ void Pleiades::step() {
      * */
 
     /* TODO: (Functional)
-     * Make knobs update appropriately on load/init
+     * Triggering currently doesn't inherit root step values, which causes
+     *     conflict with reasonable default values and excepted behavior.
+     *     Need to either compute entire primary and secondary value for stack
+     *     before computing trigging effects or drop secondary value
+     *     functionality. When all values are 0, triggering should happen.
      * Make knobs able to have reasonable default values depending on function
      * Sync causes invalid stepping behavior at lower depth
      * depth stepping needs to update center knob or allow for step targeting
-     * Something's wrong with triggering...
      * Something's wrong with slew...
      * Knob reset needs to update delta value. Should only reset current index.
      *
