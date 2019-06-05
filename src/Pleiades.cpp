@@ -4,6 +4,7 @@
 #define DEPTH 6
 #define DMAIN true
 #define DSEQ false
+#define DTEMP false
 
 /*
 #define SDPRINT(DSEQ, x, ...) \
@@ -25,7 +26,12 @@ struct Step
     // 6 : secondary octave
     unsigned char values[7]={0,0,0,3,0,0,1};
 
-    float getValue(Step triggerStep, int index, int subindex, float* tones, float prevTone)
+    void setValue(int index, unsigned char val)
+    {
+        values[index] = val;
+    }
+
+    float getValue(Step* triggerStep, int index, int subindex, float* tones, float prevTone)
     {
         //index and subindex must be 1-7
         //tones is an array mapping tone number to value
@@ -65,7 +71,8 @@ struct Step
         float tone_values[2];
         tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 -3;
         tone_values[1] = values[6]+tones[values[5]] - 1;
-        unsigned char trigger = triggerStep.values[4];
+tone_values[1] = 10.0;
+        unsigned char trigger = triggerStep->values[4];
 
         unsigned char tlast = trigger+1;
         unsigned char tfirst = 8-index;
@@ -74,7 +81,8 @@ struct Step
 
         DPRINT(DSEQ, "    %i%%%i = %i\n", tfirst, tlast, triggerIndex);
 
-        triggerIndex= triggerIndex ==0 ? 0: 1;
+        DPRINT(DTEMP, "%i\n", triggerIndex);
+        triggerIndex = ((triggerIndex == 0) ? 0 : 1);
 
         DPRINT(DSEQ, "    ");
         for(int i = 0; i < 7; ++i)
@@ -84,7 +92,6 @@ struct Step
         DPRINT(DSEQ, "\n");
         DPRINT(DSEQ, "    Param: %i, %i, %f\n", index, subindex, prevTone);
         DPRINT(DSEQ, "    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
-
 
         if(!isfinite(prevTone)) return tone_values[triggerIndex];
 
@@ -104,6 +111,7 @@ struct Address
 //DEPTH is the number of levels excluding root step, so there are DEPTH+1 total
 //steps to add together at each point in the sequence
 //
+//In digits, index 0 is the lowest level (largest step size)
 //
     unsigned char digits[DEPTH] = {1};
 
@@ -204,22 +212,41 @@ struct Address
 
 struct Sequence
 {
-    struct Address address;
     struct Step* steps;
     //struct Step steps[(1<<3*DEPTH)];
     
     float prevTone[DEPTH+1] = {0};
     float prevValue[DEPTH+1] = {0};
 
+    int length = 1<<(3*DEPTH);
+
     Sequence()
     {
-        steps = new struct Step[(1<<(3*DEPTH))];
+        steps = new struct Step[length];
+
         for (int i = 0; i < DEPTH; ++i)
         {
             prevTone[i] = 0;
             prevValue[i] = 0;
         }
         steps[0].values[6] = 6;
+    }
+
+    void checkSteps()
+    {
+        for (int i = 0; i < length; ++i)
+        {
+            for (int j = 0; j < 7; ++j)
+            {
+                if(steps[i].values[j] > 7)
+                {
+                    printf("Error: %i-%i=%i", i, j, steps[i].values[j]);
+                }
+            }
+
+        }
+
+
     }
 
     int step(int rolls)
@@ -236,11 +263,28 @@ struct Sequence
         return 0;
     }
 
-    float get_value(Address fromAdd, Sequence triggerSeq)
+    Step getStep(int index)
+    {
+        //TODO: Move step retrieval to here
+        if (index >= length)
+        {
+            printf("SEQUENCE INDEX ERROR: %o >i= %o\n", index, length);
+        }
+        return steps[index];
+    }
+
+    float get_value(Address fromAdd, Sequence triggerSeq, float* tones)
     {
         float result = 0;
 
-        float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7}; //TODO: Temporary
+
+/*
+        for (int i = 0; i < DEPTH; ++i)
+        {
+            printf("%i", fromAdd.digits[i]);
+        }
+        printf("\n");
+*/
 
         fromAdd.print();
 
@@ -248,21 +292,24 @@ struct Sequence
         {
             int index = 1;
             int subindex = 7;
+
             if(i < DEPTH-1)
-                index = address.digits[i+1];
+                index = fromAdd.digits[i+1];
             if(i < DEPTH-2)
-                subindex = address.digits[i+2];
+                subindex = fromAdd.digits[i+2];
+
             int addIdx = fromAdd.get_address(i+1);
-            Step mainStep = steps[addIdx];
-            Step triggerStep = triggerSeq.steps[addIdx];
+            Step mainStep = getStep(addIdx);
+            Step triggerStep = triggerSeq.getStep(addIdx);
 
             float prevToneLocal = NAN;
             if (i < DEPTH-1)
                 prevToneLocal = prevTone[i+1];
 
+
             DPRINT(DSEQ, "0o%07o:\n", addIdx);
             float stepVal = mainStep.getValue(
-                triggerStep, index, subindex, 
+                &triggerStep, index, subindex, 
                 tones, prevToneLocal
                 );
             prevValue[i+1] = stepVal;
@@ -296,7 +343,7 @@ struct Pleiades : Module {
     int seq_idx = 0; //currently selected sequence
 
     struct Address address;
-    int depth_idx = 2;
+    int depth_idx = DEPTH-4;
 
     struct EncoderController* encoders[NUM_PARAMS];
     int encoder_delta[NUM_PARAMS];
@@ -312,6 +359,8 @@ struct Pleiades : Module {
 
     bool update_steps = false;
     bool ready = false;
+
+    float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 
@@ -379,8 +428,6 @@ void Pleiades::step() {
     #include "Pleiades_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
-
-
     int N = 7;
 
     bool there_are_updates = false;
@@ -440,8 +487,10 @@ void Pleiades::step() {
         {
             int step_index = address.get_sub_address(depth_idx+1, i+1);
             unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
-            sequences[seq_idx].steps[step_index].values[value_index] 
-                = encoders[PARAM_STEP+i]->getValue();
+            sequences[seq_idx].steps[step_index].setValue(
+                value_index,
+                encoders[PARAM_STEP+i]->getValue()
+                );
 
             unsigned char* step_values = 
                 sequences[seq_idx].steps[step_index].values;
@@ -499,10 +548,6 @@ void Pleiades::step() {
         params[PARAM_MODE+5].changed = false;
     }
  */
-
-
-
-
 
 
     bool sync = false;
@@ -582,14 +627,15 @@ void Pleiades::step() {
         //Update port lights
         for(int i = 0; i < N; ++i)
         {
-            lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0);
-            lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0);
+            lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0); //Value target
+            lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0); //Trigger target
         }
 
         //Generate outputs
         for(int i = 0; i < N; ++ i)
         {
-            float val =sequences[i].get_value(address, sequences[(i+1)%7]);
+            DPRINT(DTEMP, "TSEQ: %i\n", (i+1)%7);
+            float val = sequences[i].get_value(address, sequences[(i+1)%7], tones);
             output_out[i] = val;
             DPRINT(DSEQ, "=%f\n", val);
         }
@@ -642,7 +688,7 @@ struct PleiadesWidget : ModuleWidget {
 //        Vec(163.999995, 204.0), 
         Rect cbox = module->encoders[Pleiades::PARAM_CENTER]->widget->box;
 
-        //        float ypos = ;
+        //Address indicator lights
         float radius = 25-7;
         for (int i = 0; i < DEPTH; ++i)
         {
@@ -657,13 +703,9 @@ struct PleiadesWidget : ModuleWidget {
                          radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
                     module, Pleiades::LIGHT_ADDRESS+i*7+j
                 );
-                int k = i+1;
                 if (i > 2)
                 {
                 ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
-//                        (k&1),
-//                        (k&2)>>1,
-//                        (k&4)>>2,
                         1,.5,0,
                         1)); 
                 }
