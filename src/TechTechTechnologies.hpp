@@ -229,6 +229,7 @@ struct EncoderController {
     void setValues(unsigned char* v);
 
     int getValue();
+    int getValue(int idx);
 
     void reset();
 

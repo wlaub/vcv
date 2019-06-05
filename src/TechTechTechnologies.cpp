@@ -280,6 +280,10 @@ int EncoderController::getValue()
 {
     return values[index];
 }
+int EncoderController::getValue(int idx)
+{
+    return values[idx];
+}
 
 void EncoderController::setColor(EncoderController* src)
 {

@@ -470,6 +470,10 @@ void Pleiades::step() {
     if(encoder_delta[PARAM_MODE+3] != 0)
     {
         depth_idx += encoder_delta[PARAM_MODE+3];
+        int center_value = encoders[PARAM_CENTER]->getValue(0);
+        address.digits[depth_idx] = center_value+1;
+        updateStepKnobs();
+
         DPRINT(DMAIN, "DEPTH INDEX CHANGED %i\n", depth_idx);
     }
 
