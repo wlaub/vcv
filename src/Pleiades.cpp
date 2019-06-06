@@ -420,11 +420,6 @@ void Pleiades::updateCenterFromStep()
      
 }
 
-void Pleiades::mode0Callback(unsigned char new_value)
-{
-    printf("Hello there! %i\n", new_value);
-}
-
 void Pleiades::step() {
     if(!ready) return;
 
@@ -607,18 +602,6 @@ void Pleiades::step() {
     
     //CONFIG 2
 
-        /*
-    TTTEncoder* knob = &(params[PARAM_CENTER]);
-    bool snap = knob->snap;
-
-    bool snap = (Knob)(params[PARAM_CENTER]).snap;
-
-    if (params[PARAM_MODE+5].changed)
-    {
-        params[PARAM_CENTER].setIndex(params[PARAM_MODE+5].value);
-        params[PARAM_MODE+5].changed = false;
-    }
- */
 
 
     bool sync = false;
@@ -653,19 +636,6 @@ void Pleiades::step() {
     else
     {
         counter = 0;
-/* Root step config demo
-        for(int i = 0; i < N; ++i)
-        {
-            Step* tstep = &(sequences[i].steps[0]);
-
-    //        tstep->values[3] = 1;        
-            for (int i = 0; i < 7; ++i)
-            {
-                tstep->values[i] = char(param_mode[i]);
-            }
-
-        }
-  */      
 
         //Step sequence
         int rolls = address.step(depth_idx+1, sync);
@@ -813,8 +783,6 @@ struct PleiadesWidget : ModuleWidget {
             module->encoders[Pleiades::PARAM_STEP+i]->setColor(
                 module->encoders[Pleiades::PARAM_MODE+1]);
         }
-
-//module->encoders[Pleiades::PARAM_MODE+0]->updateCallback = Pleiades::mode0Callback;
 
         module->updateStepKnobs();
 

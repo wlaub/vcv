@@ -251,11 +251,6 @@ void EncoderController::update(int amount)
     if(values[index] == 255) values[index] = 6;
     else if(values[index] == 7) values[index] = 0;
 
-    if(updateCallback != 0)
-    {
-        updateCallback(values[index]);
-    }
-
     widget->setValue(values[index]);
 }
 
