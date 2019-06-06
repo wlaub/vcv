@@ -210,6 +210,8 @@ struct EncoderController {
     unsigned char index = 0;
     int delta = 0;
 
+    void (*updateCallback)(unsigned char new_value) = 0;
+
     EncoderController(TTTEncoder* w, const unsigned char* defs)
     {
         widget = w;

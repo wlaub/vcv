@@ -6,6 +6,8 @@
 #define DSEQ false
 #define DTEMP false
 
+#define CENTER_STEP_INDEX 1
+
 /*
 #define SDPRINT(DSEQ, x, ...) \
 #ifdef x \
@@ -14,6 +16,16 @@ printf(...);        \
 */
 
 #define DPRINT(x, ...) if(x) printf(__VA_ARGS__);
+
+const float MODE_COLORS[7][3] = {
+    {0,0,1},
+    {0,1,0},
+    {0,1,1},
+    {1,0,0},
+    {1,1,0},
+    {1,0,1},
+    {1,1,1}
+    };
 
 struct Step
 {
@@ -365,8 +377,11 @@ struct Pleiades : Module {
     Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 
     void updateStepKnobs();
+    void updateCenterFromStep();
 
     void step() override;
+
+    void mode0Callback(unsigned char new_value);
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - toJson, fromJson: serialization of internal data
@@ -392,6 +407,24 @@ void Pleiades::updateStepKnobs()
 
 }
 
+void Pleiades::updateCenterFromStep()
+{ //Load the currently selected root step value into the center knob
+  //Jesus what a fucking mess
+    int step_index = address.get_address(depth_idx+1);
+    unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
+    unsigned char param_value = sequences[seq_idx].steps[step_index].values[value_index];
+
+    encoders[PARAM_CENTER]->values[CENTER_STEP_INDEX] = param_value;
+    encoders[PARAM_CENTER]->setIndex(CENTER_STEP_INDEX);   
+    DPRINT(DMAIN, "CENTER KNOB VALUE UPDATED %i\n", param_value);
+     
+}
+
+void Pleiades::mode0Callback(unsigned char new_value)
+{
+    printf("Hello there! %i\n", new_value);
+}
+
 void Pleiades::step() {
     if(!ready) return;
 
@@ -411,10 +444,8 @@ void Pleiades::step() {
      *     functionality. When all values are 0, triggering should happen.
      * Make knobs able to have reasonable default values depending on function
      * Sync causes invalid stepping behavior at lower depth
-     * depth stepping needs to update center knob or allow for step targeting
-     * Something's wrong with slew...
      * Knob reset needs to update delta value. Should only reset current index.
-     *
+     * 
      *
      * */
 
@@ -461,6 +492,10 @@ void Pleiades::step() {
         {
             encoders[PARAM_STEP+i]->setIndex(function_index);
         }
+        if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
+        {
+            updateCenterFromStep();
+        }
     }
    
     //MODE 2
@@ -483,6 +518,23 @@ void Pleiades::step() {
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
         encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
+        if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
+        {
+            updateCenterFromStep();
+            encoders[PARAM_CENTER]->setColor(
+                MODE_COLORS[1][0],
+                MODE_COLORS[1][1],
+                MODE_COLORS[1][2]
+                );
+        }
+        else
+        {
+            encoders[PARAM_CENTER]->setColor(
+                MODE_COLORS[5][0],
+                MODE_COLORS[5][1],
+                MODE_COLORS[5][2]
+                );
+        }
     }
 
     //MODE 6
@@ -516,7 +568,19 @@ void Pleiades::step() {
                 address.digits[depth_idx] = center_value+1;
                 updateStepKnobs();
             break;
-            case 1: //
+            case 1: //Root step control
+            /*
+                int step_index = address.get_address(depth_idx);
+                unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
+                sequences[seq_idx].steps[step_index].setValue(
+                    value_index,
+                    center_value,
+                    );
+
+                unsigned char* step_values = 
+                    sequences[seq_idx].steps[step_index].values;
+                DPRINT(DMAIN, "PARAM CHANGE %o %i %i\n", step_index, value_index, step_values[value_index]);
+            */
             break;
             case 2:
             break;
@@ -733,13 +797,14 @@ struct PleiadesWidget : ModuleWidget {
             addChild(light);        
         }
 
-        module->encoders[Pleiades::PARAM_MODE+0]->setColor(0,0,1);
-        module->encoders[Pleiades::PARAM_MODE+1]->setColor(0,1,0);
-        module->encoders[Pleiades::PARAM_MODE+2]->setColor(0,1,1);
-        module->encoders[Pleiades::PARAM_MODE+3]->setColor(1,0,0);
-        module->encoders[Pleiades::PARAM_MODE+4]->setColor(1,1,0);
-        module->encoders[Pleiades::PARAM_MODE+5]->setColor(1,0,1);
-        module->encoders[Pleiades::PARAM_MODE+6]->setColor(1,1,1);
+        for(int i = 0; i < 7; ++i)
+        {
+            module->encoders[Pleiades::PARAM_MODE+i]->setColor(
+                    MODE_COLORS[i][0],
+                    MODE_COLORS[i][1],
+                    MODE_COLORS[i][2]
+                    );
+        }
 
         module->encoders[Pleiades::PARAM_CENTER]->setColor(
             module->encoders[Pleiades::PARAM_MODE+5]);
@@ -748,6 +813,8 @@ struct PleiadesWidget : ModuleWidget {
             module->encoders[Pleiades::PARAM_STEP+i]->setColor(
                 module->encoders[Pleiades::PARAM_MODE+1]);
         }
+
+//module->encoders[Pleiades::PARAM_MODE+0]->updateCallback = Pleiades::mode0Callback;
 
         module->updateStepKnobs();
 

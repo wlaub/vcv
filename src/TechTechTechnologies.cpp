@@ -250,13 +250,21 @@ void EncoderController::update(int amount)
     delta += amount;
     if(values[index] == 255) values[index] = 6;
     else if(values[index] == 7) values[index] = 0;
+
+    if(updateCallback != 0)
+    {
+        updateCallback(values[index]);
+    }
+
     widget->setValue(values[index]);
 }
 
 void EncoderController::setValues(unsigned char* v)
 { //
     for(int i = 0; i < 7; ++i)
+    {
         values[i] = v[i];
+    }
     widget->setValue(values[index]);
 }
 
