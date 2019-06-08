@@ -135,7 +135,7 @@ void TTTEncoder::draw(NVGcontext *vg)
 void TTTEncoder::fromJson(json_t *rootJ) {
     json_t *valueJ = json_object_get(rootJ, "value");
     if (valueJ)
-        controller->values[controller->index] = char(json_number_value(valueJ));
+        controller->values[controller->group][controller->index] = char(json_number_value(valueJ));
         setValue(json_number_value(valueJ));
 }
 
@@ -246,21 +246,28 @@ void TTTEncoder::step() {
 
 void EncoderController::update(int amount)
 { //TODO: Called by the widget to increment or decrement
-    values[index] += amount;
+    values[group][index] += amount;
     delta += amount;
-    if(values[index] == 255) values[index] = 6;
-    else if(values[index] == 7) values[index] = 0;
+    if(values[group][index] == 255) values[group][index] = 6;
+    else if(values[group][index] == 7) values[group][index] = 0;
 
-    widget->setValue(values[index]);
+    widget->setValue(values[group][index]);
 }
 
-void EncoderController::setValues(unsigned char* v)
+void EncoderController::setValues(unsigned char* v, unsigned char tgroup)
 { //
+    if(tgroup >= ngroup)
+    {
+        tgroup = group;
+    }
     for(int i = 0; i < 7; ++i)
     {
-        values[i] = v[i];
+        values[tgroup][i] = v[i];
     }
-    widget->setValue(values[index]);
+    if(tgroup == group)
+    {
+        widget->setValue(values[group][index]);
+    }
 }
 
 int EncoderController::process()
@@ -272,20 +279,30 @@ int EncoderController::process()
     return result;
 }
 
+void EncoderController::clear()
+{
+    for(int i = 0; i < ngroup; ++i)
+    {
+        for(int j = 0; j < 7; ++j)
+            values[i][j] = defaults[j];
+    }
+}
+
+
 void EncoderController::reset()
 {
-    delta += defaults[index]-values[index];
-    values[index] = defaults[index];
-    update(0);
+    delta += defaults[index]-values[group][index];
+    values[group][index] = defaults[index];
+    update(0);   
 }
 
 int EncoderController::getValue()
 {
-    return values[index];
+    return values[group][index];
 }
 int EncoderController::getValue(int idx)
 {
-    return values[idx];
+    return values[group][idx];
 }
 
 void EncoderController::setColor(EncoderController* src)
@@ -299,6 +316,20 @@ void EncoderController::setColor(float r, float g, float b)
     widget->color = nvgRGBAf(r,g,b,1);
     update(0);
 }
+
+void EncoderController::setIndex(unsigned char idx, unsigned char tgroup)
+{ //Changes current index and sets the widget accordingly
+    if(tgroup < ngroup)
+    {
+        group = tgroup;
+    }
+//        if(index == idx) return;
+    index = idx;
+
+    widget->setValue(values[group][idx]);
+}
+
+
 
 // The plugin-wide instance of the Plugin class
 Plugin *plugin;

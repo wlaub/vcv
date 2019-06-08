@@ -204,10 +204,13 @@ struct ITTTEncoder : TTTEncoder {
 };
 
 struct EncoderController {
-    unsigned char values[7];
+    unsigned char ngroup = 2;
+    unsigned char values[2][7];
     unsigned char defaults[7];
     TTTEncoder* widget;
     unsigned char index = 0;
+    unsigned char group = 0;
+
     int delta = 0;
 
     EncoderController(TTTEncoder* w, const unsigned char* defs)
@@ -218,7 +221,7 @@ struct EncoderController {
         {
             defaults[i] = defs[i];
         }
-        reset();
+        clear();
         setIndex(0);
     }
 
@@ -226,25 +229,21 @@ struct EncoderController {
 
     void setColor(EncoderController* src);
     void setColor(float r,float g, float b);
-    void setValues(unsigned char* v);
+    void setValues(unsigned char* v, unsigned char tgroup=255);
 
     int getValue();
     int getValue(int idx);
 
+    void clear();
     void reset();
 
     void reset(unsigned char i)
     { //TODO: Should be called when the widget gets reset
-        values[i] = defaults[i];
+        values[group][i] = defaults[i];
         update(0);
     }
 
-    void setIndex(unsigned char idx)
-    { //Changes current index and sets the widget accordingly
-        if(index == idx) return;
-        index = idx;
-        widget->setValue(values[idx]);
-    }
+    void setIndex(unsigned char idx, unsigned char tgroup=255);
 
     void update(int amount);
 };

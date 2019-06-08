@@ -405,19 +405,13 @@ void Pleiades::updateStepKnobs()
                 );
     }
 
-}
-
-void Pleiades::updateCenterFromStep()
-{ //Load the currently selected root step value into the center knob
-  //Jesus what a fucking mess
     int step_index = address.get_address(depth_idx+1);
-    unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
-    unsigned char param_value = sequences[seq_idx].steps[step_index].values[value_index];
+    unsigned char* step_values = 
+        sequences[seq_idx].steps[step_index].values;
 
-    encoders[PARAM_CENTER]->values[CENTER_STEP_INDEX] = param_value;
-    encoders[PARAM_CENTER]->setIndex(CENTER_STEP_INDEX);   
-    DPRINT(DMAIN, "CENTER KNOB VALUE UPDATED %i\n", param_value);
-     
+    encoders[PARAM_CENTER]->setValues(step_values, 1);
+
+
 }
 
 void Pleiades::step() {
@@ -489,7 +483,7 @@ void Pleiades::step() {
         }
         if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
         {
-            updateCenterFromStep();
+            encoders[PARAM_CENTER]->setIndex(function_index, 1);
         }
     }
    
@@ -512,10 +506,12 @@ void Pleiades::step() {
     //MODE 5 (Center knob function)
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
-        encoders[PARAM_CENTER]->setIndex(params[PARAM_MODE+5].value);
+        encoders[PARAM_CENTER]->setIndex(
+            encoders[PARAM_MODE+5]->getValue(), 0);
         if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
         {
-            updateCenterFromStep();
+            encoders[PARAM_CENTER]->setIndex(
+                encoders[PARAM_MODE+1]->getValue(), 1);
             encoders[PARAM_CENTER]->setColor(
                 MODE_COLORS[1][0],
                 MODE_COLORS[1][1],
