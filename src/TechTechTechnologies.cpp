@@ -156,10 +156,16 @@ void TTTEncoder::onHoverKey(EventHoverKey &e)
     switch (e.key) 
 	{
         case GLFW_KEY_PAGE_UP:
+//        case GLFW_KEY_UP:
 			controller->update(1);
+            e.consumed=true;
+            return;
     	break;
-        case GLFW_KEY_PAGE_DOWN:
+        case GLFW_KEY_DOWN:
+//        case GLFW_KEY_PAGE_DOWN:
 			controller->update(-1);
+            e.consumed=true;
+            return;
     	break;
     }
     RoundBlackKnob::onHoverKey(e);  
