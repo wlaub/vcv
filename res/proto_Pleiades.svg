@@ -180,7 +180,7 @@
      inkscape:cx="189.03562"
      inkscape:cy="203.10333"
      inkscape:document-units="px"
-     inkscape:current-layer="layer12"
+     inkscape:current-layer="layer3"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -4307,12 +4307,12 @@
        inkscape:label="param">
       <desc
          id="desc5112-1-8-1-9-6-29">{
-'min':0,
-'max':7,
+'min':-1,
+'max':1,
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2">ITTTEncoder</title>
+         id="title4026-5-1-2-6-8-2">RoundTinyBlackKnob</title>
     </path>
     <path
        inkscape:connector-curvature="0"

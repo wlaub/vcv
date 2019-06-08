@@ -201,10 +201,10 @@
     addParam(param);
         
 
-    param = ParamWidget::create<ITTTEncoder>(
+    param = ParamWidget::create<RoundTinyBlackKnob>(
         Vec(283.261275, 55.215543), 
         module, Pleiades::PARAM_CONFIG+2,
-        0, 7, 0
+        -1, 1, 0
     );
     center(param,1,1);
     addParam(param);

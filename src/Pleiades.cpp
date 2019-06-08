@@ -435,7 +435,7 @@ void Pleiades::step() {
      * Bulk editing functionality
      * Analog controls
      * 
-     *
+     * 
      * 
      * */
 
@@ -457,8 +457,9 @@ void Pleiades::step() {
     bool there_are_updates = false;
     for(int i = 0; i < NUM_PARAMS; ++i)
     {
-       encoder_delta[i] = encoders[i]->process(); 
-       if(encoder_delta[i] != 0) there_are_updates = true;
+        if(i == PARAM_CONFIG+2) continue;
+        encoder_delta[i] = encoders[i]->process(); 
+        if(encoder_delta[i] != 0) there_are_updates = true;
     }
 
     /***************************/
@@ -689,8 +690,12 @@ void Pleiades::step() {
 struct PleiadesWidget : ModuleWidget {
       
     void addParam(ParamWidget *param) {
+
         params.push_back(param);
         addChild(param);
+        
+        if(param->paramId == Pleiades::PARAM_CONFIG+2) return;
+        
         const unsigned char defs[7] = {0,0,0,0,0,0,0};
         ((Pleiades*)(module))->encoders[param->paramId] = new EncoderController((TTTEncoder*)param, defs);
         ((TTTEncoder*)param)->configureLights();
