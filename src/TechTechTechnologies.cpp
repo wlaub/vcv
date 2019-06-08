@@ -151,6 +151,19 @@ void TTTEncoder::setValue(float v)
     onChange(e);
 }
 
+void TTTEncoder::onHoverKey(EventHoverKey &e) 
+{
+    switch (e.key) 
+	{
+        case GLFW_KEY_PAGE_UP:
+			controller->update(1);
+    	break;
+        case GLFW_KEY_PAGE_DOWN:
+			controller->update(-1);
+    	break;
+    }
+    RoundBlackKnob::onHoverKey(e);  
+}
 
 void TTTEncoder::onDragMove(EventDragMove &e) {
     float range;

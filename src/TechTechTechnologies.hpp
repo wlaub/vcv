@@ -188,6 +188,7 @@ struct TTTEncoder : RoundBlackKnob {
 
     void setValue(float v);
 
+    void onHoverKey(EventHoverKey &e) override;
     void onDragMove(EventDragMove &e) override;
     void reset() override;
     void draw(NVGcontext *vg) override;
