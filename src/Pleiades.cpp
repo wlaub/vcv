@@ -506,25 +506,17 @@ void Pleiades::step() {
     //MODE 5 (Center knob function)
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
-        encoders[PARAM_CENTER]->setIndex(
-            encoders[PARAM_MODE+5]->getValue(), 0);
         if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
         {
             encoders[PARAM_CENTER]->setIndex(
                 encoders[PARAM_MODE+1]->getValue(), 1);
-            encoders[PARAM_CENTER]->setColor(
-                MODE_COLORS[1][0],
-                MODE_COLORS[1][1],
-                MODE_COLORS[1][2]
-                );
+            encoders[PARAM_CENTER]->setColor(encoders[PARAM_MODE+1]);
         }
         else
         {
-            encoders[PARAM_CENTER]->setColor(
-                MODE_COLORS[5][0],
-                MODE_COLORS[5][1],
-                MODE_COLORS[5][2]
-                );
+            encoders[PARAM_CENTER]->setIndex(
+                encoders[PARAM_MODE+5]->getValue(), 0);
+            encoders[PARAM_CENTER]->setColor(encoders[PARAM_MODE+5]);
         }
     }
 
@@ -569,11 +561,6 @@ void Pleiades::step() {
                     value_index,
                     center_value
                     );
-
-//                unsigned char* step_values = 
-//                    sequences[seq_idx].steps[step_index].values;
-                
-//                DPRINT(DMAIN, "PARAM CHANGE %o %i %i\n", step_index, value_index, step_values[value_index]);
             
             break;
             case 2:
