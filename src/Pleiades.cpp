@@ -405,7 +405,7 @@ void Pleiades::updateStepKnobs()
                 );
     }
 
-    int step_index = address.get_address(depth_idx+1);
+    int step_index = address.get_address(depth_idx);
     unsigned char* step_values = 
         sequences[seq_idx].steps[step_index].values;
 
@@ -555,23 +555,26 @@ void Pleiades::step() {
         int center_value = encoders[PARAM_CENTER]->getValue();
         switch(encoders[PARAM_MODE+5]->getValue())
         {
+            int step_index;
+            unsigned char value_index;
             case 0: //Step select
                 address.digits[depth_idx] = center_value+1;
                 updateStepKnobs();
             break;
             case 1: //Root step control
-            /*
-                int step_index = address.get_address(depth_idx);
-                unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
+            
+                step_index = address.get_address(depth_idx);
+                value_index = encoders[PARAM_MODE+1]->getValue();
                 sequences[seq_idx].steps[step_index].setValue(
                     value_index,
-                    center_value,
+                    center_value
                     );
 
-                unsigned char* step_values = 
-                    sequences[seq_idx].steps[step_index].values;
-                DPRINT(DMAIN, "PARAM CHANGE %o %i %i\n", step_index, value_index, step_values[value_index]);
-            */
+//                unsigned char* step_values = 
+//                    sequences[seq_idx].steps[step_index].values;
+                
+//                DPRINT(DMAIN, "PARAM CHANGE %o %i %i\n", step_index, value_index, step_values[value_index]);
+            
             break;
             case 2:
             break;
