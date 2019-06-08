@@ -426,21 +426,22 @@ void Pleiades::step() {
      * */
 
     /* TODO: (Functional)
-     * Triggering currently doesn't inherit root step values, which causes
-     *     conflict with reasonable default values and excepted behavior.
-     *     Need to either compute entire primary and secondary value for stack
-     *     before computing trigging effects or drop secondary value
-     *     functionality. When all values are 0, triggering should happen.
      * Make knobs able to have reasonable default values depending on function
      * Sync causes invalid stepping behavior at lower depth
-     * Knob reset needs to update delta value. Should only reset current index.
+     * Implement note tuning
+     * Implement internal clock control
+     * Implement adaptive exc clock loop filter
+     * 
+     * Bulk editing functionality
+     * Analog controls
      * 
      *
+     * 
      * */
 
     /* TODO: (UI)
      * Make address display not suck
-     * Implement mouse wheel control of encoder knobs
+     * Implement mouse wheel control of encoder knobs - impossible?
      *
      *
      * */
@@ -597,7 +598,12 @@ void Pleiades::step() {
         {
             if(clockTrigger.process(input_clock))
             {
-                basePeriod = basePeriod*.75 + clockCounter*.25;
+                output_out[7] = 10*(clockCounter-basePeriod)/basePeriod;
+//                float loop_rate = 1-pow(10, -clockCounter/10000.);
+                float loop_rate = 1-1/(clockCounter/100+1);
+                loop_rate = 1;
+                basePeriod = basePeriod*(1-loop_rate) + clockCounter*loop_rate;
+
                 clockPeriod = basePeriod*scalePeriod;
                 clockCounter = 0;
                 counter = clockPeriod+1;
@@ -649,7 +655,7 @@ void Pleiades::step() {
 
 
 //        printf("%i\n", (unsigned char)(param_mode[4]));
-        output_out[7] = address.digits[encoders[PARAM_MODE+4]->getValue()]-1;
+        //output_out[7] = address.digits[encoders[PARAM_MODE+4]->getValue()]-1;
 
         //Update port lights
         for(int i = 0; i < N; ++i)
