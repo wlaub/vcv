@@ -36,7 +36,7 @@ struct Step
     // 4 : trigger
     // 5 : secondary tone 
     // 6 : secondary octave
-    unsigned char values[7]={0,0,0,3,0,0,1};
+    unsigned char values[7]={0,0,0,3,0,0,6};
 
     void setValue(int index, unsigned char val)
     {
@@ -405,7 +405,7 @@ void Pleiades::updateStepKnobs()
                 );
     }
 
-    int step_index = address.get_address(depth_idx);
+    int step_index = address.get_address(depth_idx+1);
     unsigned char* step_values = 
         sequences[seq_idx].steps[step_index].values;
 
@@ -555,7 +555,7 @@ void Pleiades::step() {
             break;
             case 1: //Root step control
             
-                step_index = address.get_address(depth_idx);
+                step_index = address.get_address(depth_idx+1);
                 value_index = encoders[PARAM_MODE+1]->getValue();
                 sequences[seq_idx].steps[step_index].setValue(
                     value_index,
