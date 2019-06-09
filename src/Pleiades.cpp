@@ -37,7 +37,7 @@ struct Step
     // 5 : secondary tone 
     // 6 : secondary octave
     unsigned char values[7]={0,0,0,3,0,0,6};
-
+//    unsigned char values[7]={0,0,0,0,0,0,0};
     void setValue(int index, unsigned char val)
     {
         values[index] = val;
@@ -241,7 +241,7 @@ struct Sequence
             prevTone[i] = 0;
             prevValue[i] = 0;
         }
-        steps[0].values[6] = 6;
+//        steps[0].values[6] = 6;
     }
 
     void checkSteps()
@@ -334,6 +334,104 @@ struct Sequence
         return result;
     }
 
+    void* toStr(const char* filename)
+    {
+        char* result;
+
+        unsigned char size = 3;
+        result = new char[length*size];
+
+        for(int i = 0; i < length; ++i)
+        {
+            unsigned int value = 0;
+            for(int j = 0; j < 7; ++j)
+            {
+                value <<=3;
+                value |= steps[i].values[j]&0x07;
+            }
+
+/*            if(value != 0)
+            {
+                printf("<--- %o @ %i\n", value, i);
+            }*/
+
+            for(int j = 0; j < size; ++j)
+            {
+                result[size*i+j] = (value & 0xff);
+                if((value & 0xff) != 0)
+/*                {
+                    printf("VALUE %x @ %i (%o) \n", result[size*i+j]&0xff, size*i+j, value);
+                }*/
+ 
+                value >>=8;
+
+            }
+
+        }
+        printf("\nSAVE %i\n", length);
+
+        std::string settingsFilename = assetLocal(filename);
+        FILE *file = fopen(settingsFilename.c_str(), "wb");
+        if (file) {
+            fwrite(result, 1, length*size, file);
+        }
+
+        delete[] result;
+    }
+
+    void fromStr(const char* filename)
+    {
+
+        char* string;
+
+        unsigned char size = 3;
+        string = new char[length*size];
+
+
+        std::string settingsFilename = assetLocal(filename);
+        FILE *file = fopen(settingsFilename.c_str(), "rb");
+        if (file) {
+            fread(string, 1, length*size, file);
+        }
+
+
+        for(int i = 0; i < length; ++i)
+        {
+            unsigned int value = 0;
+            for(int j = 0; j < size; ++j)
+            {
+                value <<= 8;
+                value |= (string[size*i+size-1-j]&0xff);
+                /*if(string[size*i+size-1-j]&0xff != 0)
+                {
+                    printf("VALUE %x @ %i (%o)\n", string[size*i+size-1-j]&0xff, size*i+size-1-j, value);
+                }*/
+ 
+
+            }
+            /*
+            if(value != 0)
+            {
+                 printf("---> %o @ %i\n", value, i);                   
+            }*/
+
+            for(int j = 0; j < 7; ++j)
+            {
+               /* if(value != 0)
+                {
+                    printf("-- %i\n", value&0x07);
+                }*/
+                steps[i].values[6-j] = value&0x07;
+                value >>=3;
+            }
+       }
+
+        delete[] string;
+
+        //printf(string);
+        printf("LOAD\n");
+    }
+
 };
 
 struct Pleiades : Module {
@@ -383,11 +481,56 @@ struct Pleiades : Module {
 
     void mode0Callback(unsigned char new_value);
 
+    json_t *toJson() override;
+    void fromJson(json_t *rootJ) override;
+
     // For more advanced Module features, read Rack's engine.hpp header file
     // - toJson, fromJson: serialization of internal data
     // - onSampleRateChange: event triggered by a change of sample rate
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
+
+json_t* Pleiades::toJson()
+{
+    json_t *rootJ = json_object();
+
+    char tstr[256];
+    char filename[256];
+
+    for(int i = 0; i < 7; ++i)
+    {
+        sprintf(tstr, "seq_%i", i);
+        sprintf(filename, "PleiadesSeq_%i.dat", i);
+        sequences[i].toStr(filename);
+        
+        json_object_set_new(rootJ, tstr,
+            json_string(filename)
+            );
+    }
+
+    return rootJ;
+}
+
+
+void Pleiades::fromJson(json_t *rootJ)
+{
+    char tstr[256];
+    Module::fromJson(rootJ);
+
+    for(int i = 0; i < 7; ++i)
+    {
+        sprintf(tstr, "seq_%i", i);       
+        sequences[i].fromStr(json_string_value(
+            json_object_get(rootJ, tstr)
+            ));
+    }
+
+    updateStepKnobs();
+
+}
+
+
+
 
 void Pleiades::updateStepKnobs()
 {
@@ -426,6 +569,7 @@ void Pleiades::step() {
      * */
 
     /* TODO: (Functional)
+     * Somehow seq_idx gets set when changing depth to -1...
      * Make knobs able to have reasonable default values depending on function
      * Sync causes invalid stepping behavior at lower depth
      * Implement note tuning
