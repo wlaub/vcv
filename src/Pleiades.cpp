@@ -481,8 +481,12 @@ struct Pleiades : Module {
 
     void mode0Callback(unsigned char new_value);
 
+    TextField* seq_name;
+
     json_t *toJson() override;
     void fromJson(json_t *rootJ) override;
+    
+
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - toJson, fromJson: serialization of internal data
@@ -497,10 +501,15 @@ json_t* Pleiades::toJson()
     char tstr[256];
     char filename[256];
 
+    json_object_set_new(rootJ, "seq_name",
+        json_string(seq_name->text.c_str())
+        );
+
+
     for(int i = 0; i < 7; ++i)
     {
         sprintf(tstr, "seq_%i", i);
-        sprintf(filename, "PleiadesSeq_%i.dat", i);
+        sprintf(filename, "PleiadesSeq_%s_%i.dat", seq_name->text.c_str(),i);
         sequences[i].toStr(filename);
         
         json_object_set_new(rootJ, tstr,
@@ -516,6 +525,9 @@ void Pleiades::fromJson(json_t *rootJ)
 {
     char tstr[256];
     Module::fromJson(rootJ);
+
+    seq_name->text = json_string_value(json_object_get(rootJ, "seq_name"));
+    seq_name->onTextChange();
 
     for(int i = 0; i < 7; ++i)
     {
@@ -832,7 +844,8 @@ void Pleiades::step() {
 
 
 struct PleiadesWidget : ModuleWidget {
-      
+    TextField* seq_name;  
+
     void addParam(ParamWidget *param) {
 
         params.push_back(param);
@@ -926,6 +939,13 @@ struct PleiadesWidget : ModuleWidget {
         }
 
         module->updateStepKnobs();
+
+        seq_name = new TextField();
+        float w = 75;
+        seq_name->box.pos = Vec(box.size.x/2-w/2, 5);
+        seq_name->box.size = Vec(w, 20);
+        addChild(seq_name);
+        module->seq_name = seq_name;
 
         module->ready = true;
     }

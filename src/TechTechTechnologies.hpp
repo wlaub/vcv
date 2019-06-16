@@ -205,8 +205,8 @@ struct ITTTEncoder : TTTEncoder {
 };
 
 struct EncoderController {
-    unsigned char ngroup = 2;
-    unsigned char values[2][7];
+    unsigned char ngroup = 3;
+    unsigned char values[3][7];
     unsigned char defaults[7];
     TTTEncoder* widget;
     unsigned char index = 0;
