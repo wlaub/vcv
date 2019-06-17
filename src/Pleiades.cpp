@@ -375,6 +375,7 @@ struct Sequence
         if (file) {
             fwrite(result, 1, length*size, file);
         }
+        fclose(file);
 
         delete[] result;
     }
@@ -393,7 +394,7 @@ struct Sequence
         if (file) {
             fread(string, 1, length*size, file);
         }
-
+        fclose(file);
 
         for(int i = 0; i < length; ++i)
         {
