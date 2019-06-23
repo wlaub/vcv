@@ -32,7 +32,8 @@ struct Athena : Module {
     Label* testLabel;
 
 
-    Athena() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS) {}
+    Athena() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -104,7 +105,8 @@ struct AthenaWidget : ModuleWidget
 };
 
 
-AthenaWidget::AthenaWidget(Athena* module) : ModuleWidget(module) {
+AthenaWidget::AthenaWidget(Athena* module) {
+		setModule(module);
     box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
     
     {

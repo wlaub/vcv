@@ -49,7 +49,8 @@ struct Vulcan : Module {
     float phase[2] = {0};
     int dir[2] = {1};
 
-	Vulcan() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Vulcan() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -208,7 +209,8 @@ struct VulcanWidget : ModuleWidget
 
 
 
-VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
+VulcanWidget::VulcanWidget(Vulcan* module) {
+		setModule(module);
 	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{

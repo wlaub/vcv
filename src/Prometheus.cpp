@@ -34,7 +34,8 @@ struct Prometheus : Module {
 
     unsigned short buffer[NLFSR];
 
-	Prometheus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Prometheus() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -110,7 +111,8 @@ struct PrometheusWidget : ModuleWidget
 };
 
 
-PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
+PrometheusWidget::PrometheusWidget(Prometheus* module) {
+		setModule(module);
 //	Prometheus *module = new Prometheus();
 //	setModule(module);
 	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);

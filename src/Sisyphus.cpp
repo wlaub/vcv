@@ -47,7 +47,8 @@ struct Sisyphus : Module {
 
     cbuf buffer[N];
 
-	Sisyphus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Sisyphus() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -170,7 +171,8 @@ struct SisyphusWidget : ModuleWidget
 };
 
 
-SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
+SisyphusWidget::SisyphusWidget(Sisyphus* module) {
+		setModule(module);
 //	Sisyphus *module = new Sisyphus();
 //	setModule(module);
 	box.size = Vec(20* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);

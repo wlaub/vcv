@@ -32,7 +32,8 @@ struct Ouroboros : Module {
 
     double phase[N] = {0};
 
-	Ouroboros() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Ouroboros() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -105,7 +106,8 @@ struct OuroborosWidget : ModuleWidget
 };
 
 
-OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
+OuroborosWidget::OuroborosWidget(Ouroboros* module) {
+		setModule(module);
 //	Ouroboros *module = new Ouroboros();
 //	setModule(module);
 	box.size = Vec(12* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);

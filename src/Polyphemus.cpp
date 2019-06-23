@@ -60,7 +60,8 @@ struct Polyphemus : Module {
 
     float stepphase = 0;
 
-	Polyphemus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Polyphemus() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -233,7 +234,8 @@ struct PolyphemusWidget : ModuleWidget
 };
 
 
-PolyphemusWidget::PolyphemusWidget(Polyphemus* module) : ModuleWidget(module) {
+PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
+		setModule(module);
 //	Polyphemus *module = new Polyphemus();
 //	setModule(module);
 	box.size = Vec(18* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);

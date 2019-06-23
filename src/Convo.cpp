@@ -25,7 +25,8 @@ struct Convo : Module {
 
    
 
-    Convo() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+    Convo() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -113,7 +114,8 @@ void Convo::step() {
 
 
 struct ConvoWidget : ModuleWidget {
-    ConvoWidget(Convo *module) : ModuleWidget(module) {
+    ConvoWidget(Convo *module) {
+		setModule(module);
         box.size = Vec(10.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {

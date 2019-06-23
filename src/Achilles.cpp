@@ -29,7 +29,8 @@ struct Achilles : Module {
 
 
 
-    Achilles() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+    Achilles() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -263,7 +264,8 @@ void Achilles::step() {
 
 
 struct AchillesWidget : ModuleWidget {
-    AchillesWidget(Achilles *module) : ModuleWidget(module) {
+    AchillesWidget(Achilles *module) {
+		setModule(module);
         box.size = Vec(27.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {

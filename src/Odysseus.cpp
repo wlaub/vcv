@@ -61,7 +61,8 @@ struct Odysseus : Module {
     SchmittTrigger clearTrigger;
     SchmittTrigger clkTrigger;
 
-	Odysseus() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	Odysseus() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -254,7 +255,8 @@ struct OdysseusWidget : ModuleWidget
 };
 
 
-OdysseusWidget::OdysseusWidget(Odysseus* module) : ModuleWidget(module) {
+OdysseusWidget::OdysseusWidget(Odysseus* module) {
+		setModule(module);
 	box.size = Vec(10 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{

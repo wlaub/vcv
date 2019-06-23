@@ -26,7 +26,8 @@ struct mDAC : Module {
 
     int ready = 0;
 
-	mDAC() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	mDAC() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -72,7 +73,8 @@ struct mDACWidget : ModuleWidget
 
 
 
-mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
+mDACWidget::mDACWidget(mDAC* module) {
+		setModule(module);
 	box.size = Vec(8 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{

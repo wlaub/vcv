@@ -34,7 +34,8 @@ struct DAC : Module {
 
     Label* valLabel;
 
-	DAC() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+	DAC() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -92,7 +93,8 @@ struct DACWidget : ModuleWidget
     DACWidget(DAC* module);
 };
 
-DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
+DACWidget::DACWidget(DAC* module) {
+		setModule(module);
 //  DAC *module = new DAC();    
 //    setModule(module);
     box.size = Vec(16 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);

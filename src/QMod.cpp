@@ -13,7 +13,8 @@ struct QMod : Module {
 
     float phase[4] = {0,0,0,0};
 
-    QMod() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+    QMod() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -112,7 +113,8 @@ void QMod::step() {
 
 
 struct QModWidget : ModuleWidget {
-    QModWidget(QMod *module) : ModuleWidget(module) {
+    QModWidget(QMod *module) {
+		setModule(module);
         box.size = Vec(18.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {

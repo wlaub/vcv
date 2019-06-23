@@ -473,7 +473,8 @@ struct Pleiades : Module {
 
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
-    Pleiades() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
+    Pleiades() {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
 
     void updateStepKnobs();
     void updateCenterFromStep();
@@ -859,7 +860,8 @@ struct PleiadesWidget : ModuleWidget {
         ((TTTEncoder*)param)->configureLights();
     }
 
-    PleiadesWidget(Pleiades *module) : ModuleWidget(module) {
+    PleiadesWidget(Pleiades *module) {
+		setModule(module);
         box.size = Vec(22.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {
