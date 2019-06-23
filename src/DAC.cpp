@@ -193,8 +193,7 @@ DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
 }
 
 Model *modelDAC = Model::create<DAC, DACWidget>(
-    "TechTech Technologies", "DAC", "DAC", 
-    DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
+    "DAC" 
     );
 
 

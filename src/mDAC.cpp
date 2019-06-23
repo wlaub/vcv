@@ -163,8 +163,7 @@ void mDACWidget::fromJson(json_t *rootJ)
 }
 
 Model* modelmDAC = Model::create<mDAC, mDACWidget>(
-        "TechTech Technologies", "mDAC", "mDAC", 
-        DIGITAL_TAG,QUANTIZER_TAG,UTILITY_TAG
+        "mDAC", 
         );
 
 

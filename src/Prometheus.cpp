@@ -183,8 +183,7 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
 }
 
 Model* modelPrometheus = Model::create<Prometheus, PrometheusWidget>(
-    "TechTech Technologies", "Prometheus", "Prometheus", 
-    DIGITAL_TAG,LOGIC_TAG,NOISE_TAG,OSCILLATOR_TAG,SEQUENCER_TAG
+    "Prometheus", 
     );
 
 

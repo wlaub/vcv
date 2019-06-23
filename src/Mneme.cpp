@@ -197,8 +197,7 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 }
 
 Model* modelMneme = Model::create<Mneme, MnemeWidget>(
-        "TechTech Technologies", "Mneme", "Mneme", 
-        DELAY_TAG, OSCILLATOR_TAG
+        "Mneme", 
         );
 
 

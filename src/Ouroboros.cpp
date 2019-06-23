@@ -177,7 +177,6 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
 }
 
     Model* modelOuroboros = Model::create<Ouroboros, OuroborosWidget>(
-    "TechTech Technologies", "Ouroboros", "Ouroboros", 
-    OSCILLATOR_TAG
+    "Ouroboros", 
     );
 

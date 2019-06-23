@@ -270,8 +270,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
 }
 
 Model* modelSisyphus = Model::create<Sisyphus, SisyphusWidget>(
-        "TechTech Technologies", "Sisyphus", "Sisyphus", 
-        SAMPLER_TAG, UTILITY_TAG
+        "Sisyphus", 
         );
 
 

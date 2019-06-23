@@ -388,7 +388,6 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) : ModuleWidget(module) {
 }
 
 Model* modelPolyphemus = Model::create<Polyphemus, PolyphemusWidget>(
-    "TechTech Technologies", "Polyphemus", "Polyphemus", 
-    FILTER_TAG
+    "Polyphemus", 
     );
 

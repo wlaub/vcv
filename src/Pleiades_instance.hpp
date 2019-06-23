@@ -4,4 +4,4 @@
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *modelPleiades = Model::create<Pleiades, PleiadesWidget>("TechTechTechnologies", "Pleiades", "Pleiades", DELAY_TAG);
+Model *modelPleiades = Model::create<Pleiades, PleiadesWidget>("Pleiades");

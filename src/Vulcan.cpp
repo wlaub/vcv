@@ -305,8 +305,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 }
 
 Model* modelVulcan = Model::create<Vulcan, VulcanWidget>(
-        "TechTech Technologies", "Vulcan", "Vulcan", 
-        DIGITAL_TAG,LOGIC_TAG,SEQUENCER_TAG
+        "Vulcan", 
         );
 
 

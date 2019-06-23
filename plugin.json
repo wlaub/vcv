@@ -5,8 +5,8 @@
   "license": "None",
   "brand": "TechTech Technologies",
   "author": "William Laub",
-  "authorEmail": "wlaub@techtechtechnologies.com",
-  "authorUrl": "techtechtechnologies.com",
+  "authorEmail": "",
+  "authorUrl": "",
   "pluginUrl": "",
   "manualUrl": "",
   "sourceUrl": "https://github.com/wlaub",
@@ -17,9 +17,9 @@
       "name": "DAC",
       "description": "Bitwise DAC",
       "tags": [
-        "digital_tag",
-        "quantizer_tag",
-        "utility_tag"
+        "digital",
+        "quantizer",
+        "utility"
       ]
     },
     {
@@ -27,9 +27,9 @@
       "name": "mDAC",
       "description": "Text to voltage converter",
       "tags": [
-        "digital_tag",
-        "quanizer_tag",
-        "utility_tag"
+        "digital",
+        "quanizer",
+        "utility"
       ]
     },
     {
@@ -37,11 +37,11 @@
       "name": "Prometheus",
       "description": "LFSR",
       "tags": [
-        "DIGITAL_TAG",
-        "logic_tag",
-        "noise_tag",
-        "oscillator_tag",
-        "sequencer_tag"
+        "DIGITAL",
+        "logic",
+        "noise",
+        "oscillator",
+        "sequencer"
       ]
     },
     {
@@ -49,9 +49,9 @@
       "name": "Vulcan",
       "description": "Mask-based sequence generator",
       "tags": [
-        "DIGITAL_TAG",
-        "LOGIC_TAG",
-        "SEQUENCER_TAG"
+        "DIGITAL",
+        "LOGIC",
+        "SEQUENCER"
       ]
     },
     {
@@ -59,8 +59,8 @@
       "name": "Sisyphus",
       "description": "Looping buffer",
       "tags": [
-        "SAMPLER_TAG",
-        "UTILITY_TAG"
+        "SAMPLER",
+        "UTILITY"
       ]
     },
     {
@@ -68,7 +68,7 @@
       "name": "Polyphemus",
       "description": "3-Pole Pair IIR filter with angle and radius control",
       "tags": [
-        "FILTER_TAG"
+        "VCF"
       ]
     },
     {
@@ -76,7 +76,7 @@
       "name": "Ouroboros",
       "description": "Oscillator FM feedback loop",
       "tags": [
-        "OSCILLATOR_TAG"
+        "VCO"
       ]
     },
     {
@@ -84,11 +84,11 @@
       "name": "Odysseus (WIP)",
       "description": "Random Walk Generator",
       "tags": [
-        "UTILITY_TAG",
-        "FUNCTION_GENERATOR_TAG",
-        "NOISE_TAG",
-        "SLEW_LIMITER_TAG",
-        "LFO_TAG"
+        "UTILITY",
+        "FUNCTION_GENERATOR",
+        "NOISE",
+        "SLEW_LIMITER",
+        "LFO"
       ]
     },
     {
@@ -96,8 +96,7 @@
       "name": "Mneme (WIP)",
       "description": "Delay",
       "tags": [
-        "DELAY_TAG",
-        "OSCILLATOR_TAG"
+        "DELAY"
       ]
     },
     {
@@ -105,7 +104,7 @@
       "name": "Athena (WIP)",
       "description": "Test Module",
       "tags": [
-        "DELAY_TAG"
+        "DELAY"
       ]
     },
     {
@@ -113,10 +112,10 @@
       "name": "Achilles (WIP)",
       "description": "Karplus-Strong toolkit",
       "tags": [
-        "DELAY_TAG",
-        "NOISE_TAG",
-        "FILTER_TAG",
-        "ENVELOPE_TAG"
+        "DELAY",
+        "NOISE",
+        "VCF",
+        "ENVELOPE_GENERATOR"
       ]
     },
     {

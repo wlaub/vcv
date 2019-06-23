@@ -154,8 +154,7 @@ AthenaWidget::AthenaWidget(Athena* module) : ModuleWidget(module) {
 }
 
 Model* modelAthena = Model::create<Athena, AthenaWidget>(
-        "TechTech Technologies", "Athena", "Athena", 
-        DELAY_TAG
+        "Athena", 
         );
 
 

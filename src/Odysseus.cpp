@@ -306,9 +306,7 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) : ModuleWidget(module) {
 }
 
 Model* modelOdysseus = Model::create<Odysseus, OdysseusWidget>(
-        "TechTech Technologies", "Odysseus", "Odysseus", 
-        UTILITY_TAG, FUNCTION_GENERATOR_TAG, NOISE_TAG,
-        SLEW_LIMITER_TAG, LFO_TAG 
+        "Odysseus", 
         );
 
 
