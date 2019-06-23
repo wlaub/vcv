@@ -122,10 +122,10 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 55, Prometheus) 
@@ -150,13 +150,13 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
         for(int i = 0; i < 8; ++i)
         {
 
-            auto* llight = ModuleLightWidget::create<MediumLight<BlueLight>>(
+            auto* llight = createLight<MediumLight<BlueLight>>(
                 Vec(30+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+j*BITL
                 );
             center(llight);
             addChild(llight);
 
-            auto* rlight = ModuleLightWidget::create<MediumLight<BlueLight>>(
+            auto* rlight = createLight<MediumLight<BlueLight>>(
                 Vec(60+xoff, 207.5+15*i), module, Prometheus::BIT_LIGHT+i+8+j*BITL
                 );
             center(rlight);
@@ -182,7 +182,7 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) : ModuleWidget(module) {
 
 }
 
-Model* modelPrometheus = Model::create<Prometheus, PrometheusWidget>(
+Model* modelPrometheus = createModel<Prometheus, PrometheusWidget>(
     "Prometheus", 
     );
 

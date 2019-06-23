@@ -82,10 +82,10 @@ mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 35, mDAC) 
@@ -99,8 +99,8 @@ mDACWidget::mDACWidget(mDAC* module) : ModuleWidget(module) {
     {
 
         float yoff = i*35+85;
-        addOutput(Port::create<PJ301MPort>(
-            Vec(77.5, yoff+2.5), Port::OUTPUT, module, mDAC::ANLG_OUTPUT+i
+        addOutput(createPort<PJ301MPort>(
+            Vec(77.5, yoff+2.5), PortWidget::OUTPUT, module, mDAC::ANLG_OUTPUT+i
             ));
 
         infields[i] = new NumField();
@@ -162,7 +162,7 @@ void mDACWidget::fromJson(json_t *rootJ)
 
 }
 
-Model* modelmDAC = Model::create<mDAC, mDACWidget>(
+Model* modelmDAC = createModel<mDAC, mDACWidget>(
         "mDAC", 
         );
 

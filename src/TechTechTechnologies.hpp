@@ -7,23 +7,23 @@
 #include <GLFW/glfw3.h>
 
 #define OUTPORT(x,y,modname,param, offset)\
-    auto *param = Port::create<PJ301MPort>(\
-        Vec(x,y), Port::OUTPUT, module, modname::param + offset\
+    auto *param = createPort<PJ301MPort>(\
+        Vec(x,y), PortWidget::OUTPUT, module, modname::param + offset\
         );\
     center(param,1,1);\
     addOutput(param);\
 \
 
 #define INPORT(x,y,modname,param, offset)\
-    auto *param = Port::create<PJ301MPort>(\
-        Vec(x,y), Port::INPUT, module, modname::param + offset\
+    auto *param = createPort<PJ301MPort>(\
+        Vec(x,y), PortWidget::INPUT, module, modname::param + offset\
         );\
     center(param,1,1);\
     addInput(param);\
 \
 
 #define KNOB(x,y,min, max, def, type, modname,param, offset)\
-    auto *param = ParamWidget::create<Round ## type ## BlackKnob>(\
+    auto *param = createParam<Round ## type ## BlackKnob>(\
         Vec(x,y),module, modname::param + offset,\
         min, max, def\
         );\
@@ -32,7 +32,7 @@
 \
 
 #define SWITCH(x,y, modname, param, ...)\
-auto* param = ParamWidget::create<CKSS>(\
+auto* param = createParam<CKSS>(\
     Vec(x,y), module, modname::param,\
     __VA_ARGS__\
     );\
@@ -41,7 +41,7 @@ addParam(param);\
 \
 
 #define BUTTON(x,y, type, modname, param, ...)\
-auto* param = ParamWidget::create<type>(\
+auto* param = createParam<type>(\
     Vec(x,y), module, modname::param,\
     __VA_ARGS__\
     );\
@@ -51,18 +51,18 @@ addParam(param);\
 
 
 #define DEPTH_WIDGETS(x,y,modname)\
-    addInput(Port::create<PJ301MPort>(\
-        Vec(x, y+2.5), Port::INPUT, module, modname::DEPTH_INPUT\
+    addInput(createPort<PJ301MPort>(\
+        Vec(x, y+2.5), PortWidget::INPUT, module, modname::DEPTH_INPUT\
         ));\
 \
 \
-    addParam(ParamWidget::create<RoundBlackSnapKnob>(\
+    addParam(createParam<RoundBlackSnapKnob>(\
         Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
         1, 16, 8\
         ));\
 \
-    addOutput(Port::create<PJ301MPort>(\
-        Vec(x+60.25, y+2.5), Port::OUTPUT, module, modname::DEPTH_OUTPUT\
+    addOutput(createPort<PJ301MPort>(\
+        Vec(x+60.25, y+2.5), PortWidget::OUTPUT, module, modname::DEPTH_OUTPUT\
         ));\
 \
 
@@ -78,10 +78,10 @@ addParam(param);\
 
 
 #define PARAM_PAIR(xoff, yoff, name, def, idx)\
-    addInput(Port::create<PJ301MPort>(\
-        Vec(xoff+2.5, yoff+2.5), Port::INPUT, module, name ## _INPUT+idx\
+    addInput(createPort<PJ301MPort>(\
+        Vec(xoff+2.5, yoff+2.5), PortWidget::INPUT, module, name ## _INPUT+idx\
         ));\
-    addParam(ParamWidget::create<RoundBlackKnob>(\
+    addParam(createParam<RoundBlackKnob>(\
         Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx,\
         0, 10, def\
         ));\
@@ -101,16 +101,16 @@ addParam(param);\
 
 
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
-    addInput(Port::create<PJ301MPort>(\
-        Vec(xoff, yoff), Port::INPUT, module, name ## _INPUT+idx\
+    addInput(createPort<PJ301MPort>(\
+        Vec(xoff, yoff), PortWidget::INPUT, module, name ## _INPUT+idx\
         ));\
 \
-    addParam(ParamWidget::create<RoundTinyBlackKnob>(\
+    addParam(createParam<RoundTinyBlackKnob>(\
         Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx,\
         -1,1,0\
         ));\
 \
-    addParam(ParamWidget::create<RoundLargeBlackKnob>(\
+    addParam(createParam<RoundLargeBlackKnob>(\
         Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx,\
         min,max,def\
         ));\

@@ -4,4 +4,4 @@
 // author name for categorization per pluginInstance, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *modelConvo = Model::create<Convo, ConvoWidget>("Convo");
+Model *modelConvo = createModel<Convo, ConvoWidget>("Convo");

@@ -104,10 +104,10 @@ DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
     float r;
     float insx = 30;
@@ -160,21 +160,21 @@ DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
 
             center(jack);
 
-            auto* button = ParamWidget::create<CKSS>(
+            auto* button = createParam<CKSS>(
                 Vec(xoff+jack->box.size.x/2+gap, yoff), module, DAC::BITS_PARAM+i,
                 0,1,0
                 );
 
             center(button, 0);
 
-            auto* light = ModuleLightWidget::create<MediumLight<BlueLight>>(
+            auto* light = createLight<MediumLight<BlueLight>>(
                 Vec(xoff, yoff+jack->box.size.y/2+gap), module, DAC::BIT_LIGHT+i
                 );
             
             center(light, 1, 0);
             addChild(light);
 
-            auto* light2 = ModuleLightWidget::create<MediumLight<GreenLight>>(
+            auto* light2 = createLight<MediumLight<GreenLight>>(
                 Vec(button->box.pos.x+button->box.size.x/2, yoff+jack->box.size.y/2+gap), module, DAC::BITIND_LIGHT+i
                 );
             
@@ -192,7 +192,7 @@ DACWidget::DACWidget(DAC* module) : ModuleWidget(module) {
 
 }
 
-Model *modelDAC = Model::create<DAC, DACWidget>(
+Model *modelDAC = createModel<DAC, DACWidget>(
     "DAC" 
     );
 

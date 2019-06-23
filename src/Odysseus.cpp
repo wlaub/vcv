@@ -264,10 +264,10 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
     OUTPORT(12.883+12.5, 380-(33.337+12.5), Odysseus, DETECT_OUTPUT, 0)
     OUTPORT(108.966+15, 380-(33.337+12.5), Odysseus, OUT_OUTPUT, 0)
@@ -305,7 +305,7 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) : ModuleWidget(module) {
 
 }
 
-Model* modelOdysseus = Model::create<Odysseus, OdysseusWidget>(
+Model* modelOdysseus = createModel<Odysseus, OdysseusWidget>(
         "Odysseus", 
         );
 

@@ -218,10 +218,10 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     DEPTH_WIDGETS(17.5, 50, Vulcan)
@@ -230,19 +230,19 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
     xoff = 165;
     yoff = 380-285-45;
-    addOutput(Port::create<PJ301MPort>(
-        Vec(xoff+2.5, yoff+2.5), Port::OUTPUT, module, Vulcan::AND_OUTPUT
+    addOutput(createPort<PJ301MPort>(
+        Vec(xoff+2.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::AND_OUTPUT
         ));
-    addOutput(Port::create<PJ301MPort>(
-        Vec(xoff+32.5, yoff+2.5), Port::OUTPUT, module, Vulcan::XOR_OUTPUT
+    addOutput(createPort<PJ301MPort>(
+        Vec(xoff+32.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::XOR_OUTPUT
         ));
-    addOutput(Port::create<PJ301MPort>(
-        Vec(xoff+62.5, yoff+2.5), Port::OUTPUT, module, Vulcan::OR_OUTPUT
+    addOutput(createPort<PJ301MPort>(
+        Vec(xoff+62.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::OR_OUTPUT
         ));
 
 
 
-    addParam(ParamWidget::create<CKSS>(
+    addParam(createParam<CKSS>(
         Vec(128, 380-162.18-20.641), module, Vulcan::ROUTE_PARAM,
         0, 1, 1
         ));
@@ -263,19 +263,19 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
         PARAM_PAIR(xoff, yoff+gap*2, Vulcan::WIDTH, 10, j)
 
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3), Port::INPUT, module, Vulcan::RATE_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5+gap*3), PortWidget::INPUT, module, Vulcan::RATE_INPUT+j
             ));
-        addParam(ParamWidget::create<RoundBlackSnapKnob>(
+        addParam(createParam<RoundBlackSnapKnob>(
             Vec(xoff+30.15, yoff+.15+gap*3), module, Vulcan::RATE_PARAM+j,
             0, 16, 1
             ));
 
 
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5+gap*3+35), Port::INPUT, module, Vulcan::MODE_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5+gap*3+35), PortWidget::INPUT, module, Vulcan::MODE_INPUT+j
             ));
-        addParam(ParamWidget::create<CKSS>(
+        addParam(createParam<CKSS>(
             Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j,
             0, 1, 1
             ));
@@ -283,12 +283,12 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
         yoff = 380-30-45;
 
-        addOutput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+2.5), Port::OUTPUT, module, Vulcan::POS_OUTPUT+j
+        addOutput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::POS_OUTPUT+j
             ));
 
-        addOutput(Port::create<PJ301MPort>(
-            Vec(xoff+32.5, yoff+2.5), Port::OUTPUT, module, Vulcan::TRIG_OUTPUT+j
+        addOutput(createPort<PJ301MPort>(
+            Vec(xoff+32.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::TRIG_OUTPUT+j
             ));
 
     }
@@ -304,7 +304,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 
 }
 
-Model* modelVulcan = Model::create<Vulcan, VulcanWidget>(
+Model* modelVulcan = createModel<Vulcan, VulcanWidget>(
         "Vulcan", 
         );
 

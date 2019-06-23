@@ -182,10 +182,10 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     float xoff, yoff;
@@ -196,48 +196,48 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
         xoff = 47.5;
         yoff = 380-287.5-25+j*75;
         
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff, yoff), Port::INPUT, module, Sisyphus::SIGNAL_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff, yoff), PortWidget::INPUT, module, Sisyphus::SIGNAL_INPUT+j
             ));
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff, yoff+30), Port::INPUT, module, Sisyphus::GATE_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff, yoff+30), PortWidget::INPUT, module, Sisyphus::GATE_INPUT+j
             ));
 
 
         xoff = 90.2;
-        addParam(ParamWidget::create<RoundBlackKnob>(
+        addParam(createParam<RoundBlackKnob>(
             Vec(xoff, yoff-2.3), module, Sisyphus::LENGTH_PARAM+j,
             0,10,10
             ));
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::LENGTH_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::LENGTH_INPUT+j
             ));
 
         xoff += 45;
-        addParam(ParamWidget::create<RoundBlackKnob>(
+        addParam(createParam<RoundBlackKnob>(
             Vec(xoff, yoff-2.3), module, Sisyphus::RATE_PARAM+j,
             0,10,5
             ));
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::RATE_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::RATE_INPUT+j
             ));
 
         xoff += 45;
-        addParam(ParamWidget::create<RoundBlackSnapKnob>(
+        addParam(createParam<RoundBlackSnapKnob>(
             Vec(xoff, yoff-2.3), module, Sisyphus::MODE_PARAM+j,
             0,1,0
             ));
-        addInput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), Port::INPUT, module, Sisyphus::MODE_INPUT+j
+        addInput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::MODE_INPUT+j
             ));
 
 
         xoff+=45;
-        addOutput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff), Port::OUTPUT, module, Sisyphus::SIGNAL_OUTPUT+j
+        addOutput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff), PortWidget::OUTPUT, module, Sisyphus::SIGNAL_OUTPUT+j
             ));
-        addOutput(Port::create<PJ301MPort>(
-            Vec(xoff+2.5, yoff+30), Port::OUTPUT, module, Sisyphus::TRIG_OUTPUT+j
+        addOutput(createPort<PJ301MPort>(
+            Vec(xoff+2.5, yoff+30), PortWidget::OUTPUT, module, Sisyphus::TRIG_OUTPUT+j
             ));
 
         float l = 14*15;
@@ -248,7 +248,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
         
         for(int i = 0; i < BITL; ++i)
         {
-            addChild(ModuleLightWidget::create<SmallLight<RedGreenBlueLight>>(
+            addChild(createLight<SmallLight<RedGreenBlueLight>>(
                 Vec(xoff, yoff+57.5+7.5/2), module, Sisyphus::LOOP_LIGHTS+3*(j*BITL+i)
                 ));
 
@@ -269,7 +269,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) : ModuleWidget(module) {
 
 }
 
-Model* modelSisyphus = Model::create<Sisyphus, SisyphusWidget>(
+Model* modelSisyphus = createModel<Sisyphus, SisyphusWidget>(
         "Sisyphus", 
         );
 

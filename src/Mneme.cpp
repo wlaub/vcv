@@ -130,10 +130,10 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
         addChild(panel);
     }
 
-    addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-    addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-    addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-    addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+    addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+    addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+    addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+    addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
     module->buffer = new ttt::CircularBuffer(BUFL);
 
@@ -157,7 +157,7 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
             ParamWidget* param;
             if(i<j)
             {
-                param = ParamWidget::create<LEDSliderRed>(
+                param = createParam<LEDSliderRed>(
                     Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
                     module, Mneme::FB_CV_PARAM + N*j+i,
                     -1, 1, 0
@@ -165,7 +165,7 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
             }
             else
             {
-                param = ParamWidget::create<LEDSliderBlue>(
+                param = createParam<LEDSliderBlue>(
                     Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
                     module, Mneme::FB_CV_PARAM + N*j+i,
                     -1, 1, 0
@@ -196,7 +196,7 @@ MnemeWidget::MnemeWidget(Mneme* module) : ModuleWidget(module) {
 
 }
 
-Model* modelMneme = Model::create<Mneme, MnemeWidget>(
+Model* modelMneme = createModel<Mneme, MnemeWidget>(
         "Mneme", 
         );
 

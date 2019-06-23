@@ -117,10 +117,10 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
 		addChild(panel);
 	}
 
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-	addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-	addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+	addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
     float xoff, yoff;
@@ -128,22 +128,22 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
     xoff = 12.5;
     yoff = 380-302.5-20;
 
-    addInput(Port::create<PJ301MPort>(
-        Vec(xoff, yoff), Port::INPUT, module, Ouroboros::BASEFREQ_INPUT
+    addInput(createPort<PJ301MPort>(
+        Vec(xoff, yoff), PortWidget::INPUT, module, Ouroboros::BASEFREQ_INPUT
         ));
 
 
-    addParam(ParamWidget::create<RoundLargeBlackKnob>(
+    addParam(createParam<RoundLargeBlackKnob>(
         Vec(xoff+28.15, yoff-6.35), module, Ouroboros::BASEFREQ_PARAM,
         -2, 2, 0
         ));
 
-    addInput(Port::create<PJ301MPort>(
-        Vec(xoff+28+44+40.5, yoff), Port::INPUT, module, Ouroboros::WAVE_INPUT
+    addInput(createPort<PJ301MPort>(
+        Vec(xoff+28+44+40.5, yoff), PortWidget::INPUT, module, Ouroboros::WAVE_INPUT
         ));
 
 
-    addParam(ParamWidget::create<RoundLargeBlackKnob>(
+    addParam(createParam<RoundLargeBlackKnob>(
         Vec(xoff+28.15+44, yoff-6.35), module, Ouroboros::WAVE_PARAM,
         0, 4, 0
         ));
@@ -157,8 +157,8 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
 
         CV_ATV_PARAM(xoff, yoff, Ouroboros::FREQ, -2,2,0,j)
 
-        addOutput(Port::create<PJ301MPort>(
-            Vec(xoff+112.5, yoff), Port::OUTPUT, module, Ouroboros::SIGNAL_OUTPUT+j
+        addOutput(createPort<PJ301MPort>(
+            Vec(xoff+112.5, yoff), PortWidget::OUTPUT, module, Ouroboros::SIGNAL_OUTPUT+j
             ));
 
 
@@ -176,7 +176,7 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) : ModuleWidget(module) {
 
 }
 
-    Model* modelOuroboros = Model::create<Ouroboros, OuroborosWidget>(
+    Model* modelOuroboros = createModel<Ouroboros, OuroborosWidget>(
     "Ouroboros", 
     );
 
