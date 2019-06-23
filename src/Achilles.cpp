@@ -275,7 +275,8 @@ struct AchillesWidget : ModuleWidget {
             addChild(panel);
         }
 
-        module->delay = new ttt::CircularBuffer(BUFL);
+        if(module)
+            module->delay = new ttt::CircularBuffer(BUFL);
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -285,8 +286,8 @@ struct AchillesWidget : ModuleWidget {
         /* +CONTROL INSTANTIATION */
         #include "Achilles_panel.hpp"
         /* -CONTROL INSTANTIATION */
-
-        module->ready=1;
+        if(module)
+            module->ready=1;
     }
 };
 

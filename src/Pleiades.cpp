@@ -105,7 +105,7 @@ struct Step
         DPRINT(DSEQ, "    Param: %i, %i, %f\n", index, subindex, prevTone);
         DPRINT(DSEQ, "    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
 
-        if(!isfinite(prevTone)) return tone_values[triggerIndex];
+        if(!std::isfinite(prevTone)) return tone_values[triggerIndex];
 
         float alpha = min(1.0,float(subindex)/(values[0]+1));
 
@@ -528,8 +528,8 @@ void Pleiades::dataFromJson(json_t *rootJ)
     char tstr[256];
     Module::dataFromJson(rootJ);
 
-    seq_name->text = json_string_value(json_object_get(rootJ, "seq_name"));
-    seq_name->onTextChange();
+    seq_name->setText (json_string_value(json_object_get(rootJ, "seq_name")));
+//    seq_name->onTextChange();
 
     for(int i = 0; i < 7; ++i)
     {
@@ -853,10 +853,10 @@ struct PleiadesWidget : ModuleWidget {
         params.push_back(param);
         addChild(param);
         
-        if(param->paramId == Pleiades::PARAM_CONFIG+2) return;
+        if(param->paramQuantity->paramId == Pleiades::PARAM_CONFIG+2) return;
         
         const unsigned char defs[7] = {0,0,0,0,0,0,0};
-        ((Pleiades*)(module))->encoders[param->paramId] = new EncoderController((TTTEncoder*)param, defs);
+        ((Pleiades*)(module))->encoders[param->paramQuantity->paramId] = new EncoderController((TTTEncoder*)param, defs);
         ((TTTEncoder*)param)->configureLights();
     }
 

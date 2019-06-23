@@ -272,7 +272,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) {
 }
 
 Model* modelSisyphus = createModel<Sisyphus, SisyphusWidget>(
-        "Sisyphus", 
+        "Sisyphus"
         );
 
 

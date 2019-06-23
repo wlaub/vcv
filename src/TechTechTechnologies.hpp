@@ -138,7 +138,7 @@ double db_to_num(float val, float unity);
 double split_log(float v, float m, float n);
 
 struct NumField : TextField {
-    void onTextChange() override;
+    void onSelectText(const event::SelectText &e) override;
 
     int outNum = 0;
 };
@@ -150,14 +150,15 @@ struct RoundTinyBlackKnob : RoundBlackKnob {
     }
 };
  
-struct DWhite : SVGSwitch, MomentarySwitch {
+struct DWhite : SVGSwitch {
+    bool momentary=true;
     DWhite() {
         addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
         addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
     }
 };
 
-struct DWhiteLatch : SVGSwitch, ToggleSwitch {
+struct DWhiteLatch : SVGSwitch {
     DWhiteLatch() {
         addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
         addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
@@ -175,6 +176,8 @@ struct TTTEncoder : RoundBlackKnob {
     bool spinning = false;
 
     float lastAngle = 0;
+    float value = 0;
+    bool dirty = false;
 
     NVGcolor color = nvgRGBAf(0,0,0,1);
 
@@ -188,10 +191,10 @@ struct TTTEncoder : RoundBlackKnob {
 
     void setValue(float v);
 
-    void onHoverKey(EventHoverKey &e) override;
-    void onDragMove(EventDragMove &e) override;
+    void onHoverKey(const event::HoverKey &e) override;
+    void onDragMove(const event::DragMove &e) override;
     void reset() override;
-    void draw(NVGcontext *vg) override;
+    void draw(const DrawArgs &args) override;
     void step() override;
     void dataFromJson(json_t *rootJ);
 

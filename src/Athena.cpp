@@ -156,7 +156,7 @@ AthenaWidget::AthenaWidget(Athena* module) {
 }
 
 Model* modelAthena = createModel<Athena, AthenaWidget>(
-        "Athena", 
+        "Athena"
         );
 
 

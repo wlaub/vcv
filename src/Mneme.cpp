@@ -199,7 +199,7 @@ MnemeWidget::MnemeWidget(Mneme* module) {
 }
 
 Model* modelMneme = createModel<Mneme, MnemeWidget>(
-        "Mneme", 
+        "Mneme"
         );
 
 

@@ -179,6 +179,6 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
 }
 
     Model* modelOuroboros = createModel<Ouroboros, OuroborosWidget>(
-    "Ouroboros", 
+    "Ouroboros" 
     );
 

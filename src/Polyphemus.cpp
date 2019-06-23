@@ -390,6 +390,6 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
 }
 
 Model* modelPolyphemus = createModel<Polyphemus, PolyphemusWidget>(
-    "Polyphemus", 
+    "Polyphemus" 
     );
 

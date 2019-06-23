@@ -185,7 +185,7 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) {
 }
 
 Model* modelPrometheus = createModel<Prometheus, PrometheusWidget>(
-    "Prometheus", 
+    "Prometheus" 
     );
 
 

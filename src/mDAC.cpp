@@ -66,8 +66,8 @@ struct mDACWidget : ModuleWidget
     NumField** infields;
     mDACWidget(mDAC* module);
     void jsontag(char* result, int i);
-    json_t *dataToJson() override;
-    void dataFromJson(json_t *rootJ) override;
+//    json_t *dataToJson() override;
+//    void dataFromJson(json_t *rootJ) override;
 };
 
 
@@ -129,7 +129,7 @@ void mDACWidget::jsontag(char* result, int i)
     sprintf(result, "text%i", i);
 }
 
-
+/*
 json_t* mDACWidget::dataToJson()
 {
     json_t *rootJ = ModuleWidget::dataToJson();
@@ -163,9 +163,9 @@ void mDACWidget::dataFromJson(json_t *rootJ)
     }
 
 }
-
+*/
 Model* modelmDAC = createModel<mDAC, mDACWidget>(
-        "mDAC", 
+        "mDAC"
         );
 
 

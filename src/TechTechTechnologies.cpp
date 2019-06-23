@@ -67,8 +67,14 @@ A split log map where
  
 }
 
-void NumField::onTextChange() 
+void NumField::onSelectText(const event::SelectText &e) 
 {
+    if (e.codepoint < 128) {
+                std::string newText(1, (char) e.codepoint);
+                        insertText(newText);
+                            }
+    e.consume(this);
+
     if (text.size() > 0) 
     {
         try 
@@ -102,7 +108,7 @@ void TTTEncoder::configureLights()
     float rad = 15;
     float angle = M_PI/7;
     if(flip) angle= -6*M_PI/7;
-    for(int i = 0; i < 7; ++i)
+/*    for(int i = 0; i < 7; ++i)
     {
         lights[i] = createLightCentered<SmallLight<GreenLight>>(
             Vec(xpos+-rad*sin(2*M_PI*i/7+angle), ypos+rad*cos(2*M_PI*i/7+angle)), 
@@ -110,7 +116,7 @@ void TTTEncoder::configureLights()
             module, 0);
 //        addChild(lights[i]);
     }
-    lights_ready=true;
+    lights_ready=true;*/
     controller->update(0);
 }
 
@@ -119,16 +125,16 @@ void TTTEncoder::reset()
     controller->reset();
 }
 
-void TTTEncoder::draw(NVGcontext *vg)
+void TTTEncoder::draw(const DrawArgs &args)
 {
-    RoundBlackKnob::draw(vg);
+    RoundBlackKnob::draw(args);
     
     for (int i = 0; i < 7; ++i)
     {
-        nvgSave(vg);
-        nvgTranslate(vg, lights[i]->box.pos.x, lights[i]->box.pos.y);
-        lights[i]->draw(vg);
-        nvgRestore(vg);
+        nvgSave(args.vg);
+        nvgTranslate(args.vg, lights[i]->box.pos.x, lights[i]->box.pos.y);
+        lights[i]->draw(args);
+        nvgRestore(args.vg);
     }
 }
 
@@ -147,66 +153,86 @@ void TTTEncoder::setValue(float v)
         for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
         lights[char(value)]->color = color;
     }
-    EventChange e;
-    onChange(e);
+
+//    EventChange e;
+//    onChange(e);
 }
 
-void TTTEncoder::onHoverKey(EventHoverKey &e) 
+void TTTEncoder::onHoverKey(const event::HoverKey &e) 
 {
     switch (e.key) 
     {
         case GLFW_KEY_PAGE_UP:
 //        case GLFW_KEY_UP:
             controller->update(1);
-            e.consumed=true;
+            e.consume(this);
             return;
         break;
         case GLFW_KEY_PAGE_DOWN:
 //        case GLFW_KEY_DOWN:
             controller->update(-1);
-            e.consumed=true;
+            e.consume(this);
             return;
         break;
     }
     RoundBlackKnob::onHoverKey(e);  
 }
 
-void TTTEncoder::onDragMove(EventDragMove &e) {
-    float range;
-    if (isfinite(minValue) && isfinite(maxValue)) {
-        range = maxValue - minValue;
-    }
-    else {
-        // Continuous encoders scale as if their limits are +/-1
-        range = 1.f - (-1.f);
-    }
-    float delta = KNOB_SENSITIVITY * -e.mouseRel.y * speed * range;
+void TTTEncoder::onDragMove(const event::DragMove &e) {
+    if (e.button != GLFW_MOUSE_BUTTON_LEFT)
+        return;
 
-    // Drag slower if Mod is held
-    if (windowIsModPressed())
-        delta /= 16.f;
-    dragValue += delta;
+    if(paramQuantity)
+    {
+        float range;
+        if (paramQuantity->isBounded()) {
+            range = paramQuantity->getRange();
+        }
+        else {
+            // Continuous encoders scale as if their limits are +/-1
+            range = 2.f;
+        }
+        float delta = (horizontal ? e.mouseDelta.x : -e.mouseDelta.y);
+        delta *= KNOB_SENSITIVITY;
+        delta *= speed;
+        delta *= range;
 
-    if(floor(dragValue) > floor(dragValue+delta))
-    {
-        controller->update(-1);
-        dragValue = value;
-    }
-    if(floor(dragValue) < floor(dragValue+delta))
-    {
-        controller->update(1);
-        dragValue = value;
-    }
+        int mods = APP->window->getMods();
+        if ((mods & RACK_MOD_MASK) == RACK_MOD_CTRL) {
+            delta /= 16.f;
+        }
+        // Drag even slower if mod+shift is held
+        if ((mods & RACK_MOD_MASK) == (RACK_MOD_CTRL | GLFW_MOD_SHIFT)) {
+            delta /= 256.f;
+        }
 
-    //Looping effect
-    if (dragValue > maxValue)      
-    {
-        dragValue += minValue - maxValue;
+        snapValue += delta;
+
+        float maxValue = paramQuantity->getMaxValue();
+        float minValue = paramQuantity->getMinValue();
+
+        if(floor(snapValue) > floor(snapValue+delta))
+        {
+            controller->update(-1);
+            snapValue = value;
+        }
+        if(floor(snapValue) < floor(snapValue+delta))
+        {
+            controller->update(1);
+            snapValue = value;
+        }
+
+        //Looping effect
+        if (snapValue > maxValue)      
+        {
+            snapValue += minValue - maxValue;
+        }
+        else if (snapValue < minValue)
+        {
+            snapValue += maxValue - minValue;
+        }
     }
-    else if (dragValue < minValue)
-    {
-        dragValue += maxValue - minValue;
-    }
+    ParamWidget::onDragMove(e);
 }
 
 
@@ -214,7 +240,10 @@ void TTTEncoder::step() {
     // Re-transform TransformWidget if dirty
     if (spinning or dirty) {
         float angle;
-        if (isfinite(minValue) && isfinite(maxValue)) {
+        float maxValue = paramQuantity->getMaxValue();
+        float minValue = paramQuantity->getMinValue();
+
+        if (std::isfinite(minValue) && std::isfinite(maxValue)) {
             angle = rescale(value, minValue, maxValue, minAngle, maxAngle);
         }
         else {
@@ -259,7 +288,7 @@ void TTTEncoder::step() {
         tw->rotate(lastAngle);
         tw->translate(center.neg());
     }
-    FramebufferWidget::step();
+    Widget::step();
 }
 
 
@@ -359,8 +388,8 @@ void init(rack::Plugin *p) {
     // It must only contain letters, numbers, and characters "-" and "_". No spaces.
     // To guarantee uniqueness, it is a good idea to prefix the slug by your name, alias, or company name if available, e.g. "MyCompany-MyPlugin".
     // The ZIP package must only contain one folder, with the name equal to the pluginInstance's slug.
-    p->website = "https://github.com/wlaub/vcv";
-    p->manual = "https://github.com/wlaub/vcv/blob/master/README.md";
+//    p->website = "https://github.com/wlaub/vcv";
+//    p->manual = "https://github.com/wlaub/vcv/blob/master/README.md";
 
     // For each module, specify the ModuleWidget subclass, manufacturer slug (for saving in patches), manufacturer human-readable name, module slug, and module name    
 

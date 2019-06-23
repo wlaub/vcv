@@ -307,7 +307,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) {
 }
 
 Model* modelVulcan = createModel<Vulcan, VulcanWidget>(
-        "Vulcan", 
+        "Vulcan"
         );
 
 

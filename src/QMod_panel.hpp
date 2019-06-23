@@ -1,7 +1,7 @@
 
     ParamWidget* param;
-    Port* input;
-    Port* output;
+    PortWidget* input;
+    PortWidget* output;
     LightWidget* light;
     
 

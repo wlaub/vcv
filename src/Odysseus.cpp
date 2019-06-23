@@ -308,7 +308,7 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) {
 }
 
 Model* modelOdysseus = createModel<Odysseus, OdysseusWidget>(
-        "Odysseus", 
+        "Odysseus"
         );
 
 
