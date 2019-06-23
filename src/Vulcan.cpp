@@ -214,7 +214,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) : ModuleWidget(module) {
 	{
 		SVGPanel *panel = new SVGPanel();
 		panel->box.size = box.size;
-		panel->setBackground(SVG::load(assetPlugin(plugin, "res/Vulcan.svg")));
+		panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/Vulcan.svg")));
 		addChild(panel);
 	}
 

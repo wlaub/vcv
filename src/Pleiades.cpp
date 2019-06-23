@@ -865,7 +865,7 @@ struct PleiadesWidget : ModuleWidget {
         {
             SVGPanel *panel = new SVGPanel();
             panel->box.size = box.size;
-            panel->setBackground(SVG::load(assetPlugin(plugin, "res/Pleiades.svg")));
+            panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/Pleiades.svg")));
             addChild(panel);
         }
 

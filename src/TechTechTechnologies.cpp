@@ -88,7 +88,7 @@ void NumField::onTextChange()
 }
 
 TTTEncoder::TTTEncoder() {
-    setSVG(SVG::load(assetPlugin(plugin, "res/Components/TTTEncoder.svg")));
+    setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/TTTEncoder.svg")));
     minAngle=0;
     maxAngle=2*M_PI;
     snap=true;
@@ -350,15 +350,15 @@ void EncoderController::setIndex(unsigned char idx, unsigned char tgroup)
 
 
 
-// The plugin-wide instance of the Plugin class
-Plugin *plugin;
+// The pluginInstance-wide instance of the Plugin class
+Plugin *pluginInstance;
 
 void init(rack::Plugin *p) {
-    plugin = p;
-    // The "slug" is the unique identifier for your plugin and must never change after release, so choose wisely.
+    pluginInstance = p;
+    // The "slug" is the unique identifier for your pluginInstance and must never change after release, so choose wisely.
     // It must only contain letters, numbers, and characters "-" and "_". No spaces.
     // To guarantee uniqueness, it is a good idea to prefix the slug by your name, alias, or company name if available, e.g. "MyCompany-MyPlugin".
-    // The ZIP package must only contain one folder, with the name equal to the plugin's slug.
+    // The ZIP package must only contain one folder, with the name equal to the pluginInstance's slug.
     p->website = "https://github.com/wlaub/vcv";
     p->manual = "https://github.com/wlaub/vcv/blob/master/README.md";
 
@@ -392,6 +392,6 @@ void init(rack::Plugin *p) {
 
     p->addModel(modelPleiades);   
 
-    // Any other plugin initialization may go here.
+    // Any other pluginInstance initialization may go here.
     // As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.
 }

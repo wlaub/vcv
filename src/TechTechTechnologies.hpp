@@ -124,7 +124,7 @@ params[name ## _PARAM+idx].value\
 using namespace rack;
 
 
-extern Plugin *plugin;
+extern Plugin *pluginInstance;
 
 
 void center(Widget* thing, int x = 1, int y = 1);
@@ -146,21 +146,21 @@ struct NumField : TextField {
 
 struct RoundTinyBlackKnob : RoundBlackKnob {
     RoundTinyBlackKnob() {
-        setSVG(SVG::load(assetPlugin(plugin, "res/Components/RoundTinyBlackKnob.svg")));
+        setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
  
 struct DWhite : SVGSwitch, MomentarySwitch {
     DWhite() {
-        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_0.svg")));
-        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_1.svg")));
+        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
     }
 };
 
 struct DWhiteLatch : SVGSwitch, ToggleSwitch {
     DWhiteLatch() {
-        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_0.svg")));
-        addFrame(SVG::load(assetPlugin(plugin, "res/Components/1DWHT_1.svg")));
+        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
     }
 };
 

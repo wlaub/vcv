@@ -110,7 +110,7 @@ AthenaWidget::AthenaWidget(Athena* module) : ModuleWidget(module) {
     {
         SVGPanel *panel = new SVGPanel();
         panel->box.size = box.size;
-        panel->setBackground(SVG::load(assetPlugin(plugin, "res/Athena.svg")));
+        panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/Athena.svg")));
         addChild(panel);
     }
 
