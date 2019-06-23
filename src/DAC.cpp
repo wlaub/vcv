@@ -122,7 +122,8 @@ DACWidget::DACWidget(DAC* module) {
     label->box.pos=Vec(90, insy-15);
     label->text = "TESTTESTESTESTETETSDASDASDA";
     addChild(label); 
-    module->valLabel = label;
+    if(module)
+        module->valLabel = label;
 
     insx = 200;
     gap = 4;
@@ -189,8 +190,8 @@ DACWidget::DACWidget(DAC* module) {
 
         }
     }
-
-    module->ready = 1;
+    if(module)
+        module->ready = 1;
 
 }
 

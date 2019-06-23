@@ -137,7 +137,8 @@ MnemeWidget::MnemeWidget(Mneme* module) {
     addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
     addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-    module->buffer = new ttt::CircularBuffer(BUFL);
+    if(module)
+        module->buffer = new ttt::CircularBuffer(BUFL);
 
     float xoff, yoff;
 
@@ -192,10 +193,12 @@ MnemeWidget::MnemeWidget(Mneme* module) {
     label->text = "";
     label->color = nvgRGB(0,0,0);
     addChild(label); 
-    module->testLabel = label;
+    if(module)
+    {
+        module->testLabel = label;
 
-    module->ready = 1;
-
+        module->ready = 1;
+    }
 }
 
 Model* modelMneme = createModel<Mneme, MnemeWidget>(

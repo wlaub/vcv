@@ -149,10 +149,11 @@ AthenaWidget::AthenaWidget(Athena* module) {
     label->text = "";
     label->color = nvgRGB(0,0,0);
     addChild(label); 
-    module->testLabel = label;
-
-    module->ready = 1;
-
+    if(module)
+    {
+        module->testLabel = label;
+        module->ready = 1;
+    }
 }
 
 Model* modelAthena = createModel<Athena, AthenaWidget>(

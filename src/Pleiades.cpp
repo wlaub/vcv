@@ -852,7 +852,9 @@ struct PleiadesWidget : ModuleWidget {
 
         params.push_back(param);
         addChild(param);
-        
+
+        if(!module) return;
+
         if(param->paramQuantity->paramId == Pleiades::PARAM_CONFIG+2) return;
         
         const unsigned char defs[7] = {0,0,0,0,0,0,0};
@@ -884,73 +886,78 @@ struct PleiadesWidget : ModuleWidget {
         #include "Pleiades_panel.hpp"
         /* -CONTROL INSTANTIATION */
 //        Vec(163.999995, 204.0), 
-        Rect cbox = module->encoders[Pleiades::PARAM_CENTER]->widget->box;
-
-        //Address indicator lights
-        float radius = 25-7;
-        for (int i = 0; i < DEPTH; ++i)
+        if(module)
         {
-            radius += 7;
-            if(i == 3) radius += 5;
-            for (int j =0; j < 7; ++j)
-            {   //i = depth,  j = idx
-                //id = depth*7 + index
-                float angle = (j+.5)*2*M_PI/7;
-                light = createLightCentered<SmallLight<GreenLight>>(
-                    Vec(-radius*sin(angle)+cbox.pos.x+cbox.size.x/2,
-                         radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
-                    module, Pleiades::LIGHT_ADDRESS+i*7+j
-                );
-                if (i > 2)
-                {
-                ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
-                        1,.5,0,
-                        1)); 
+            Rect cbox = module->encoders[Pleiades::PARAM_CENTER]->widget->box;
+
+
+            //Address indicator lights
+            float radius = 25-7;
+            for (int i = 0; i < DEPTH; ++i)
+            {
+                radius += 7;
+                if(i == 3) radius += 5;
+                for (int j =0; j < 7; ++j)
+                {   //i = depth,  j = idx
+                    //id = depth*7 + index
+                    float angle = (j+.5)*2*M_PI/7;
+                    light = createLightCentered<SmallLight<GreenLight>>(
+                        Vec(-radius*sin(angle)+cbox.pos.x+cbox.size.x/2,
+                             radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
+                        module, Pleiades::LIGHT_ADDRESS+i*7+j
+                    );
+                    if (i > 2)
+                    {
+                    ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
+                            1,.5,0,
+                            1)); 
+                    }
+                    addChild(light);
                 }
-                addChild(light);
+
             }
 
+            for(int i = 0; i < 7; ++i)
+            {
+                float irad = 150;
+                float angle = (i+.5)*2*M_PI/7;           
+                light = createLightCentered<SmallLight<GreenRedLight>>(
+                    Vec(-irad*sin(angle)+cbox.pos.x+cbox.size.x/2,
+                         irad*cos(angle)+cbox.pos.y+cbox.size.y/2), 
+                    module, Pleiades::LIGHT_PORT+i*2
+                );
+                addChild(light);        
+            }
+
+            for(int i = 0; i < 7; ++i)
+            {
+                module->encoders[Pleiades::PARAM_MODE+i]->setColor(
+                        MODE_COLORS[i][0],
+                        MODE_COLORS[i][1],
+                        MODE_COLORS[i][2]
+                        );
+            }
+
+            module->encoders[Pleiades::PARAM_CENTER]->setColor(
+                module->encoders[Pleiades::PARAM_MODE+5]);
+            for(int i = 0; i < 7; ++i)
+            {
+                module->encoders[Pleiades::PARAM_STEP+i]->setColor(
+                    module->encoders[Pleiades::PARAM_MODE+1]);
+            }
+
+            module->updateStepKnobs();
+
+            seq_name = new TextField();
+            float w = 75;
+            seq_name->box.pos = Vec(box.size.x/2-w/2, 5);
+            seq_name->box.size = Vec(w, 20);
+            addChild(seq_name);
+
+            module->seq_name = seq_name;
+
+            module->ready = true;
         }
-
-        for(int i = 0; i < 7; ++i)
-        {
-            float irad = 150;
-            float angle = (i+.5)*2*M_PI/7;           
-            light = createLightCentered<SmallLight<GreenRedLight>>(
-                Vec(-irad*sin(angle)+cbox.pos.x+cbox.size.x/2,
-                     irad*cos(angle)+cbox.pos.y+cbox.size.y/2), 
-                module, Pleiades::LIGHT_PORT+i*2
-            );
-            addChild(light);        
-        }
-
-        for(int i = 0; i < 7; ++i)
-        {
-            module->encoders[Pleiades::PARAM_MODE+i]->setColor(
-                    MODE_COLORS[i][0],
-                    MODE_COLORS[i][1],
-                    MODE_COLORS[i][2]
-                    );
-        }
-
-        module->encoders[Pleiades::PARAM_CENTER]->setColor(
-            module->encoders[Pleiades::PARAM_MODE+5]);
-        for(int i = 0; i < 7; ++i)
-        {
-            module->encoders[Pleiades::PARAM_STEP+i]->setColor(
-                module->encoders[Pleiades::PARAM_MODE+1]);
-        }
-
-        module->updateStepKnobs();
-
-        seq_name = new TextField();
-        float w = 75;
-        seq_name->box.pos = Vec(box.size.x/2-w/2, 5);
-        seq_name->box.size = Vec(w, 20);
-        addChild(seq_name);
-        module->seq_name = seq_name;
-
-        module->ready = true;
     }
 
 

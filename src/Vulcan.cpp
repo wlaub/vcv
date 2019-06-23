@@ -300,10 +300,11 @@ VulcanWidget::VulcanWidget(Vulcan* module) {
     label->box.pos=Vec(0, 30);
     label->text = "";
     addChild(label); 
-    module->testLabel = label;
-
-    module->ready = 1;
-
+    if(module)
+    {
+        module->testLabel = label;
+        module->ready = 1;
+    }
 }
 
 Model* modelVulcan = createModel<Vulcan, VulcanWidget>(

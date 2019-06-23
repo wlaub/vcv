@@ -125,10 +125,13 @@ struct ConvoWidget : ModuleWidget {
             addChild(panel);
         }
 
-        for(int i; i < 2; ++i)
+        if(module)       
         {
-            module->signal[i] = new ttt::CircularBuffer(BUFL);
-            module->kernel[i] = new ttt::CircularBuffer(BUFL);
+            for(int i; i < 2; ++i)
+            {
+                module->signal[i] = new ttt::CircularBuffer(BUFL);
+                module->kernel[i] = new ttt::CircularBuffer(BUFL);
+            }
         }
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
@@ -139,8 +142,8 @@ struct ConvoWidget : ModuleWidget {
         /* +CONTROL INSTANTIATION */
         #include "Convo_panel.hpp"
         /* -CONTROL INSTANTIATION */
-
-        module->ready = 1;
+        if(module)
+            module->ready = 1;
     }
 };
 

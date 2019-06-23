@@ -301,10 +301,12 @@ OdysseusWidget::OdysseusWidget(Odysseus* module) {
     label->text = "";
     label->color = nvgRGB(0,0,0);
     addChild(label); 
-    module->testLabel = label;
+    if(module)
+    {
+        module->testLabel = label;
 
-    module -> ready = 1;
-
+        module -> ready = 1;
+    }
 }
 
 Model* modelOdysseus = createModel<Odysseus, OdysseusWidget>(

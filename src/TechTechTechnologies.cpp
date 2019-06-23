@@ -108,15 +108,15 @@ void TTTEncoder::configureLights()
     float rad = 15;
     float angle = M_PI/7;
     if(flip) angle= -6*M_PI/7;
-/*    for(int i = 0; i < 7; ++i)
+    for(int i = 0; i < 7; ++i)
     {
         lights[i] = createLightCentered<SmallLight<GreenLight>>(
             Vec(xpos+-rad*sin(2*M_PI*i/7+angle), ypos+rad*cos(2*M_PI*i/7+angle)), 
 //            Vec(0, 0),
-            module, 0);
+            paramQuantity->module, 0);
 //        addChild(lights[i]);
     }
-    lights_ready=true;*/
+    lights_ready=true;
     controller->update(0);
 }
 
@@ -129,12 +129,15 @@ void TTTEncoder::draw(const DrawArgs &args)
 {
     RoundBlackKnob::draw(args);
     
-    for (int i = 0; i < 7; ++i)
+    if(lights_ready)
     {
-        nvgSave(args.vg);
-        nvgTranslate(args.vg, lights[i]->box.pos.x, lights[i]->box.pos.y);
-        lights[i]->draw(args);
-        nvgRestore(args.vg);
+        for (int i = 0; i < 7; ++i)
+        {
+            nvgSave(args.vg);
+            nvgTranslate(args.vg, lights[i]->box.pos.x, lights[i]->box.pos.y);
+            lights[i]->draw(args);
+            nvgRestore(args.vg);
+        }
     }
 }
 
@@ -160,20 +163,23 @@ void TTTEncoder::setValue(float v)
 
 void TTTEncoder::onHoverKey(const event::HoverKey &e) 
 {
-    switch (e.key) 
+    if(e.action == GLFW_PRESS)
     {
-        case GLFW_KEY_PAGE_UP:
-//        case GLFW_KEY_UP:
-            controller->update(1);
-            e.consume(this);
-            return;
-        break;
-        case GLFW_KEY_PAGE_DOWN:
-//        case GLFW_KEY_DOWN:
-            controller->update(-1);
-            e.consume(this);
-            return;
-        break;
+        switch (e.key) 
+        {
+            case GLFW_KEY_PAGE_UP:
+    //        case GLFW_KEY_UP:
+                controller->update(1);
+                e.consume(this);
+                return;
+            break;
+            case GLFW_KEY_PAGE_DOWN:
+    //        case GLFW_KEY_DOWN:
+                controller->update(-1);
+                e.consume(this);
+                return;
+            break;
+        }
     }
     RoundBlackKnob::onHoverKey(e);  
 }

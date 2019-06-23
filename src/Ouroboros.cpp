@@ -172,10 +172,12 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
     label->box.pos=Vec(0, 30);
     label->text = "";
     addChild(label); 
+    if(module)
+    {
     module->testLabel = label;
 
     module->ready = 1;
-
+    }
 }
 
     Model* modelOuroboros = createModel<Ouroboros, OuroborosWidget>(

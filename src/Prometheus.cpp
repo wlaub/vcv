@@ -178,9 +178,12 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) {
     label->box.pos=Vec(0, 30);
     label->text = "";
     addChild(label); 
-    module->testLabel = label;
+    if(module)
+    {
+        module->testLabel = label;
 
-    module->ready = 1;
+        module->ready = 1;
+    }   
 
 }
 

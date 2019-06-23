@@ -95,7 +95,8 @@ mDACWidget::mDACWidget(mDAC* module) {
 
     infields = new NumField*[NOUT];
 
-    module->infields = infields;
+    if(module)
+        module->infields = infields;
 
     for(int i = 0; i < NOUT; ++i)
     {
@@ -117,9 +118,11 @@ mDACWidget::mDACWidget(mDAC* module) {
     label->box.pos=Vec(30, 0);
     label->text = "";
     addChild(label); 
-    module->testLabel = label;
+    if(module)
+        module->testLabel = label;
 
-    module -> ready = 1;
+    if(module)
+        module -> ready = 1;
 
 }
 
