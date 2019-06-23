@@ -484,18 +484,18 @@ struct Pleiades : Module {
 
     TextField* seq_name;
 
-    json_t *toJson() override;
-    void fromJson(json_t *rootJ) override;
+    json_t *dataToJson() override;
+    void dataFromJson(json_t *rootJ) override;
     
 
 
     // For more advanced Module features, read Rack's engine.hpp header file
-    // - toJson, fromJson: serialization of internal data
+    // - dataToJson, dataFromJson: serialization of internal data
     // - onSampleRateChange: event triggered by a change of sample rate
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
-json_t* Pleiades::toJson()
+json_t* Pleiades::dataToJson()
 {
     json_t *rootJ = json_object();
 
@@ -522,10 +522,10 @@ json_t* Pleiades::toJson()
 }
 
 
-void Pleiades::fromJson(json_t *rootJ)
+void Pleiades::dataFromJson(json_t *rootJ)
 {
     char tstr[256];
-    Module::fromJson(rootJ);
+    Module::dataFromJson(rootJ);
 
     seq_name->text = json_string_value(json_object_get(rootJ, "seq_name"));
     seq_name->onTextChange();

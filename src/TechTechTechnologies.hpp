@@ -193,7 +193,7 @@ struct TTTEncoder : RoundBlackKnob {
     void reset() override;
     void draw(NVGcontext *vg) override;
     void step() override;
-    void fromJson(json_t *rootJ);
+    void dataFromJson(json_t *rootJ);
 
 };
 

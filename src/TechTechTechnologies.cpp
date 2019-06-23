@@ -132,7 +132,7 @@ void TTTEncoder::draw(NVGcontext *vg)
     }
 }
 
-void TTTEncoder::fromJson(json_t *rootJ) {
+void TTTEncoder::dataFromJson(json_t *rootJ) {
     json_t *valueJ = json_object_get(rootJ, "value");
     if (valueJ)
         controller->values[controller->group][controller->index] = char(json_number_value(valueJ));

@@ -30,7 +30,7 @@ struct mDAC : Module {
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
-	// - toJson, fromJson: serialization of internal data
+	// - dataToJson, dataFromJson: serialization of internal data
 	// - onSampleRateChange: event triggered by a change of sample rate
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 
@@ -65,8 +65,8 @@ struct mDACWidget : ModuleWidget
     NumField** infields;
     mDACWidget(mDAC* module);
     void jsontag(char* result, int i);
-    json_t *toJson() override;
-    void fromJson(json_t *rootJ) override;
+    json_t *dataToJson() override;
+    void dataFromJson(json_t *rootJ) override;
 };
 
 
@@ -128,9 +128,9 @@ void mDACWidget::jsontag(char* result, int i)
 }
 
 
-json_t* mDACWidget::toJson()
+json_t* mDACWidget::dataToJson()
 {
-    json_t *rootJ = ModuleWidget::toJson();
+    json_t *rootJ = ModuleWidget::dataToJson();
 
     char tstr[256];
 
@@ -146,10 +146,10 @@ json_t* mDACWidget::toJson()
 }
 
 
-void mDACWidget::fromJson(json_t *rootJ)
+void mDACWidget::dataFromJson(json_t *rootJ)
 {
     char tstr[256];
-    ModuleWidget::fromJson(rootJ);
+    ModuleWidget::dataFromJson(rootJ);
 
     for(int i = 0; i < NOUT; ++i)
     {
