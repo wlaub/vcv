@@ -33,6 +33,10 @@ Ramp/random walk generator. This module is still in development. Current impleme
   * radius input from -1 to 1 with CV input. Clips to (-1,1).
   * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
 
+### QMod
+
+4x Quadrature Modulator/Demodulator Pairs
+
 ## LFSR Modules
 
 ### Depth
@@ -90,5 +94,20 @@ Utility module providing 8 digital outputs generated from text boxes. Numbers ma
 
 * 8x outputs: 8x analog outputs that behave the same way as the DAC A output
 
+## WIP Modules
 
+### Achilles
 
+Karplus Strong Toolkit
+
+### Pleiades
+
+Sequencer
+
+### Mneme
+
+Delays
+
+### Athena
+
+???
