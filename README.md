@@ -1,9 +1,49 @@
 
 # TechTech Technologies VCV Plugins
 
-### Odysseus
+## Green Cathedral
+
+### Odysseus (II)
 
 Ramp/random walk generator. This module is still in development. Current implementation is based on design values, but will be updated to reflect final hardware behavior after it's finished.
+
+### Polyphemus (II)
+
+6-pole IIR filter
+
+* 3 pole pairs defined by radius and angle
+  * radius input from -1 to 1 with CV input. Clips to (-1,1).
+  * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
+
+### Prometheus (II)
+
+3x up-to 16-bit LFSRs using Galois implementation
+
+* Taps inputs: Tap configuration as 0 ~ 10V CV, quantized to the selected bit depth
+  * taps1 and taps2 are xor'd together if present
+* Gate input: Ticks the LFSR on a rising edge
+* Lights: displays the state of the LFSR register
+* D output: The internal register value scaled to 0 ~ 10V
+* A output: The 0th bit of the register scaled to -5 ~ 5V
+
+### Achilles (WIP) (II?)
+
+Karplus Strong Toolkit (noise -> env -> delay -> filter)
+
+### Pleiades (WIP)
+
+Tree Sequencer
+
+### Mneme (WIP)
+
+Delays?
+
+### Athena (NOT STARTED)
+
+???
+
+
+## Other Modules
 
 ### Ouroboros
 
@@ -24,14 +64,6 @@ Ramp/random walk generator. This module is still in development. Current impleme
   * Red: buffer end location
   * Green: buffer start location
   * Blue: buffer playback location
-
-### Polyphemus
-
-6-pole IIR filter
-
-* 3 pole pairs defined by radius and angle
-  * radius input from -1 to 1 with CV input. Clips to (-1,1).
-  * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
 
 ### QMod
 
@@ -98,16 +130,33 @@ Utility module providing 8 digital outputs generated from text boxes. Numbers ma
 
 ### Achilles
 
-Karplus Strong Toolkit
+Karplus Strong Toolkit (noise -> env -> delay -> filter)
 
 ### Pleiades
 
-Sequencer
+Tree Sequencer
 
 ### Mneme
 
-Delays
+Delays?
 
 ### Athena
 
 ???
+
+## Future Modules
+
+### Odysseus II
+
+More channels, more outputs
+
+### Polyphemus II
+
+More modular, better curves, (v/oct lpf)
+
+### Output Delay Module
+
+v/oct relative to 120 bpm, clock input, stereo, external feedback access
+maybe part of Mneme? Maybe part of Athena?
+
+
