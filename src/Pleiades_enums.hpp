@@ -4,6 +4,8 @@
         ENUMS(PARAM_CONFIG,3),
         ENUMS(PARAM_MODE,7),
         ENUMS(PARAM_STEP,7),
+        ENUMS(PARAM_SAVE,1),
+        ENUMS(PARAM_LOAD,1),
         NUM_PARAMS
     };
     enum InputIds {

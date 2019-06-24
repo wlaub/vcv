@@ -470,6 +470,8 @@ struct Pleiades : Module {
 
     bool update_steps = false;
     bool ready = false;
+    bool write_enable = false;
+    char write_name[256];
 
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
@@ -504,16 +506,20 @@ json_t* Pleiades::dataToJson()
     char filename[256];
 
     json_object_set_new(rootJ, "seq_name",
-        json_string(seq_name->text.c_str())
+//        json_string(seq_name->text.c_str())
+        json_string(write_name)
         );
 
 
     for(int i = 0; i < 7; ++i)
     {
         sprintf(tstr, "seq_%i", i);
-        sprintf(filename, "PleiadesSeq_%s_%i.dat", seq_name->text.c_str(),i);
-        sequences[i].toStr(filename);
-        
+        sprintf(filename, "PleiadesSeq_%s_%i.dat", write_name,i);
+        if(write_enable)
+        {
+            sequences[i].toStr(filename);
+        }
+
         json_object_set_new(rootJ, tstr,
             json_string(filename)
             );
@@ -529,6 +535,7 @@ void Pleiades::dataFromJson(json_t *rootJ)
     Module::dataFromJson(rootJ);
 
     seq_name->setText (json_string_value(json_object_get(rootJ, "seq_name")));
+    sprintf(write_name, seq_name->text.c_str());
 //    seq_name->onTextChange();
 
     for(int i = 0; i < 7; ++i)
@@ -538,6 +545,7 @@ void Pleiades::dataFromJson(json_t *rootJ)
             json_object_get(rootJ, tstr)
             ));
     }
+    write_enable=true;
 
     updateStepKnobs();
 
@@ -953,6 +961,25 @@ struct PleiadesWidget : ModuleWidget {
             seq_name->box.pos = Vec(box.size.x/2-w/2, 5);
             seq_name->box.size = Vec(w, 20);
             addChild(seq_name);
+
+            param = createParam<LEDButton>(
+                Vec(box.size.x/2+w/2+10, 5),
+                module,
+                Pleiades::PARAM_SAVE, 0,1,0
+                );
+
+            center(param,1,1);
+            addParam(param);
+
+            param = createParam<LEDButton>(
+                Vec(box.size.x/2-w/2-10, 5),
+                module,
+                Pleiades::PARAM_LOAD, 0,1,0
+                );
+
+            center(param,1,1);
+            addParam(param);
+ 
 
             module->seq_name = seq_name;
 
