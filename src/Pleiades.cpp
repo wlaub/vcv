@@ -510,6 +510,8 @@ json_t* Pleiades::dataToJson()
         json_string(write_name)
         );
 
+    json_object_set_new(rootJ, "format_id", json_integer(0));
+
 
     for(int i = 0; i < 7; ++i)
     {
@@ -533,6 +535,8 @@ void Pleiades::dataFromJson(json_t *rootJ)
 {
     char tstr[256];
     Module::dataFromJson(rootJ);
+
+    int format_id = json_integer_value(json_object_get(rootJ, "format_id"));
 
     seq_name->setText (json_string_value(json_object_get(rootJ, "seq_name")));
     sprintf(write_name, seq_name->text.c_str());
