@@ -442,6 +442,7 @@ struct Pleiades : Module {
     enum LightIds {
         ENUMS(LIGHT_PORT, 7*2),
         ENUMS(LIGHT_ADDRESS, 7*DEPTH),
+        ENUMS(LIGHT_WRITE_ENABLE, 2),
         NUM_LIGHTS
     };
  
@@ -459,6 +460,9 @@ struct Pleiades : Module {
     struct EncoderController* encoders[NUM_PARAMS];
     int encoder_delta[NUM_PARAMS];
 
+    SchmittTrigger saveTrigger;
+    SchmittTrigger loadTrigger;
+
     SchmittTrigger clockTrigger;
     int counter = 0;
     int clockCounter = 0;
@@ -475,9 +479,6 @@ struct Pleiades : Module {
 
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
-    Pleiades() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
-
     void updateStepKnobs();
     void updateCenterFromStep();
 
@@ -491,6 +492,13 @@ struct Pleiades : Module {
     void dataFromJson(json_t *rootJ) override;
     
 
+    Pleiades() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+    
+    }
+
+   
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - dataToJson, dataFromJson: serialization of internal data
@@ -506,7 +514,6 @@ json_t* Pleiades::dataToJson()
     char filename[256];
 
     json_object_set_new(rootJ, "seq_name",
-//        json_string(seq_name->text.c_str())
         json_string(write_name)
         );
 
@@ -633,6 +640,20 @@ void Pleiades::step() {
         encoder_delta[i] = encoders[i]->process(); 
         if(encoder_delta[i] != 0) there_are_updates = true;
     }
+
+    if(saveTrigger.process(params[PARAM_SAVE].value))
+    {
+        sprintf(write_name, seq_name->text.c_str());
+        write_enable = true;
+    }
+    if(saveTrigger.process(params[PARAM_LOAD].value))
+    {
+        //Force load here
+        //Set write enable on success
+    }
+    //set write enable lights here
+    lights[LIGHT_WRITE_ENABLE].value = write_enable?0:1;
+    lights[LIGHT_WRITE_ENABLE+1].value = write_enable?0:1;
 
     /***************************/
     /* Knob Meta-Configuration */
@@ -855,7 +876,6 @@ void Pleiades::step() {
     /*  -OUTPUT_PROCESSING */
 
 
-
 }
 
 
@@ -981,6 +1001,25 @@ struct PleiadesWidget : ModuleWidget {
 
             center(param,1,0);
             addParam(param);
+
+            light = createLightCentered<SmallLight<RedLight>>(
+                Vec(box.size.x/2+w/2+dist, 5),
+                module, Pleiades::LIGHT_WRITE_ENABLE
+            );
+            ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
+                    1,.5,0,
+                    1)); 
+            addChild(light);        
+
+             light = createLightCentered<SmallLight<RedLight>>(
+                Vec(box.size.x/2-w/2-dist, 5),
+                module, Pleiades::LIGHT_WRITE_ENABLE+1
+            );
+            ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
+                    1,.5,0,
+                    1)); 
+            addChild(light);        
+            
 
             param = createParam<LEDButton>(
                 Vec(box.size.x/2-w/2-dist, 5),
