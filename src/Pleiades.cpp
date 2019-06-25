@@ -624,6 +624,8 @@ void Pleiades::step() {
     for(int i = 0; i < NUM_PARAMS; ++i)
     {
         if(i == PARAM_CONFIG+2) continue;
+        if(i == PARAM_SAVE) continue;       
+        if(i == PARAM_LOAD) continue;        
         encoder_delta[i] = encoders[i]->process(); 
         if(encoder_delta[i] != 0) there_are_updates = true;
     }
@@ -864,7 +866,9 @@ struct PleiadesWidget : ModuleWidget {
         if(!module) return;
 
         if(param->paramQuantity->paramId == Pleiades::PARAM_CONFIG+2) return;
-        
+        if(param->paramQuantity->paramId == Pleiades::PARAM_SAVE) return;
+        if(param->paramQuantity->paramId == Pleiades::PARAM_LOAD) return;
+
         const unsigned char defs[7] = {0,0,0,0,0,0,0};
         ((Pleiades*)(module))->encoders[param->paramQuantity->paramId] = new EncoderController((TTTEncoder*)param, defs);
         ((TTTEncoder*)param)->configureLights();
@@ -958,26 +962,29 @@ struct PleiadesWidget : ModuleWidget {
 
             seq_name = new TextField();
             float w = 75;
+    
             seq_name->box.pos = Vec(box.size.x/2-w/2, 5);
             seq_name->box.size = Vec(w, 20);
             addChild(seq_name);
 
+            float dist = 15;
+
             param = createParam<LEDButton>(
-                Vec(box.size.x/2+w/2+10, 5),
+                Vec(box.size.x/2+w/2+dist, 5),
                 module,
                 Pleiades::PARAM_SAVE, 0,1,0
                 );
 
-            center(param,1,1);
+            center(param,1,0);
             addParam(param);
 
             param = createParam<LEDButton>(
-                Vec(box.size.x/2-w/2-10, 5),
+                Vec(box.size.x/2-w/2-dist, 5),
                 module,
                 Pleiades::PARAM_LOAD, 0,1,0
                 );
 
-            center(param,1,1);
+            center(param,1,0);
             addParam(param);
  
 
