@@ -8,6 +8,8 @@
 
 #define CENTER_STEP_INDEX 1
 
+#define FORMAT_VERSION 0
+
 /*
 #define SDPRINT(DSEQ, x, ...) \
 #ifdef x \
@@ -490,9 +492,11 @@ struct Pleiades : Module {
 
     TextField* seq_name;
 
+    void getFilename(char* into, const char* key, int index, int version);
     json_t *dataToJson() override;
     void dataFromJson(json_t *rootJ) override;
-    
+    void loadSequence(const char* filename, int format_version);
+
     LightWidget** addressLights;
 
     Pleiades() 
@@ -508,6 +512,14 @@ struct Pleiades : Module {
     // - onSampleRateChange: event triggered by a change of sample rate
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
+
+void Pleiades::getFilename(char* into, const char* key, int index, int version)
+{
+    if(version == 0)
+    {
+        sprintf(into, "PleiadesSeq_%s_%i.dat", key, index);
+    }
+}
 
 json_t* Pleiades::dataToJson()
 {
@@ -526,11 +538,8 @@ json_t* Pleiades::dataToJson()
     for(int i = 0; i < 7; ++i)
     {
         sprintf(tstr, "seq_%i", i);
-        sprintf(filename, "PleiadesSeq_%s_%i.dat", write_name,i);
-        if(write_enable)
-        {
-            sequences[i].toStr(filename);
-        }
+        getFilename(filename, write_name,i, FORMAT_VERSION);
+        sequences[i].toStr(filename);
 
         json_object_set_new(rootJ, tstr,
             json_string(filename)
@@ -540,6 +549,16 @@ json_t* Pleiades::dataToJson()
     return rootJ;
 }
 
+void Pleiades::loadSequence(const char* key, int format_version)
+{
+    char filename[1024];
+    for(int i = 0; i < 7; ++i)
+    {
+        getFilename(filename, key, i, format_version);
+        sequences[i].fromStr(filename);
+    }
+
+}
 
 void Pleiades::dataFromJson(json_t *rootJ)
 {
@@ -548,18 +567,10 @@ void Pleiades::dataFromJson(json_t *rootJ)
 
     int format_id = json_integer_value(json_object_get(rootJ, "format_id"));
 
-    seq_name->setText (json_string_value(json_object_get(rootJ, "seq_name")));
+    seq_name->setText(json_string_value(json_object_get(rootJ, "seq_name")));
     sprintf(write_name, seq_name->text.c_str());
-//    seq_name->onTextChange();
 
-    for(int i = 0; i < 7; ++i)
-    {
-        sprintf(tstr, "seq_%i", i);       
-        sequences[i].fromStr(json_string_value(
-            json_object_get(rootJ, tstr)
-            ));
-    }
-    write_enable=true;
+    loadSequence(write_name, format_id);
 
     updateStepKnobs();
 
@@ -644,17 +655,20 @@ void Pleiades::step() {
         if(encoder_delta[i] != 0) there_are_updates = true;
     }
 
+
+
     if(saveTrigger.process(params[PARAM_SAVE].value))
     {
         sprintf(write_name, seq_name->text.c_str());
-        write_enable = true;
+        dataToJson();
     }
     if(saveTrigger.process(params[PARAM_LOAD].value))
     {
-        //Force load here
-        //Set write enable on success
+        loadSequence(seq_name->text.c_str(), FORMAT_VERSION);
+        sprintf(write_name, seq_name->text.c_str());
     }
     //set write enable lights here
+    write_enable = (strcmp(seq_name->text.c_str(), write_name)==0);
     lights[LIGHT_WRITE_ENABLE].value = write_enable?0:1;
     lights[LIGHT_WRITE_ENABLE+1].value = write_enable?0:1;
 
@@ -1016,36 +1030,36 @@ struct PleiadesWidget : ModuleWidget {
             float dist = 15;
 
             param = createParam<LEDButton>(
-                Vec(box.size.x/2+w/2+dist, 5),
+                Vec(box.size.x/2+w/2+dist, 15),
                 module,
                 Pleiades::PARAM_SAVE, 0,1,0
                 );
 
-            center(param,1,0);
+            center(param,1,1);
             addParam(param);
 
             light = createLightCentered<SmallLight<RedLight>>(
-                Vec(box.size.x/2+w/2+dist, 5),
+                Vec(box.size.x/2+w/2+dist, 15),
                 module, Pleiades::LIGHT_WRITE_ENABLE
             );
             ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
             addChild(light);        
 
              light = createLightCentered<SmallLight<RedLight>>(
-                Vec(box.size.x/2-w/2-dist, 5),
+                Vec(box.size.x/2-w/2-dist, 15),
                 module, Pleiades::LIGHT_WRITE_ENABLE+1
             );
-            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
+            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE;
             addChild(light);        
             
 
             param = createParam<LEDButton>(
-                Vec(box.size.x/2-w/2-dist, 5),
+                Vec(box.size.x/2-w/2-dist, 15),
                 module,
                 Pleiades::PARAM_LOAD, 0,1,0
                 );
 
-            center(param,1,0);
+            center(param,1,1);
             addParam(param);
  
 
