@@ -27,6 +27,8 @@ const float MODE_COLORS[7][3] = {
     {1,1,1}
     };
 
+const NVGcolor GC_ORANGE = nvgRGBAf(1, .5, 0, 1);
+
 struct Step
 {
     // 0 : slew
@@ -491,6 +493,7 @@ struct Pleiades : Module {
     json_t *dataToJson() override;
     void dataFromJson(json_t *rootJ) override;
     
+    LightWidget** addressLights;
 
     Pleiades() 
     {
@@ -688,10 +691,29 @@ void Pleiades::step() {
     
     if(encoder_delta[PARAM_MODE+3] != 0)
     {
-        depth_idx += encoder_delta[PARAM_MODE+3];
+        int depth_delta = encoder_delta[PARAM_MODE+3];
+        depth_idx += depth_delta;
         int center_value = encoders[PARAM_CENTER]->getValue(0);
         address.digits[depth_idx] = center_value+1;
         updateStepKnobs();
+
+            for (int i = 0; i < DEPTH; ++i)
+            {
+                for (int j =0; j < 7; ++j)
+                {   //i = depth,  j = idx
+                    //id = depth*7 + index
+                    if (i > depth_idx+1)
+                    {
+                    ((ModuleLightWidget*)addressLights[i*7+j])->baseColors[0] = GC_ORANGE; 
+                    }
+                    else
+                    {
+                    ((ModuleLightWidget*)addressLights[i*7+j])->baseColors[0] = SCHEME_GREEN; 
+                    }
+                }
+            }
+
+
 
         DPRINT(DMAIN, "DEPTH INDEX CHANGED %i\n", depth_idx);
     }
@@ -842,7 +864,7 @@ void Pleiades::step() {
                      (j+1 >= address.digits[i] and j+1 <= prev)
                       ?.1:0);
                 if(j+1 == address.digits[i])
-                    lights[LIGHT_ADDRESS+i*7+j].value= 1;
+                    lights[LIGHT_ADDRESS+i*7+j].value=1;
            }
            prev =  address.digits[i];
         }
@@ -928,6 +950,7 @@ struct PleiadesWidget : ModuleWidget {
 
 
             //Address indicator lights
+            module->addressLights = new LightWidget*[DEPTH*7];
             float radius = 25-7;
             for (int i = 0; i < DEPTH; ++i)
             {
@@ -942,12 +965,11 @@ struct PleiadesWidget : ModuleWidget {
                              radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
                         module, Pleiades::LIGHT_ADDRESS+i*7+j
                     );
-                    if (i > 2)
+                    if (i > module->depth_idx+1)
                     {
-                    ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
-                            1,.5,0,
-                            1)); 
+                    ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
                     }
+                    module->addressLights[i*7+j] = light;
                     addChild(light);
                 }
 
@@ -1006,18 +1028,14 @@ struct PleiadesWidget : ModuleWidget {
                 Vec(box.size.x/2+w/2+dist, 5),
                 module, Pleiades::LIGHT_WRITE_ENABLE
             );
-            ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
-                    1,.5,0,
-                    1)); 
+            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
             addChild(light);        
 
              light = createLightCentered<SmallLight<RedLight>>(
                 Vec(box.size.x/2-w/2-dist, 5),
                 module, Pleiades::LIGHT_WRITE_ENABLE+1
             );
-            ((ModuleLightWidget*)light)->baseColors[0] = (nvgRGBAf(
-                    1,.5,0,
-                    1)); 
+            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
             addChild(light);        
             
 
