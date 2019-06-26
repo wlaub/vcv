@@ -1045,14 +1045,6 @@ struct PleiadesWidget : ModuleWidget {
             ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
             addChild(light);        
 
-             light = createLightCentered<SmallLight<RedLight>>(
-                Vec(box.size.x/2-w/2-dist, 15),
-                module, Pleiades::LIGHT_WRITE_ENABLE+1
-            );
-            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE;
-            addChild(light);        
-            
-
             param = createParam<LEDButton>(
                 Vec(box.size.x/2-w/2-dist, 15),
                 module,
@@ -1062,7 +1054,13 @@ struct PleiadesWidget : ModuleWidget {
             center(param,1,1);
             addParam(param);
  
-
+             light = createLightCentered<SmallLight<RedLight>>(
+                Vec(box.size.x/2-w/2-dist, 15),
+                module, Pleiades::LIGHT_WRITE_ENABLE+1
+            );
+            ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE;
+            addChild(light);        
+ 
             module->seq_name = seq_name;
 
             module->ready = true;
