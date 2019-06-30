@@ -104,7 +104,7 @@ struct Step
         {
             if ((index-trigger_offset) % (8-trigger_freq) == 0)
             {
-                tone_value +=  + values[6] - 3 + 5;
+                tone_value +=  + triggerStep->values[6] - 3 + 5;
             }
         }
 
