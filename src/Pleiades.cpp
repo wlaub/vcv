@@ -462,6 +462,8 @@ struct Pleiades : Module {
     struct Address address;
     int depth_idx = DEPTH-4;
 
+    int clock_out_depth = 0;
+
     struct EncoderController* encoders[NUM_PARAMS];
     int encoder_delta[NUM_PARAMS];
 
@@ -746,13 +748,24 @@ void Pleiades::step() {
 
     //MODE 4
 
+    if(encoder_delta[PARAM_MODE+4] != 0)
+    {
+        clock_out_depth=encoders[PARAM_MODE+4]->getValue();
+    }
+
+
+
     //MODE 5 (Center knob function)
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
         if(depth_idx == -1 && encoders[PARAM_MODE+5]->getValue() == 0)
+        {
             encoders[PARAM_CENTER]->setMode(1);
+        }
         else
+        {
             encoders[PARAM_CENTER]->setMode(0);
+        }
 
         if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
         {
@@ -838,7 +851,7 @@ void Pleiades::step() {
     
     //CONFIG 2
 
-
+    //
 
     bool sync = false;
     if(inputs[INPUT_CLOCK].active)
@@ -847,7 +860,7 @@ void Pleiades::step() {
         {
             if(clockTrigger.process(input_clock))
             {
-                output_out[7] = 10*(clockCounter-basePeriod)/basePeriod;
+//                output_out[7] = 10*(clockCounter-basePeriod)/basePeriod;
 //                float loop_rate = 1-pow(10, -clockCounter/10000.);
                 float loop_rate = 1-1/(clockCounter/100+1);
                 loop_rate = 1;
@@ -884,6 +897,14 @@ void Pleiades::step() {
         {
             sequences[i].step(rolls);
         }
+    
+        int clock_depth_idx = clock_out_depth-1; 
+        if(clock_out_depth == 0)//Default to track depth_idx
+        {
+            clock_depth_idx=depth_idx+1;
+        }
+        
+        output_out[7] = (address.digits[clock_depth_idx] == 1)?5:0;
 
         //Update address lights
         int prev = 1;
