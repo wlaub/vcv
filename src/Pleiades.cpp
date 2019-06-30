@@ -56,16 +56,25 @@ struct Step
         //Step is the matching step from the next higher sequence and provides
         //trigger_setting for trigger configuration
         //
-        //index is the index of the current substep and is used to
-        //determine whether step is high or low by index%trigger_setting == 0
-        //Over the course of the step, each trigger setting yields the sequence
-        // 0 : 1 1 1 1 1 1 1
-        // 1 : 0 1 0 1 0 1 0
-        // 2 : 0 1 0 0 1 0 0
-        // 3 : 0 0 0 1 0 0 0
-        // 4 : 0 0 1 0 0 0 0
-        // 5 : 0 1 0 0 0 0 0
-        // 6 : 1 0 0 0 0 0 0
+        //index is the index of the current substep and is used to provide
+        //trigger timing. Triggering within a step only begins when index
+        //greater than of equal to trigger_offset.
+        //
+        //  If trigger_freq == 0, there is no trigger
+        //
+        //  If trigger_freq > 0, trigger_offset is subtracted from index, and
+        //  the result is used to set trigger high when
+        //  (index-trigger_offset) % (8-trigger_freq) == 0
+        //
+        //The trigger pattenern for each trigger_freq is then:
+        //
+        // 0 0 0 0 0 0 0 0
+        // 1 1 0 0 0 0 0 0
+        // 2 1 0 0 0 0 0 1
+        // 3 1 0 0 0 0 1 0
+        // 4 1 0 0 0 1 0 0
+        // 5 1 0 0 1 0 0 1
+        // 6 1 0 1 0 1 0 1
         //
         //prevTone is the tone value from the end of the previous index,
         //maintained at the controller level.
@@ -84,9 +93,8 @@ struct Step
         // 6 : 0.1  0.3  0.4  0.6  0.7  0.9  1.0
         //
 
-        float tone_values[2];
-        tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 - 3;
-        tone_values[1] = tone_values[0] + values[6] - 3 + 5;
+        float tone_value;
+        tone_value = values[3]+tones[values[2]]+tones[values[1]]/7.0 - 3;
        
         unsigned char trigger_offset = triggerStep->values[5]+1;
         unsigned char trigger_freq = triggerStep->values[4];
@@ -94,28 +102,9 @@ struct Step
         unsigned char triggerIndex = 0;
         if(trigger_freq > 0 and index >= trigger_offset)
         {
-            //index-trigger_offset
-            // 0 0 0 0 0 0 0
-            // 1 0 0 0 0 0 0
-            // 1 0 0 0 0 0 1
-            // 1 0 0 0 0 1 0
-            // 1 0 0 0 1 0 0
-            // 1 0 0 1 0 0 1
-            // 1 0 1 0 1 0 1
-            //   
-            //   0 1 2 3 4 5 6
-            // 2 0 1 0 1 0 1 0
-            // 3 0 1 2 0 1 2 0
-            // 4 0 1 2 3 0 1 2
-            // 5 0 1 2 3 4 0 1
-            // 6 0 1 2 3 4 5 0
-            // 7 0 1 2 3 4 5 6
-            //
-            //
-            //
             if ((index-trigger_offset) % (8-trigger_freq) == 0)
             {
-                triggerIndex = 1;
+                tone_value +=  + values[6] - 3 + 5;
             }
         }
 
@@ -126,15 +115,15 @@ struct Step
         }
         DPRINT(DSEQ, "\n");
         DPRINT(DSEQ, "    Param: %i, %i, %f\n", index, subindex, prevTone);
-        DPRINT(DSEQ, "    Tones: %f, %f, %i\n", tone_values[0], tone_values[1], triggerIndex);
+        DPRINT(DSEQ, "    Tones: %f, %i\n", tone_value, triggerIndex);
 
-        if(!std::isfinite(prevTone)) return tone_values[triggerIndex];
+        if(!std::isfinite(prevTone)) return tone_value;
 
         float alpha = min(1.0,float(subindex)/(values[0]+1));
 
         DPRINT(DSEQ, "    %i/%i -> %f\n", subindex-1, values[0]+1, alpha);
 
-        return tone_values[triggerIndex]*alpha+prevTone*(1-alpha);
+        return tone_value*alpha+prevTone*(1-alpha);
     }
 };
 
@@ -576,7 +565,7 @@ struct Pleiades : Module {
 
 void Pleiades::getFilename(char* into, const char* key, int index, int version)
 {
-    if(version == 0 || version == 1)
+    if(true) //TODO update if this changes
     {
         sprintf(into, "PleiadesSeq_%s_%i.dat", key, index);
     }
@@ -702,7 +691,7 @@ int Pleiades::get_complement(int index, int format_version)
     {
         return (index+1)%7;
     }
-    else if(format_version == 1)
+    else if(format_version > 0)
     {
         //6 -> 0 | 5 -> 1 | 4 -> 2 | 3 -> 3
         return 6-index;
