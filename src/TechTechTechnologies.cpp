@@ -153,8 +153,20 @@ void TTTEncoder::setValue(float v)
     value = v;
     if (lights_ready)
     {
-        for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
-        lights[char(value)]->color = color;
+        if(mode < 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
+        }
+        else if(mode == 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
+            lights[char(value)]->color = color;
+        }
+        else if(mode > 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = color;
+        }
+ 
     }
 
 //    EventChange e;
@@ -306,6 +318,13 @@ void EncoderController::update(int amount)
     else if(values[group][index] == 7) values[group][index] = 0;
 
     widget->setValue(values[group][index]);
+}
+
+void EncoderController::setMode(int new_mode)
+{
+    widget->mode = new_mode;
+    mode = new_mode;
+    update(0);
 }
 
 void EncoderController::setValues(unsigned char* v, unsigned char tgroup)

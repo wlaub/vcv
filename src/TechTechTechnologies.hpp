@@ -178,6 +178,7 @@ struct TTTEncoder : RoundBlackKnob {
     float lastAngle = 0;
     float value = 0;
     bool dirty = false;
+    int mode = 0;
 
     NVGcolor color = nvgRGBAf(0,0,0,1);
 
@@ -215,6 +216,8 @@ struct EncoderController {
     unsigned char index = 0;
     unsigned char group = 0;
 
+    int mode = 0;
+
     int delta = 0;
 
     EncoderController(TTTEncoder* w, const unsigned char* defs)
@@ -240,6 +243,8 @@ struct EncoderController {
 
     void clear();
     void reset();
+
+    void setMode(int new_mode);
 
     void reset(unsigned char i)
     { //TODO: Should be called when the widget gets reset

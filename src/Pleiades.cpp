@@ -712,6 +712,13 @@ void Pleiades::step() {
         depth_idx += depth_delta;
         if(depth_idx < -1) depth_idx = -1;
         else if(depth_idx >= DEPTH-1) depth_idx=DEPTH-2;
+
+        if(depth_idx == -1 && encoders[PARAM_MODE+5]->getValue() == 0)
+            encoders[PARAM_CENTER]->setMode(1);
+        else
+            encoders[PARAM_CENTER]->setMode(0);
+
+
         int center_value = encoders[PARAM_CENTER]->getValue(0);
         address.digits[depth_idx] = center_value+1;
         updateStepKnobs();
@@ -742,11 +749,18 @@ void Pleiades::step() {
     //MODE 5 (Center knob function)
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
+        if(depth_idx == -1 && encoders[PARAM_MODE+5]->getValue() == 0)
+            encoders[PARAM_CENTER]->setMode(1);
+        else
+            encoders[PARAM_CENTER]->setMode(0);
+
         if(encoders[PARAM_MODE+5]->getValue() == CENTER_STEP_INDEX)
         {
             encoders[PARAM_CENTER]->setIndex(
                 encoders[PARAM_MODE+1]->getValue(), 1);
             encoders[PARAM_CENTER]->setColor(encoders[PARAM_MODE+1]);
+
+           
         }
         else
         {
