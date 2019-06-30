@@ -615,10 +615,14 @@ int Pleiades::get_complement(int index, int format_version)
 {
     //For the given port index, return the index of the controlling sequence.
     //
-
     if(format_version == 0)
     {
         return (index+1)%7;
+    }
+    else if(format_version == 1)
+    {
+        //6 -> 0 | 5 -> 1 | 4 -> 2 | 3 -> 3
+        return 6-index;
     }
 }
 
