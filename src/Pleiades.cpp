@@ -486,6 +486,8 @@ struct Pleiades : Module {
 
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
+    int get_complement(int index, int format_version);
+
     void updateStepKnobs();
     void updateCenterFromStep();
 
@@ -607,6 +609,17 @@ void Pleiades::updateStepKnobs()
     encoders[PARAM_CENTER]->setValues(step_values, 1);
 
 
+}
+
+int Pleiades::get_complement(int index, int format_version)
+{
+    //For the given port index, return the index of the controlling sequence.
+    //
+
+    if(format_version == 0)
+    {
+        return (index+1)%7;
+    }
 }
 
 void Pleiades::step() {
@@ -931,14 +944,15 @@ void Pleiades::step() {
         for(int i = 0; i < N; ++i)
         {
             lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0); //Value target
-            lights[LIGHT_PORT+i*2+1].value = ((i+1)%7 == seq_idx?1:0); //Trigger target
+            lights[LIGHT_PORT+i*2+1].value = 
+                (get_complement(i, FORMAT_VERSION) == seq_idx?1:0); //Trigger target
         }
 
         //Generate outputs
         for(int i = 0; i < N; ++ i)
         {
-            DPRINT(DTEMP, "TSEQ: %i\n", (i+1)%7);
-            float val = sequences[i].get_value(address, sequences[(i+1)%7], tones);
+            DPRINT(DTEMP, "TSEQ: %i\n", get_complement(i, FORMAT_VERSION));
+            float val = sequences[i].get_value(address, sequences[get_complement(i, FORMAT_VERSION)], tones);
             output_out[i] = val;
             DPRINT(DSEQ, "=%f\n", val);
         }
