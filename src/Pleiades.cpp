@@ -455,8 +455,9 @@ struct Pleiades : Module {
     #include "Pleiades_vars.hpp"
     /* -TRIGGER_VARS */
 
+    //Order matters here for some reason
+    int seq_idx = 0; //currently selected sequence   
     struct Sequence sequences[7];
-    int seq_idx = 0; //currently selected sequence
 
     struct Address address;
     int depth_idx = DEPTH-4;
@@ -584,7 +585,9 @@ void Pleiades::updateStepKnobs()
     for(int i = 0 ; i < 7; ++i)
     {
         int step_index = address.get_sub_address(depth_idx+1, i+1);
-        unsigned char value_index = encoders[PARAM_MODE+1]->getValue();                   
+        printf("step index = %o\n", step_index);
+        unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
+
         unsigned char* step_values = 
             sequences[seq_idx].steps[step_index].values;
 
@@ -707,6 +710,8 @@ void Pleiades::step() {
     {
         int depth_delta = encoder_delta[PARAM_MODE+3];
         depth_idx += depth_delta;
+        if(depth_idx < -1) depth_idx = -1;
+        else if(depth_idx >= DEPTH-1) depth_idx=DEPTH-2;
         int center_value = encoders[PARAM_CENTER]->getValue(0);
         address.digits[depth_idx] = center_value+1;
         updateStepKnobs();
