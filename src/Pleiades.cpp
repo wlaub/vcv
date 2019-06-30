@@ -565,7 +565,7 @@ json_t* Pleiades::dataToJson()
         json_string(write_name)
         );
 
-    json_object_set_new(rootJ, "format_id", json_integer(0));
+    json_object_set_new(rootJ, "format_id", json_integer(FORMAT_VERSION));
 
 
     for(int i = 0; i < 7; ++i)
