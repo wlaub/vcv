@@ -8,7 +8,7 @@
 
 #define CENTER_STEP_INDEX 1
 
-#define FORMAT_VERSION 1
+#define FORMAT_VERSION 2
 
 /*
 #define SDPRINT(DSEQ, x, ...) \
@@ -37,10 +37,10 @@ struct Step
     // 1 : primary microtone
     // 2 : primary tone
     // 3 : primary octave
-    // 4 : trigger
-    // 5 : secondary tone 
-    // 6 : secondary octave
-    unsigned char values[7]={0,0,0,3,0,0,6};
+    // 4 : trigger offset
+    // 5 : trigger frequency 
+    // 6 : trigger level
+    unsigned char values[7]={0,0,0,3,0,0,3};
 //    unsigned char values[7]={0,0,0,0,0,0,0};
     void setValue(int index, unsigned char val)
     {
@@ -85,20 +85,39 @@ struct Step
         //
 
         float tone_values[2];
-        tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 -3;
-        tone_values[1] = values[6]+tones[values[5]] - 1;
+        tone_values[0] = values[3]+tones[values[2]]+tones[values[1]]/7.0 - 3;
+        tone_values[1] = tone_values[0] + values[6] - 3 + 5;
+       
+        unsigned char trigger_offset = triggerStep->values[5]+1;
+        unsigned char trigger_freq = triggerStep->values[4];
 
-        unsigned char trigger = triggerStep->values[4];
-
-        unsigned char tlast = trigger+1;
-        unsigned char tfirst = 8-index;
-
-        unsigned char triggerIndex = tfirst%tlast;
-
-        DPRINT(DSEQ, "    %i%%%i = %i\n", tfirst, tlast, triggerIndex);
-
-        DPRINT(DTEMP, "%i\n", triggerIndex);
-        triggerIndex = ((triggerIndex == 0) ? 0 : 1);
+        unsigned char triggerIndex = 0;
+        if(trigger_freq > 0 and index >= trigger_offset)
+        {
+            //index-trigger_offset
+            // 0 0 0 0 0 0 0
+            // 1 0 0 0 0 0 0
+            // 1 0 0 0 0 0 1
+            // 1 0 0 0 0 1 0
+            // 1 0 0 0 1 0 0
+            // 1 0 0 1 0 0 1
+            // 1 0 1 0 1 0 1
+            //   
+            //   0 1 2 3 4 5 6
+            // 2 0 1 0 1 0 1 0
+            // 3 0 1 2 0 1 2 0
+            // 4 0 1 2 3 0 1 2
+            // 5 0 1 2 3 4 0 1
+            // 6 0 1 2 3 4 5 0
+            // 7 0 1 2 3 4 5 6
+            //
+            //
+            //
+            if ((index-trigger_offset) % (8-trigger_freq) == 0)
+            {
+                triggerIndex = 1;
+            }
+        }
 
         DPRINT(DSEQ, "    ");
         for(int i = 0; i < 7; ++i)
@@ -366,6 +385,15 @@ struct Sequence
         }
     }
 
+    void clear(int index)
+    {
+        Step ref_step;
+        for(int i = 0; i < length; ++i)
+        {
+            steps[i].values[index] = ref_step.values[index];
+        }
+    }
+
     void* toStr(const char* filename)
     {
         char* result;
@@ -605,6 +633,15 @@ void Pleiades::loadSequence(const char* key, int format_version)
         printf("Moving triggers from %i to %i\n", old_index, new_index);
         sequences[new_index].receive(reference_sequences[old_index], 4); //clone triggers
     }
+    if(format_version < 2)
+    {//Replace secondary values with trigger control
+        for(int i = 0; i < 7; ++i)
+        {
+            sequences[i].clear(5);
+            sequences[i].clear(6);           
+        }
+    }
+
     //delete[] reference_sequences;
     //TODO Delete reference clones
 
