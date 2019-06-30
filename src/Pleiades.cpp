@@ -8,7 +8,7 @@
 
 #define CENTER_STEP_INDEX 1
 
-#define FORMAT_VERSION 0
+#define FORMAT_VERSION 1
 
 /*
 #define SDPRINT(DSEQ, x, ...) \
@@ -248,6 +248,23 @@ struct Sequence
 //        steps[0].values[6] = 6;
     }
 
+/*    
+    ~Sequence()
+    {
+        delete[] steps;
+    }
+*/
+
+    Sequence* copy()
+    {
+        Sequence *result = new Sequence();
+        for(int i = 0; i < 7; ++ i)
+        {
+            result->receive(this, i);
+        }
+        return result;
+    }
+
     void checkSteps()
     {
         for (int i = 0; i < length; ++i)
@@ -336,6 +353,17 @@ struct Sequence
         }
         DPRINT(DSEQ, "\n");
         return result;
+    }
+
+    void receive(Sequence *from, int index)
+    {
+        //Swap values with another sequence for the given index
+        //Used to convert sequence formats
+
+        for(int i = 0; i < length; ++i)
+        {
+            steps[i].values[index] = from->steps[i].values[index];
+        }
     }
 
     void* toStr(const char* filename)
@@ -520,7 +548,7 @@ struct Pleiades : Module {
 
 void Pleiades::getFilename(char* into, const char* key, int index, int version)
 {
-    if(version == 0)
+    if(version == 0 || version == 1)
     {
         sprintf(into, "PleiadesSeq_%s_%i.dat", key, index);
     }
@@ -562,6 +590,23 @@ void Pleiades::loadSequence(const char* key, int format_version)
         getFilename(filename, key, i, format_version);
         sequences[i].fromStr(filename);
     }
+
+    Sequence* reference_sequences[7];
+    for(int i = 0; i < 7; ++i)
+    {
+        reference_sequences[i] = sequences[i].copy();
+    }
+    for(int i = 0; i < 7; ++i)
+    {
+
+        int old_index = get_complement(i, format_version);
+        int new_index = get_complement(i, FORMAT_VERSION);
+//        new_index=get_complement(i,1); //TODO
+        printf("Moving triggers from %i to %i\n", old_index, new_index);
+        sequences[new_index].receive(reference_sequences[old_index], 4); //clone triggers
+    }
+    //delete[] reference_sequences;
+    //TODO Delete reference clones
 
 }
 
@@ -615,6 +660,7 @@ int Pleiades::get_complement(int index, int format_version)
 {
     //For the given port index, return the index of the controlling sequence.
     //
+
     if(format_version == 0)
     {
         return (index+1)%7;
@@ -945,18 +991,20 @@ void Pleiades::step() {
         //output_out[7] = address.digits[encoders[PARAM_MODE+4]->getValue()]-1;
 
         //Update port lights
+        int format_version = FORMAT_VERSION;
+//        format_version = 1; //TODO
         for(int i = 0; i < N; ++i)
         {
             lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0); //Value target
             lights[LIGHT_PORT+i*2+1].value = 
-                (get_complement(i, FORMAT_VERSION) == seq_idx?1:0); //Trigger target
+                (get_complement(i, format_version) == seq_idx?1:0); //Trigger target
         }
 
         //Generate outputs
         for(int i = 0; i < N; ++ i)
         {
-            DPRINT(DTEMP, "TSEQ: %i\n", get_complement(i, FORMAT_VERSION));
-            float val = sequences[i].get_value(address, sequences[get_complement(i, FORMAT_VERSION)], tones);
+            DPRINT(DTEMP, "TSEQ: %i\n", get_complement(i, format_version));
+            float val = sequences[i].get_value(address, sequences[get_complement(i, format_version)], tones);
             output_out[i] = val;
             DPRINT(DSEQ, "=%f\n", val);
         }
