@@ -98,13 +98,17 @@ struct Step
        
         unsigned char trigger_offset = triggerStep->values[5]+1;
         unsigned char trigger_freq = triggerStep->values[4];
+        signed char trigger_phase = triggerStep->values[6] - 3; //TODO:Implement this
 
         unsigned char triggerIndex = 0;
         if(trigger_freq > 0 and index >= trigger_offset)
         {
-            if ((index-trigger_offset) % (8-trigger_freq) == 0)
+            if ((
+                (index-trigger_offset-trigger_phase) %
+                (8-trigger_freq)) == 0)
             {
-                tone_value +=  + triggerStep->values[6] - 3 + 5;
+//                tone_value +=  + triggerStep->values[6] - 3 + 5;
+                tone_value += + 5;
             }
         }
 
