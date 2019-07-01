@@ -101,16 +101,34 @@ struct Step
         signed char trigger_phase = triggerStep->values[6] - 3; //TODO:Implement this
 
         unsigned char triggerIndex = 0;
-        if(trigger_freq > 0 and index >= trigger_offset)
+        if(trigger_freq > 0)
         {
-            if ((
-                (index-trigger_offset-trigger_phase) %
-                (8-trigger_freq)) == 0)
+            if(index >= trigger_offset and trigger_phase >= 0)
             {
-//                tone_value +=  + triggerStep->values[6] - 3 + 5;
-                tone_value += + 5;
+                if ((
+                    (index-trigger_offset-trigger_phase) %
+                    (8-trigger_freq)) == 0)
+                {
+                    tone_value += 5;
+                }
             }
+            else if(index <= 8-trigger_offset and trigger_phase < 0)
+            {
+                if ((
+                    (
+                     (8-index)
+                     -(trigger_offset)
+                     +(trigger_phase+1)
+                     ) 
+                    %
+                    (8-trigger_freq)) == 0)
+                {
+                    tone_value += 5;
+                }
+            }
+ 
         }
+
 
         DPRINT(DSEQ, "    ");
         for(int i = 0; i < 7; ++i)
