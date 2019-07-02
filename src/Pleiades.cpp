@@ -6,6 +6,14 @@
 #define DSEQ false
 #define DTEMP false
 
+#define BULK_DISABLE 0
+#define BULK_SHIFT 1
+#define BULK_ROTATE 2
+#define BULK_PASTE 3
+#define BULK_COPY 4
+#define BULK_CLEAR 5
+
+
 #define CENTER_STEP_INDEX 1
 
 #define FORMAT_VERSION 2
@@ -66,7 +74,7 @@ struct Step
         //  the result is used to set trigger high when
         //  (index-trigger_offset) % (8-trigger_freq) == 0
         //
-        //The trigger pattenern for each trigger_freq is then:
+        //The trigger pattern for each trigger_freq is then:
         //
         // 0 0 0 0 0 0 0 0
         // 1 1 0 0 0 0 0 0
@@ -75,6 +83,13 @@ struct Step
         // 4 1 0 0 0 1 0 0
         // 5 1 0 0 1 0 0 1
         // 6 1 0 1 0 1 0 1
+        //!7 1 1 1 1 1 1 1 //Not implemented 
+        //
+        //trigger_phase rotates this sequence, and if it is negative, reverses
+        //the sequence, and counts offset from the end instead of the beginning
+        //
+        //TODO trigger lengths instead of phase?
+        // 0, 1/7, 2/7, 3/7, 1, 2, 3
         //
         //prevTone is the tone value from the end of the previous index,
         //maintained at the controller level.
@@ -384,6 +399,21 @@ struct Sequence
         DPRINT(DSEQ, "\n");
         return result;
     }
+
+    void bulk_shift(int edit_index, int new_index, int depth_idx)
+    {
+        //Swap steps at each index from given depth
+    }
+    void bulk_rotate(int edit_index, int new_index, int depth_idx)
+    {
+        //Rotate entire set of steps by difference between indices
+    }
+    void bulk_clear(int edit_index, int new_index, int depth_idx)
+    {
+        //Clear step
+    }
+
+    //TODO: Copy and paste
 
     void receive(Sequence *from, int index)
     {
@@ -896,6 +926,11 @@ void Pleiades::step() {
 
     //MODE 6
 
+    //
+    //TODO Internal Clock control
+    //TODO Reset input
+    //
+
     //STEP 0-6 (Sequence step configurations)
     for(int i = 0 ; i < 7; ++i)
     {
@@ -924,8 +959,46 @@ void Pleiades::step() {
             int step_index;
             unsigned char value_index;
             case 0: //Step select
+            {
+                //new address
+                int edit_index = address.digits[depth_idx];
+                int new_index = center_value+1;
                 address.digits[depth_idx] = center_value+1;
+                //bulk editing effects
+                if(false) //TODO: when edit button active
+                {
+                    int bulk_mode = encoders[PARAM_MODE+2]->getValue();
+                    for(int i = 0; i < N; ++i)
+                    {
+                    if(i != seq_idx) continue; //TODO:future home of multisequence edit control
+                    switch(bulk_mode)
+                    {
+                        case BULK_SHIFT:
+                            sequences[i].bulk_shift(edit_index, new_index, depth_idx);
+                        break;
+                        case BULK_ROTATE:
+                            sequences[i].bulk_rotate(edit_index, new_index, depth_idx);
+                        break;
+                        case BULK_COPY:
+                        break;
+                        case BULK_PASTE:
+                        break;
+                        case BULK_CLEAR:
+                            sequences[i].bulk_clear(edit_index, new_index, depth_idx);
+                        break;
+                        case BULK_DISABLE:
+                        break;
+//                        case BULK_DISABLE:
+//                        break;
+                        default:
+                            printf("BULK MODE ERROR: %i\n", bulk_mode);
+                        break; 
+                    }
+                    }
+                }
+                //Load new steps into knobs
                 updateStepKnobs();
+            }
             break;
             case 1: //Root step control
             
@@ -961,8 +1034,6 @@ void Pleiades::step() {
     //CONFIG 1
     
     //CONFIG 2
-
-    //
 
     bool sync = false;
     if(inputs[INPUT_CLOCK].active)
