@@ -164,6 +164,104 @@ struct Step
     }
 };
 
+struct NewAddress
+{
+//Deals with the mechanics of incrementing through the octal address space and
+//extracting relevant addresses to compute the current step.
+//
+//DEPTH is the number of levels excluding root step, so there are DEPTH+1 total
+//steps to add together at each point in the sequence
+//
+//In digits, index 0 is the lowest level (largest step size)
+//
+    unsigned char digits[DEPTH] = {1};
+
+    int** coefficients;
+
+    NewAddress()
+    {
+        if(coefficients == 0)
+        {//Generate lookup table of coefficients for computing addresses
+            coefficients = new int*[DEPTH];
+            for(int i = 0; i < DEPTH; ++ i)
+            {
+                coefficients[i] = new int[7];
+                for(int j = 0; j < 7; ++ j)
+                {
+                    coefficients[i][j] = j*(1-pow(7,DEPTH-i))/(1-7);
+//                    printf("%i ", coefficients[i][j]);
+                }
+//                printf("\n");
+            }
+        }
+
+        for (int i = 0; i < DEPTH; ++i)
+            digits[i] = 0;
+    }
+
+    int step(int depth_index, bool sync = false)
+    {//Increments the step and returns flags showing which indices rolled over
+     //Depth protects smaller indices from being incremented
+        int result = 0;
+        for (int i = 0; i < DEPTH-depth_index; ++i)
+        {
+            int revidx = DEPTH-1-i;
+            if(false and sync and revidx > depth_index)
+            {
+                digits[revidx] = 8;
+            }
+            else
+            {
+                digits[revidx] += 1;
+            }
+
+            if(digits[revidx] >= 7) 
+            {
+                digits[revidx] = 0;
+                result |= (1<<revidx);
+            }
+            else
+            {
+                i = DEPTH;
+            }
+        }
+
+        return result;
+ 
+
+    }
+
+    void print()
+    {
+        for(int i = 0; i < DEPTH; ++i)
+        {
+            printf("%i",digits[i]);
+        }
+        printf(" -> %x\n", get_address(DEPTH));
+    }
+
+    int get_address(int depth)
+    { //Returns the address of the step at the given depth
+        int result = 0;
+        for(int i = 0; i < depth; ++i)
+        {
+            result += coefficients[i][digits[i]]+i+1;
+        }
+        return result;
+    }
+
+    int get_sub_address(int depth, unsigned char index)
+    { //Returns the address of the index'th child of the step at the given
+      //depth
+        int result = get_address(depth);
+        result += coefficients[depth][index];
+        return result;
+    }
+
+};
+
+
+
 struct Address
 {
 //Deals with the mechanics of incrementing through the octal address space and
@@ -604,7 +702,6 @@ struct Pleiades : Module {
     Pleiades() 
     {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-    
     }
 
    
