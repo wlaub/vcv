@@ -465,7 +465,7 @@ struct Sequence
         printf("\n");
 */
 
-        fromAdd.print();
+//        fromAdd.print();        
 
         for (int i = -1; i < DEPTH; ++i)
         {
@@ -684,7 +684,7 @@ struct Pleiades : Module {
 
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
-    int get_complement(int index, int format_version);
+    int get_complement(int index);
 
     void updateStepKnobs();
     void updateCenterFromStep();
@@ -695,10 +695,10 @@ struct Pleiades : Module {
 
     TextField* seq_name;
 
-    void getFilename(char* into, const char* key, int index, int version);
+    void getFilename(char* into, const char* key, int index);
     json_t *dataToJson() override;
     void dataFromJson(json_t *rootJ) override;
-    void loadSequence(const char* filename, int format_version);
+    void loadSequence(const char* filename);
 
     LightWidget** addressLights;
 
@@ -715,12 +715,9 @@ struct Pleiades : Module {
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
-void Pleiades::getFilename(char* into, const char* key, int index, int version)
+void Pleiades::getFilename(char* into, const char* key, int index)
 {
-    if(true) //TODO update if this changes
-    {
-        sprintf(into, "PleiadesSeq_%s_%i.dat", key, index);
-    }
+    sprintf(into, "PleiadesSeq_%s_%i.dat", key, index);
 }
 
 json_t* Pleiades::dataToJson()
@@ -740,7 +737,7 @@ json_t* Pleiades::dataToJson()
     for(int i = 0; i < 7; ++i)
     {
         sprintf(tstr, "seq_%i", i);
-        getFilename(filename, write_name,i, FORMAT_VERSION);
+        getFilename(filename, write_name,i);
         sequences[i].toStr(filename);
 
         json_object_set_new(rootJ, tstr,
@@ -751,41 +748,14 @@ json_t* Pleiades::dataToJson()
     return rootJ;
 }
 
-void Pleiades::loadSequence(const char* key, int format_version)
+void Pleiades::loadSequence(const char* key)
 {
     char filename[1024];
     for(int i = 0; i < 7; ++i)
     {
-        getFilename(filename, key, i, format_version);
+        getFilename(filename, key, i);
         sequences[i].fromStr(filename);
     }
-
-    Sequence* reference_sequences[7];
-    for(int i = 0; i < 7; ++i)
-    {
-        reference_sequences[i] = sequences[i].copy();
-    }
-    for(int i = 0; i < 7; ++i)
-    {
-
-        int old_index = get_complement(i, format_version);
-        int new_index = get_complement(i, FORMAT_VERSION);
-//        new_index=get_complement(i,1); //TODO
-        printf("Moving triggers from %i to %i\n", old_index, new_index);
-        sequences[new_index].receive(reference_sequences[old_index], 4); //clone triggers
-    }
-    if(format_version < 2)
-    {//Replace secondary values with trigger control
-        for(int i = 0; i < 7; ++i)
-        {
-            sequences[i].clear(5);
-            sequences[i].clear(6);           
-        }
-    }
-
-    //delete[] reference_sequences;
-    //TODO Delete reference clones
-
 }
 
 void Pleiades::dataFromJson(json_t *rootJ)
@@ -798,7 +768,7 @@ void Pleiades::dataFromJson(json_t *rootJ)
     seq_name->setText(json_string_value(json_object_get(rootJ, "seq_name")));
     sprintf(write_name, seq_name->text.c_str());
 
-    if(format_id <= 3)
+    if(format_id != FORMAT_VERSION)
     {
         printf("Warning: Pleiades invalid sequence version.\n");
         seq_name->setText("ERROR");
@@ -807,7 +777,7 @@ void Pleiades::dataFromJson(json_t *rootJ)
     }
     else
     {
-        loadSequence(write_name, format_id);
+        loadSequence(write_name);
 
         updateStepKnobs();
     }
@@ -844,20 +814,12 @@ void Pleiades::updateStepKnobs()
 
 }
 
-int Pleiades::get_complement(int index, int format_version)
+int Pleiades::get_complement(int index)
 {
     //For the given port index, return the index of the controlling sequence.
     //
 
-    if(format_version == 0)
-    {
-        return (index+1)%7;
-    }
-    else if(format_version > 0)
-    {
-        //6 -> 0 | 5 -> 1 | 4 -> 2 | 3 -> 3
-        return 6-index;
-    }
+    return 6-index;
 }
 
 void Pleiades::step() {
@@ -920,7 +882,7 @@ void Pleiades::step() {
     }
     if(saveTrigger.process(params[PARAM_LOAD].value))
     {
-        loadSequence(seq_name->text.c_str(), FORMAT_VERSION);
+        loadSequence(seq_name->text.c_str());
         sprintf(write_name, seq_name->text.c_str());
     }
     //set write enable lights here
@@ -1227,20 +1189,18 @@ void Pleiades::step() {
         //output_out[7] = address.digits[encoders[PARAM_MODE+4]->getValue()]-1;
 
         //Update port lights
-        int format_version = FORMAT_VERSION;
-//        format_version = 1; //TODO
         for(int i = 0; i < N; ++i)
         {
             lights[LIGHT_PORT+i*2].value = (i == seq_idx?1:0); //Value target
             lights[LIGHT_PORT+i*2+1].value = 
-                (get_complement(i, format_version) == seq_idx?1:0); //Trigger target
+                (get_complement(i) == seq_idx?1:0); //Trigger target
         }
 
         //Generate outputs
         for(int i = 0; i < N; ++ i)
         {
-            DPRINT(DTEMP, "TSEQ: %i\n", get_complement(i, format_version));
-            float val = sequences[i].get_value(address, sequences[get_complement(i, format_version)], tones);
+            DPRINT(DTEMP, "TSEQ: %i\n", get_complement(i));
+            float val = sequences[i].get_value(address, sequences[get_complement(i)], tones);
             output_out[i] = val;
             DPRINT(DSEQ, "=%f\n", val);
         }
