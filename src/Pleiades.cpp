@@ -18,6 +18,8 @@
 
 #define FORMAT_VERSION 2
 
+#define Address NewAddress
+
 /*
 #define SDPRINT(DSEQ, x, ...) \
 #ifdef x \
@@ -176,13 +178,13 @@ struct NewAddress
 //
     unsigned char digits[DEPTH] = {1};
 
-    int** coefficients;
+    int* coefficients[DEPTH] = {0};
 
     NewAddress()
     {
-        if(coefficients == 0)
+        if(coefficients[0] == 0)
         {//Generate lookup table of coefficients for computing addresses
-            coefficients = new int*[DEPTH];
+//            coefficients = new int*[DEPTH];
             for(int i = 0; i < DEPTH; ++ i)
             {
                 coefficients[i] = new int[7];
@@ -254,7 +256,7 @@ struct NewAddress
     { //Returns the address of the index'th child of the step at the given
       //depth
         int result = get_address(depth);
-        result += coefficients[depth][index];
+        result += coefficients[depth][index]+depth+1;
         return result;
     }
 
@@ -262,7 +264,7 @@ struct NewAddress
 
 
 
-struct Address
+struct OldAddress
 {
 //Deals with the mechanics of incrementing through the octal address space and
 //extracting relevant addresses to compute the current step.
@@ -274,7 +276,7 @@ struct Address
 //
     unsigned char digits[DEPTH] = {1};
 
-    Address()
+    OldAddress()
     {
         for (int i = 0; i < DEPTH; ++i)
             digits[i] = 1;
@@ -470,9 +472,9 @@ struct Sequence
             int subindex = 7;
 
             if(i < DEPTH-1)
-                index = fromAdd.digits[i+1];
+                index = fromAdd.digits[i+1]+1;
             if(i < DEPTH-2)
-                subindex = fromAdd.digits[i+2];
+                subindex = fromAdd.digits[i+2]+1;
 
             int addIdx = fromAdd.get_address(i+1);
             Step mainStep = getStep(addIdx);
@@ -655,7 +657,7 @@ struct Pleiades : Module {
     struct Sequence sequences[7];
 
     struct Address address;
-    int depth_idx = DEPTH-4;
+    int depth_idx = DEPTH>>1;
 
     int clock_out_depth = 0;
 
@@ -808,7 +810,7 @@ void Pleiades::updateStepKnobs()
 {
     for(int i = 0 ; i < 7; ++i)
     {
-        int step_index = address.get_sub_address(depth_idx+1, i+1);
+        int step_index = address.get_sub_address(depth_idx, i);
         printf("step index = %o\n", step_index);
         unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
 
@@ -822,7 +824,7 @@ void Pleiades::updateStepKnobs()
                 );
     }
 
-    int step_index = address.get_address(depth_idx+1);
+    int step_index = address.get_address(depth_idx);
     unsigned char* step_values = 
         sequences[seq_idx].steps[step_index].values;
 
@@ -950,17 +952,21 @@ void Pleiades::step() {
     {
         int depth_delta = encoder_delta[PARAM_MODE+3];
         depth_idx += depth_delta;
-        if(depth_idx < -1) depth_idx = -1;
-        else if(depth_idx >= DEPTH-1) depth_idx=DEPTH-2;
 
-        if(depth_idx == -1 && encoders[PARAM_MODE+5]->getValue() == 0)
+        //clip depth
+        if(depth_idx < 0) depth_idx = 0;
+        else if(depth_idx >= DEPTH) depth_idx=DEPTH-1;
+
+        //Assign selected index to address if not root
+        if(depth_idx == 0 && encoders[PARAM_MODE+5]->getValue() == 0)
             encoders[PARAM_CENTER]->setMode(1);
         else
             encoders[PARAM_CENTER]->setMode(0);
+            int center_value = encoders[PARAM_CENTER]->getValue(0);
+            address.digits[depth_idx-1] = center_value;
 
 
-        int center_value = encoders[PARAM_CENTER]->getValue(0);
-        address.digits[depth_idx] = center_value+1;
+
         updateStepKnobs();
 
             for (int i = 0; i < DEPTH; ++i)
@@ -968,7 +974,7 @@ void Pleiades::step() {
                 for (int j =0; j < 7; ++j)
                 {   //i = depth,  j = idx
                     //id = depth*7 + index
-                    if (i > depth_idx+1)
+                    if (i > depth_idx)
                     {
                     ((ModuleLightWidget*)addressLights[i*7+j])->baseColors[0] = GC_ORANGE; 
                     }
@@ -996,7 +1002,7 @@ void Pleiades::step() {
     //MODE 5 (Center knob function)
     if(encoder_delta[PARAM_MODE+5] != 0)
     {
-        if(depth_idx == -1 && encoders[PARAM_MODE+5]->getValue() == 0)
+        if(depth_idx == 0 && encoders[PARAM_MODE+5]->getValue() == 0)
         {
             encoders[PARAM_CENTER]->setMode(1);
         }
@@ -1033,7 +1039,7 @@ void Pleiades::step() {
     {
         if(encoder_delta[PARAM_STEP+i] != 0)
         {
-            int step_index = address.get_sub_address(depth_idx+1, i+1);
+            int step_index = address.get_sub_address(depth_idx, i);
             unsigned char value_index = encoders[PARAM_MODE+1]->getValue();
             sequences[seq_idx].steps[step_index].setValue(
                 value_index,
@@ -1058,48 +1064,51 @@ void Pleiades::step() {
             case 0: //Step select
             {
                 //new address
-                int edit_index = address.digits[depth_idx];
-                int new_index = center_value+1;
-                address.digits[depth_idx] = center_value+1;
-                //bulk editing effects
-                if(false) //TODO: when edit button active
+                if(depth_idx > 0)
                 {
-                    int bulk_mode = encoders[PARAM_MODE+2]->getValue();
-                    for(int i = 0; i < N; ++i)
+                    int edit_index = address.digits[depth_idx-1];
+                    int new_index = center_value;
+                    address.digits[depth_idx-1] = center_value;
+                    //bulk editing effects
+                    if(false) //TODO: when edit button active
                     {
-                    if(i != seq_idx) continue; //TODO:future home of multisequence edit control
-                    switch(bulk_mode)
-                    {
-                        case BULK_SHIFT:
-                            sequences[i].bulk_shift(edit_index, new_index, depth_idx);
-                        break;
-                        case BULK_ROTATE:
-                            sequences[i].bulk_rotate(edit_index, new_index, depth_idx);
-                        break;
-                        case BULK_COPY:
-                        break;
-                        case BULK_PASTE:
-                        break;
-                        case BULK_CLEAR:
-                            sequences[i].bulk_clear(edit_index, new_index, depth_idx);
-                        break;
-                        case BULK_DISABLE:
-                        break;
-//                        case BULK_DISABLE:
-//                        break;
-                        default:
-                            printf("BULK MODE ERROR: %i\n", bulk_mode);
-                        break; 
+                        int bulk_mode = encoders[PARAM_MODE+2]->getValue();
+                        for(int i = 0; i < N; ++i)
+                        {
+                        if(i != seq_idx) continue; //TODO:future home of multisequence edit control
+                        switch(bulk_mode)
+                        {
+                            case BULK_SHIFT:
+                                sequences[i].bulk_shift(edit_index, new_index, depth_idx);
+                            break;
+                            case BULK_ROTATE:
+                                sequences[i].bulk_rotate(edit_index, new_index, depth_idx);
+                            break;
+                            case BULK_COPY:
+                            break;
+                            case BULK_PASTE:
+                            break;
+                            case BULK_CLEAR:
+                                sequences[i].bulk_clear(edit_index, new_index, depth_idx);
+                            break;
+                            case BULK_DISABLE:
+                            break;
+    //                        case BULK_DISABLE:
+    //                        break;
+                            default:
+                                printf("BULK MODE ERROR: %i\n", bulk_mode);
+                            break; 
+                        }
+                        }
                     }
-                    }
+                    //Load new steps into knobs
+                    updateStepKnobs();
                 }
-                //Load new steps into knobs
-                updateStepKnobs();
             }
             break;
             case 1: //Root step control
             
-                step_index = address.get_address(depth_idx+1);
+                step_index = address.get_address(depth_idx);
                 value_index = encoders[PARAM_MODE+1]->getValue();
                 sequences[seq_idx].steps[step_index].setValue(
                     value_index,
@@ -1171,7 +1180,7 @@ void Pleiades::step() {
         counter = 0;
 
         //Step sequence
-        int rolls = address.step(depth_idx+1, sync);
+        int rolls = address.step(depth_idx, sync);
         for(int i = 0; i < N; ++ i)
         {
             sequences[i].step(rolls);
@@ -1180,10 +1189,10 @@ void Pleiades::step() {
         int clock_depth_idx = clock_out_depth-1; 
         if(clock_out_depth == 0)//Default to track depth_idx
         {
-            clock_depth_idx=depth_idx+1;
+            clock_depth_idx=depth_idx;
         }
         
-        output_out[7] = (address.digits[clock_depth_idx] == 1)?5:0;
+        output_out[7] = (address.digits[clock_depth_idx] == 0)?5:0;
 
         //Update address lights
         int prev = 1;
@@ -1193,10 +1202,10 @@ void Pleiades::step() {
             {
                 lights[LIGHT_ADDRESS+i*7+j].value= 
                     ( 
-                     (j+1 <= address.digits[i] and j+1 >= prev) or
-                     (j+1 >= address.digits[i] and j+1 <= prev)
+                     (j <= address.digits[i] and j >= prev) or
+                     (j >= address.digits[i] and j <= prev)
                       ?.1:0);
-                if(j+1 == address.digits[i])
+                if(j == address.digits[i])
                     lights[LIGHT_ADDRESS+i*7+j].value=1;
            }
            prev =  address.digits[i];
@@ -1301,7 +1310,7 @@ struct PleiadesWidget : ModuleWidget {
                              radius*cos(angle)+cbox.pos.y+cbox.size.y/2), 
                         module, Pleiades::LIGHT_ADDRESS+i*7+j
                     );
-                    if (i > module->depth_idx+1)
+                    if (i > module->depth_idx)
                     {
                     ((ModuleLightWidget*)light)->baseColors[0] = GC_ORANGE; 
                     }
