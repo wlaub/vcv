@@ -245,7 +245,7 @@ struct Address
         int result = 0;
         for(int i = 0; i < depth; ++i)
         {
-            result += coefficients[i][digits[i]]+i+1;
+            result += coefficients[i][digits[i]]+1;
         }
         return result;
     }
@@ -254,7 +254,7 @@ struct Address
     { //Returns the address of the index'th child of the step at the given
       //depth
         int result = get_address(depth);
-        result += coefficients[depth][index]+depth+1;
+        result += coefficients[depth][index]+1;
         return result;
     }
 
@@ -562,7 +562,7 @@ struct Pleiades : Module {
     int counter = 0;
     int clockCounter = 0;
     float basePeriod = 49;
-    float scalePeriod = 1.0/49;
+    float scalePeriod = 1.0/(49);
     float clockPeriod = 49;
 
     int outputCounter = 0;
@@ -1058,6 +1058,11 @@ void Pleiades::step() {
         }
         
         output_out[7] = (address.digits[clock_depth_idx] == 0)?5:0;
+        if(rolls & (1<<clock_depth_idx))
+        {
+            address.print();
+        }
+
 
         //Update address lights
         int prev = 1;
