@@ -16,7 +16,7 @@
 
 #define CENTER_STEP_INDEX 1
 
-#define FORMAT_VERSION 2
+#define FORMAT_VERSION 3
 
 #define Address NewAddress
 
@@ -798,9 +798,19 @@ void Pleiades::dataFromJson(json_t *rootJ)
     seq_name->setText(json_string_value(json_object_get(rootJ, "seq_name")));
     sprintf(write_name, seq_name->text.c_str());
 
-    loadSequence(write_name, format_id);
+    if(format_id <= 3)
+    {
+        printf("Warning: Pleiades invalid sequence version. Use PleiadesConvert.py\n");
+        seq_name->setText("ERROR");
+        sprintf(write_name, seq_name->text.c_str());
 
-    updateStepKnobs();
+    }
+    else
+    {
+        loadSequence(write_name, format_id);
+
+        updateStepKnobs();
+    }
 
 }
 
