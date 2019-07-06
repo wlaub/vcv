@@ -18,8 +18,6 @@
 
 #define FORMAT_VERSION 3
 
-#define Address NewAddress
-
 /*
 #define SDPRINT(DSEQ, x, ...) \
 #ifdef x \
@@ -166,7 +164,7 @@ struct Step
     }
 };
 
-struct NewAddress
+struct Address
 {
 //Deals with the mechanics of incrementing through the octal address space and
 //extracting relevant addresses to compute the current step.
@@ -180,7 +178,7 @@ struct NewAddress
 
     int* coefficients[DEPTH] = {0};
 
-    NewAddress()
+    Address()
     {
         if(coefficients[0] == 0)
         {//Generate lookup table of coefficients for computing addresses
@@ -262,114 +260,6 @@ struct NewAddress
 
 };
 
-
-
-struct OldAddress
-{
-//Deals with the mechanics of incrementing through the octal address space and
-//extracting relevant addresses to compute the current step.
-//
-//DEPTH is the number of levels excluding root step, so there are DEPTH+1 total
-//steps to add together at each point in the sequence
-//
-//In digits, index 0 is the lowest level (largest step size)
-//
-    unsigned char digits[DEPTH] = {1};
-
-    OldAddress()
-    {
-        for (int i = 0; i < DEPTH; ++i)
-            digits[i] = 1;
-    }
-
-    int step(int depth_index, bool sync = false)
-    {//Increments the step and returns flags showing which indices rolled over
-     //Depth protects smaller indices from being incremented
-        int result = 0;
-        for (int i = 0; i < DEPTH-depth_index; ++i)
-        {
-            int revidx = DEPTH-1-i;
-            if(false and sync and revidx > depth_index)
-            {
-                digits[revidx] = 8;
-            }
-            else
-            {
-                digits[revidx] += 1;
-            }
-
-            if(digits[revidx] == 8) 
-            {
-                digits[revidx] = 1;
-                result |= (1<<revidx);
-            }
-            else
-            {
-                i = DEPTH;
-            }
-        }
-
-        return result;
-    }
-
-    void print()
-    {
-        DPRINT(DSEQ, "0o%07o\n",get_address(DEPTH+1));
-    }
-
-    int get_address(int depth)
-    { //Returns the address of the step at the given depth by masking digits
-      //and reducing to an octal address using the masking scheme.
-      //
-      // digits  [ A, B, C, ... ]
-      // depth 0 [ 0, 0, 0, ... ]
-      // depth 1 [ A, 0, 0, ... ]
-      // depth 2 [ A, B, 0, ... ]
-      //
-      //And so on.
-
-        int result = 0;
-        for (int i = 0; i < DEPTH; ++i)
-        {
-            if(i < depth)
-            {
-                result |= digits[i];
-            }
-            result <<= 3;
-        }
-        return result>>3;
-    }
-
-    int get_sub_address(int depth, unsigned char index)
-    { //Returns the address of the step at the given depth by masking digits
-      //and reducing to an octal address using the masking scheme.
-      //
-      // digits  [ A, B, C, ... ]
-      // depth 0 [ 0, 0, 0, ... ]
-      // depth 1 [ A, 0, 0, ... ]
-      // depth 2 [ A, B, 0, ... ]
-      //
-      //And so on.
-
-        int result = 0;
-        for (int i = 0; i < DEPTH; ++i)
-        {
-            if(i < depth)
-            {
-                result |= digits[i];
-            }
-            else if(i == depth)
-            {
-                result |= index;
-            }
-            result <<= 3;
-        }
-        return result>>3;
-    }
-
-
-
-};
 
 struct Sequence
 {
@@ -856,6 +746,7 @@ void Pleiades::step() {
      * */
 
     float deltaTime = engineGetSampleTime();
+    float sampleRate = engineGetSampleRate();
 
     /*  +INPUT_PROCESSING */
     #include "Pleiades_inputs.hpp"
@@ -1141,6 +1032,7 @@ void Pleiades::step() {
     else
     {
         clockCounter = 0;
+        clockPeriod = sampleRate*scalePeriod;
     }
 
 
