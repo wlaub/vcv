@@ -379,7 +379,8 @@ struct Sequence
     float prevTone[DEPTH+1] = {0};
     float prevValue[DEPTH+1] = {0};
 
-    int length = 1<<(3*DEPTH);
+//    int length = 1<<(3*DEPTH);
+    int length = (1-pow(7,DEPTH+1))/(1-7);
 
     Sequence()
     {
