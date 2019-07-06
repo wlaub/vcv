@@ -800,7 +800,7 @@ void Pleiades::dataFromJson(json_t *rootJ)
 
     if(format_id <= 3)
     {
-        printf("Warning: Pleiades invalid sequence version. Use PleiadesConvert.py\n");
+        printf("Warning: Pleiades invalid sequence version.\n");
         seq_name->setText("ERROR");
         sprintf(write_name, seq_name->text.c_str());
 
