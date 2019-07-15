@@ -142,10 +142,11 @@ struct Polyphemus2 : Module {
             float r = get_r(wc);
             float k = get_k(wc, r);
 
+            printf("%f: %f, %f\n", wc, r, k);
             for(int j = 0; j < 3; ++j)
             {
                 float x = inputs[IN00_INPUT+i+4*j].getVoltage();
-                float y = k*x+r*buffer[i][j];
+                float y = x/k+r*buffer[i][j];
                 buffer[i][j] = y;
                 outputs[OUT00_OUTPUT+i+4*j].setVoltage(y);
             }
@@ -167,65 +168,65 @@ struct Polyphemus2Widget : ModuleWidget {
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 377.635)), module, Polyphemus2::BIAS0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 377.635)), module, Polyphemus2::BIAS1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 377.635)), module, Polyphemus2::BIAS2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 377.635)), module, Polyphemus2::BIAS3_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 377.635)), module, Polyphemus2::ENVGAIN0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 377.635)), module, Polyphemus2::ENVGAIN1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 377.635)), module, Polyphemus2::ENVGAIN2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 377.635)), module, Polyphemus2::ENVGAIN3_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 362.933)), module, Polyphemus2::ENVP0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 362.933)), module, Polyphemus2::ENVP1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 362.933)), module, Polyphemus2::ENVP2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 362.933)), module, Polyphemus2::ENVP3_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 392.338)), module, Polyphemus2::GAIN0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 392.338)), module, Polyphemus2::GAIN1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 392.338)), module, Polyphemus2::GAIN2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 392.338)), module, Polyphemus2::GAIN3_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 392.338)), module, Polyphemus2::KNEE0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 392.338)), module, Polyphemus2::KNEE1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 392.338)), module, Polyphemus2::KNEE2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 392.338)), module, Polyphemus2::KNEE3_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 362.933)), module, Polyphemus2::VOCTP0_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 362.933)), module, Polyphemus2::VOCTP1_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 362.933)), module, Polyphemus2::VOCTP2_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 362.933)), module, Polyphemus2::VOCTP3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 48.274)), module, Polyphemus2::BIAS0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 48.274)), module, Polyphemus2::BIAS1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 48.274)), module, Polyphemus2::BIAS2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 48.274)), module, Polyphemus2::BIAS3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 48.274)), module, Polyphemus2::ENVGAIN0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 48.274)), module, Polyphemus2::ENVGAIN1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 48.274)), module, Polyphemus2::ENVGAIN2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 48.274)), module, Polyphemus2::ENVGAIN3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 33.571)), module, Polyphemus2::ENVP0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 33.571)), module, Polyphemus2::ENVP1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 33.571)), module, Polyphemus2::ENVP2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 33.571)), module, Polyphemus2::ENVP3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(32.003, 62.977)), module, Polyphemus2::GAIN0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(73.661, 62.977)), module, Polyphemus2::GAIN1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(115.319, 62.977)), module, Polyphemus2::GAIN2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(156.977, 62.977)), module, Polyphemus2::GAIN3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 62.977)), module, Polyphemus2::KNEE0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 62.977)), module, Polyphemus2::KNEE1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 62.977)), module, Polyphemus2::KNEE2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 62.977)), module, Polyphemus2::KNEE3_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(17.3, 33.571)), module, Polyphemus2::VOCTP0_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(58.958, 33.571)), module, Polyphemus2::VOCTP1_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(100.616, 33.571)), module, Polyphemus2::VOCTP2_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(142.274, 33.571)), module, Polyphemus2::VOCTP3_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(32.003, 348.23)), module, Polyphemus2::ENV0_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(73.661, 348.23)), module, Polyphemus2::ENV1_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(115.319, 348.23)), module, Polyphemus2::ENV2_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(156.977, 348.23)), module, Polyphemus2::ENV3_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 407.041)), module, Polyphemus2::IN00_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 407.041)), module, Polyphemus2::IN01_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 407.041)), module, Polyphemus2::IN02_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 407.041)), module, Polyphemus2::IN03_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 421.744)), module, Polyphemus2::IN10_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 421.744)), module, Polyphemus2::IN11_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 421.744)), module, Polyphemus2::IN12_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 421.744)), module, Polyphemus2::IN13_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 436.446)), module, Polyphemus2::IN20_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 436.446)), module, Polyphemus2::IN21_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 436.446)), module, Polyphemus2::IN22_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 436.446)), module, Polyphemus2::IN23_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 348.23)), module, Polyphemus2::VOCT0_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 348.23)), module, Polyphemus2::VOCT1_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 348.23)), module, Polyphemus2::VOCT2_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 348.23)), module, Polyphemus2::VOCT3_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(32.003, 18.869)), module, Polyphemus2::ENV0_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(73.661, 18.869)), module, Polyphemus2::ENV1_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(115.319, 18.869)), module, Polyphemus2::ENV2_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(156.977, 18.869)), module, Polyphemus2::ENV3_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 77.68)), module, Polyphemus2::IN00_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 77.68)), module, Polyphemus2::IN01_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 77.68)), module, Polyphemus2::IN02_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 77.68)), module, Polyphemus2::IN03_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 92.382)), module, Polyphemus2::IN10_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 92.382)), module, Polyphemus2::IN11_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 92.382)), module, Polyphemus2::IN12_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 92.382)), module, Polyphemus2::IN13_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 107.085)), module, Polyphemus2::IN20_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 107.085)), module, Polyphemus2::IN21_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 107.085)), module, Polyphemus2::IN22_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 107.085)), module, Polyphemus2::IN23_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(17.3, 18.869)), module, Polyphemus2::VOCT0_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(58.958, 18.869)), module, Polyphemus2::VOCT1_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(100.616, 18.869)), module, Polyphemus2::VOCT2_INPUT));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(142.274, 18.869)), module, Polyphemus2::VOCT3_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(32.003, 407.041)), module, Polyphemus2::OUT00_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(73.661, 407.041)), module, Polyphemus2::OUT01_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(115.319, 407.041)), module, Polyphemus2::OUT02_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(156.977, 407.041)), module, Polyphemus2::OUT03_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(32.003, 421.744)), module, Polyphemus2::OUT10_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(73.661, 421.744)), module, Polyphemus2::OUT11_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(115.319, 421.744)), module, Polyphemus2::OUT12_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(156.977, 421.744)), module, Polyphemus2::OUT13_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(-32.003, 436.446)), module, Polyphemus2::OUT20_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(-73.661, 436.446)), module, Polyphemus2::OUT21_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(-115.319, 436.446)), module, Polyphemus2::OUT22_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(-156.977, 436.446)), module, Polyphemus2::OUT23_OUTPUT));
-	}
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(32.003, 77.68)), module, Polyphemus2::OUT00_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(73.661, 77.68)), module, Polyphemus2::OUT01_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(115.319, 77.68)), module, Polyphemus2::OUT02_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(156.977, 77.68)), module, Polyphemus2::OUT03_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(32.003, 92.382)), module, Polyphemus2::OUT10_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(73.661, 92.382)), module, Polyphemus2::OUT11_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(115.319, 92.382)), module, Polyphemus2::OUT12_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(156.977, 92.382)), module, Polyphemus2::OUT13_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(32.003, 107.085)), module, Polyphemus2::OUT20_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(73.661, 107.085)), module, Polyphemus2::OUT21_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(115.319, 107.085)), module, Polyphemus2::OUT22_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(156.977, 107.085)), module, Polyphemus2::OUT23_OUTPUT));
+    }
 
 };
 
