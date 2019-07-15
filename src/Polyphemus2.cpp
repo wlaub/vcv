@@ -135,6 +135,7 @@ struct Polyphemus2 : Module {
             }
 
             float pitch = params[VOCTP0_PARAM+i].getValue();
+            pitch += inputs[VOCT0_INPUT+i].getVoltage();
             float freq =  dsp::FREQ_C4 * std::pow(2.f, pitch) * t;
             float wc = 6.28*freq*args.sampleTime;
             wc = clamp(wc, 0.f, 3.14f);
@@ -142,7 +143,7 @@ struct Polyphemus2 : Module {
             float r = get_r(wc);
             float k = get_k(wc, r);
 
-            printf("%f: %f, %f\n", wc, r, k);
+//            printf("%f: %f, %f\n", wc, r, k);
             for(int j = 0; j < 3; ++j)
             {
                 float x = inputs[IN00_INPUT+i+4*j].getVoltage();
