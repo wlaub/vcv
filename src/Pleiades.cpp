@@ -980,19 +980,26 @@ void Pleiades::step() {
                     );
             
             break;
-            case 2:
+            case 2: //Bulk parameter mask TODO: Requires button
+
             break;
-            case 3:
+            case 3: //Bulk edit cursor
+            //It would be nice if this could take up the current role of 
+            //primary cursor while the original focuses more on performance.
+            //I guess that would kind of separate the cursor from sequence select
+            //and node edit, which is kind of undesirable. Maybe just leave both
+            //with the full functionality, but also add some specific functionality
+            //like bulk edit is focused on that, and the other one is focused more
+            //on navigation and a g i l e detailed editing. Maybe rotate everything
+            //so the data edit cursor is case 3 and default to case 3 on knob.
             break;
-            case 4: //Sequence Select
+            case 4: //Bulk depth mask ??
+            break;
+            case 5: //Tuning cursor ??
+            break;
+            case 6: //Sequence Select
                 seq_idx = center_value;
                 updateStepKnobs();
-            break;
-            case 5:
-            break;
-            case 6:
-            break;
-            case 7:
             break;
         }
     }

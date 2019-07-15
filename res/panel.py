@@ -627,6 +627,13 @@ class Panel():
         except Exception as e:
             print(f'Failed to generate instance block\n{e}')
 
+        try:
+            with open(os.path.join(src_dir,f'{self.modname}_configs.hpp'), 'w') as f:
+                f.write(self.get_module_configs())
+        except Exception as e:
+            print(f'Failed to generate instance block\n{e}')
+
+
 
 
         filename = os.path.join(src_dir, f'{self.modname}.cpp')

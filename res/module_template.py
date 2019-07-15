@@ -41,7 +41,13 @@ struct {modname} : Module {{
     /* -TRIGGER_VARS */
 
 
-    {modname}() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {{}}
+    {modname}()
+        {{
+            config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+            /* +CONFIGS */
+            #include "{modname}_configs.hpp"
+            /* -CONFIGS */
+        }}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
