@@ -143,6 +143,16 @@
       "tags": [
         "Sequencer"
       ]
+    },
+    {
+      "slug": "Polyphemus2",
+      "name": "Polyphemus II",
+      "description": "Single-pole VCF x4",
+      "tags": [
+        "low pass gate",
+        "quad",
+        "vcf"
+      ]
     }
   ]
 }
