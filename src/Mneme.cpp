@@ -47,10 +47,10 @@ struct Mneme : Module {
             for(int i = 0; i < N; ++i)
             {
                 configParam(-1,1,0,FB_CV_PARAM + N*j+i, "");
+            }
+            configParam(-1,1,0, IN_CV_PARAM+j, "");
+            configParam(-1,1,0, OUT_CV_PARAM+j, "");
         }
-        configParam(-1,1,0, IN_CV_PARAM+j, "");
-        configParam(-1,1,0, OUT_CV_PARAM+j, "");
-    }
         
     }
     void step() override;
