@@ -36,7 +36,7 @@ Ramp/random walk generator. This module is still in development. Current impleme
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)
 
-### Pleiades (WIP)
+### Pleiades (WIP) (Sequence format unstable)
 
 Tree Sequencer
 

@@ -20,8 +20,7 @@
 
 #define KNOB(x,y,min, max, def, type, modname,param, offset)\
     addParam(createParamCentered<Round ## type ## BlackKnob>(\
-        Vec(x,y),module, modname::param + offset,\
-        min, max, def\
+        Vec(x,y),module, modname::param + offset\
         ));\
 \
 
