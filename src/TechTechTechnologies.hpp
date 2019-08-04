@@ -7,28 +7,22 @@
 #include <GLFW/glfw3.h>
 
 #define OUTPORT(x,y,modname,param, offset)\
-    auto *param = createPort<PJ301MPort>(\
-        Vec(x,y), PortWidget::OUTPUT, module, modname::param + offset\
-        );\
-    center(param,1,1);\
-    addOutput(param);\
+    addOutput(createOutputCentered<PJ301MPort>(\
+        Vec(x,y), module, modname::param + offset\
+        ));\
 \
 
 #define INPORT(x,y,modname,param, offset)\
-    auto *param = createPort<PJ301MPort>(\
-        Vec(x,y), PortWidget::INPUT, module, modname::param + offset\
-        );\
-    center(param,1,1);\
-    addInput(param);\
+    addInput(createInputCentered<PJ301MPort>(\
+        Vec(x,y), module, modname::param + offset\
+        ));\
 \
 
 #define KNOB(x,y,min, max, def, type, modname,param, offset)\
-    auto *param = createParam<Round ## type ## BlackKnob>(\
+    addParam(createParamCentered<Round ## type ## BlackKnob>(\
         Vec(x,y),module, modname::param + offset,\
         min, max, def\
-        );\
-    center(param,1,1);\
-    addParam(param);\
+        ));\
 \
 
 #define SWITCH(x,y, modname, param, ...)\
@@ -49,6 +43,7 @@ center(param,1,1);\
 addParam(param);\
 \
 
+#define DEPTH_CONFIGURE configParam(DEPTH_PARAM, 1, 16, 8, "Conversion bit depth");
 
 #define DEPTH_WIDGETS(x,y,modname)\
     addInput(createPort<PJ301MPort>(\
@@ -57,9 +52,7 @@ addParam(param);\
 \
 \
     addParam(createParam<RoundBlackSnapKnob>(\
-        Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
-        1, 16, 8\
-        ));\
+        Vec(x+27.5, y+1), module, modname::DEPTH_PARAM));\
 \
     addOutput(createPort<PJ301MPort>(\
         Vec(x+60.25, y+2.5), PortWidget::OUTPUT, module, modname::DEPTH_OUTPUT\
@@ -279,8 +272,6 @@ extern Model* modelOuroboros;
 extern Model* modelOdysseus;
 
 extern Model* modelMneme;
-
-extern Model* modelAthena;
 
 extern Model* modelAchilles;
 

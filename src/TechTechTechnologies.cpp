@@ -417,8 +417,6 @@ void init(rack::Plugin *p) {
     
     p->addModel(modelMneme);
 
-    p->addModel(modelAthena);
-
     p->addModel(modelAchilles);
 
     p->addModel(modelQMod);
