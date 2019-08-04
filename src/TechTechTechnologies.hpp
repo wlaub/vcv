@@ -92,6 +92,10 @@ addParam(param);\
  \
 
 
+#define CV_ATV_CONFIGURE(min, max, def, name, idx)\
+configParam(-1,1,0, name ## CV_PARAM + idx, ""); \
+configParam(min, max, def, name ## _PARAM + idx, ""); \
+
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
     addInput(createPort<PJ301MPort>(\
         Vec(xoff, yoff), PortWidget::INPUT, module, name ## _INPUT+idx\
