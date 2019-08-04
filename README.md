@@ -3,11 +3,15 @@
 
 ## Green Cathedral
 
-### Odysseus (II)
+### Odysseus
+
+#### I
 
 Ramp/random walk generator. This module is still in development. Current implementation is based on design values, but will be updated to reflect final hardware behavior after it's finished.
 
-### Polyphemus (II)
+### Polyphemus
+
+#### I
 
 6-pole IIR filter
 
@@ -15,7 +19,9 @@ Ramp/random walk generator. This module is still in development. Current impleme
   * radius input from -1 to 1 with CV input. Clips to (-1,1).
   * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
 
-### Prometheus (II)
+### Prometheus 
+
+#### I
 
 3x up-to 16-bit LFSRs using Galois implementation
 
