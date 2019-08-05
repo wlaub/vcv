@@ -73,8 +73,7 @@
         Vec(xoff+2.5, yoff+2.5), PortWidget::INPUT, module, name ## _INPUT+idx\
         ));\
     addParam(createParam<RoundBlackKnob>(\
-        Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx,\
-        0, 10, def\
+        Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx\
         ));\
 \
 
