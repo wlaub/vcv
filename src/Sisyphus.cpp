@@ -47,8 +47,18 @@ struct Sisyphus : Module {
 
     cbuf buffer[N];
 
-	Sisyphus() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Sisyphus() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        for(int j = 0; j < N; ++j)
+        {
+            configParam(LENGTH_PARAM+j, 0,10,10, "Buffer length");
+            configParam(RATE_PARAM+j, 0, 10, 5, "Playback Rate");
+            configParam(MODE_PARAM+j, 0,1,0, "Playback Mode");
+        }
+
+       
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
