@@ -6,6 +6,11 @@
 
 #include <GLFW/glfw3.h>
 
+//
+// What follows is misguided legacy macros. I am sorry.
+//
+//
+
 #define OUTPORT(x,y,modname,param, offset)\
     addOutput(createOutputCentered<PJ301MPort>(\
         Vec(x,y), module, modname::param + offset\
@@ -25,21 +30,15 @@
 \
 
 #define SWITCH(x,y, modname, param, ...)\
-auto* param = createParam<CKSS>(\
-    Vec(x,y), module, modname::param,\
-    __VA_ARGS__\
-    );\
-center(param,1,1);\
-addParam(param);\
+    addParam(createParamCentered<CKSS>(\
+        Vec(x,y), module, modname::param\
+        ));\
 \
 
 #define BUTTON(x,y, type, modname, param, ...)\
-auto* param = createParam<type>(\
-    Vec(x,y), module, modname::param,\
-    __VA_ARGS__\
-    );\
-center(param,1,1);\
-addParam(param);\
+    addParam(createParamCentered<type>(\
+        Vec(x,y), module, modname::param\
+        ));\
 \
 
 #define DEPTH_CONFIGURE configParam(DEPTH_PARAM, 1, 16, 8, "Conversion bit depth");
