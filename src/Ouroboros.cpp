@@ -36,8 +36,8 @@ struct Ouroboros : Module {
     {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(-2,2,0,BASEFREQ_PARAM, "Master frequency");
-        configParam(0,4,0, WAVE_PARAM, "Squareness");
+        configParam(BASEFREQ_PARAM, -2,2,0, "Master frequency");
+        configParam(WAVE_PARAM, 0,4,0, "Squareness");
 
         for(int j = 0; j < N; ++j)
         {
