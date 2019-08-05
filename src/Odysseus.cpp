@@ -65,21 +65,21 @@ struct Odysseus : Module {
     {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(0, 1, .5, OFFSET_CV_PARAM, "Offset CV gain");
-        configParam(0, 1, 0, NOISE_CV_PARAM, "Noise CV Gain");
+        configParam(OFFSET_CV_PARAM, 0, 1, .5, "Offset CV gain");
+        configParam(NOISE_CV_PARAM, 0, 1, 0, "Noise CV Gain");
 
-        configParam(0, 1, .5, OFFSET_PARAM, "Offset Level");
-        configParam(0, 1, 0, NOISE_PARAM, "Noise Level");
+        configParam(OFFSET_PARAM, 0, 1, .5, "Offset Level");
+        configParam(NOISE_PARAM, 0, 1, 0, "Noise Level");
 
-        configParam(0, 1, 0, FREQ_PARAM, "S&H Frequency");
-        configParam(0, 1, 0, RATE_PARAM, "Integration Rate");
-        configParam(0, 1, 0, DETECT_PARAM, "Detect Threshold");
+        configParam(FREQ_PARAM, 0, 1, 0, "S&H Frequency");
+        configParam(RATE_PARAM, 0, 1, 0, "Integration Rate");
+        configParam(DETECT_PARAM, 0, 1, 0, "Detect Threshold");
 
-        configParam(0,1,0, FS_PARAM, "Fast clock select");
-        configParam(0,1,0, SS_PARAM, "Slow clock select");
+        configParam(FS_PARAM, 0,1,0, "Fast/slow clock select");
+        configParam(SS_PARAM, 0,1,0, "Slow/slowest clock select");
 
-        configParam(0,1,0, AC_PARAM, "Autoclear Enable");
-        configParam(0,1,0, CLEAR_PARAM, "Clear Integrator");
+        configParam(AC_PARAM, 0,1,0, "Autoclear Enable");
+        configParam(CLEAR_PARAM, 0,1,0, "Clear Integrator");
     }
 	void step() override;
 
