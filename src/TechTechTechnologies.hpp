@@ -92,8 +92,8 @@
 
 
 #define CV_ATV_CONFIGURE(min, max, def, name, idx)\
-configParam(-1,1,0, name ## CV_PARAM + idx, ""); \
-configParam(min, max, def, name ## _PARAM + idx, ""); \
+configParam(name ## CV_PARAM + idx, -1,1,0, "CV Gain"); \
+configParam(name ## _PARAM + idx, min, max, def, "Value"); \
 
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
     addInput(createPort<PJ301MPort>(\
@@ -101,13 +101,11 @@ configParam(min, max, def, name ## _PARAM + idx, ""); \
         ));\
 \
     addParam(createParam<RoundTinyBlackKnob>(\
-        Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx,\
-        -1,1,0\
+        Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx\
         ));\
 \
     addParam(createParam<RoundLargeBlackKnob>(\
-        Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx,\
-        min,max,def\
+        Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx\
         ));\
 
 #define CV_ATV_VALUE(name, max, idx)\

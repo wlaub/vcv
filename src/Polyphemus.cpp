@@ -64,15 +64,15 @@ struct Polyphemus : Module {
     {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
     
-        configParam(0,2,1, GAIN_PARAM, "Gain");
+        configParam(GAIN_PARAM, 0,2,1, "Gain");
 
         for(int j = 0; j < N; ++j)
         {
-            configParam(-1,1,0, RADIUSCV_PARAM+j, "Radius CV Gain");
-            configParam(-1,1,0, RADIUS_PARAM+j, "Radius");
+            configParam(RADIUSCV_PARAM+j, -1,1,0, "Radius CV Gain");
+            configParam(RADIUS_PARAM+j, -1,1,0, "Radius");
 
-            configParam(-1,1,0, ANGLECV_PARAM+j, "Angle CV Gain");
-            configParam(0,3.14,0, ANGLE_PARAM+j, "Angle");
+            configParam(ANGLECV_PARAM+j, -1,1,0, "Angle CV Gain");
+            configParam(ANGLE_PARAM+j, 0,3.14,0, "Angle");
         }
         CV_ATV_CONFIGURE(-1,1,0, RADIUS, N)
 
