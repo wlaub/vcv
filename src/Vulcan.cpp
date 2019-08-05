@@ -5,8 +5,8 @@
 struct Vulcan : Module {
 	enum ParamIds {
         DEPTH_PARAM,
-        CLOCK_PARAM,
         ROUTE_PARAM,
+        CLOCK_PARAM,
         POS_PARAM = CLOCK_PARAM+NSEQ,
         WIDTH_PARAM=POS_PARAM + NSEQ,
         RATE_PARAM =WIDTH_PARAM+NSEQ,
