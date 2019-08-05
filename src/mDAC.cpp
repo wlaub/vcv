@@ -26,8 +26,11 @@ struct mDAC : Module {
 
     int ready = 0;
 
-	mDAC() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	mDAC() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        DEPTH_CONFIGURE
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
