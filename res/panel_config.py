@@ -65,17 +65,15 @@ class ControlConfig():
     ));
     """,
         'input':"""
-    input = createPort<PJ301MPort>(
-        Vec({xpos},{ypos}), PortWidget::INPUT, module, {name}::{id}
+    input = createInputCentered<PJ301MPort>(
+        Vec({xpos},{ypos}), module, {name}::{id}
         );
-    center(input,1,1);
     addInput(input);    
         """,
         'output':"""
-    output = createPort<PJ301MPort>(
-        Vec({xpos},{ypos}), PortWidget::OUTPUT, module, {name}::{id}
+    output = createOutputCentered<PJ301MPort>(
+        Vec({xpos},{ypos}), module, {name}::{id}
         );
-    center(output,1,1);
     addOutput(output);    
         """,
        'light':"""
