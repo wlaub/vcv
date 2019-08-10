@@ -60,8 +60,30 @@ struct Polyphemus : Module {
 
     float stepphase = 0;
 
-	Polyphemus() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Polyphemus() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+    
+        configParam(GAIN_PARAM, 0,2,1, "Gain");
+
+        for(int j = 0; j < N; ++j)
+        {
+            configParam(RADIUSCV_PARAM+j, -1,1,0, "Radius CV Gain");
+            configParam(RADIUS_PARAM+j, -1,1,0, "Radius");
+
+            configParam(ANGLECV_PARAM+j, -1,1,0, "Angle CV Gain");
+            configParam(ANGLE_PARAM+j, 0,3.14,0, "Angle");
+        }
+        CV_ATV_CONFIGURE(-1,1,0, RADIUS, N)
+
+        CV_ATV_CONFIGURE(0,3.14,0, ANGLE, N)
+
+        CV_ATV_CONFIGURE(0,1,0,NORM, 0)
+
+        CV_ATV_CONFIGURE(-1,1,0,STAB, 0)
+
+       
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -270,8 +292,7 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
 
 
     addParam(createParam<RoundLargeBlackKnob>(
-        Vec(xoff+28.15, yoff-6.35), module, Polyphemus::GAIN_PARAM,
-        0, 2, 1
+        Vec(xoff+28.15, yoff-6.35), module, Polyphemus::GAIN_PARAM
         ));
 
 
@@ -312,13 +333,11 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
-            Vec(xoff+35, yoff+3.5), module, Polyphemus::RADIUSCV_PARAM+j,
-            -1,1,0
+            Vec(xoff+35, yoff+3.5), module, Polyphemus::RADIUSCV_PARAM+j
             ));
  
         addParam(createParam<RoundLargeBlackKnob>(
-            Vec(xoff+62.65, yoff-13.85), module, Polyphemus::RADIUS_PARAM+j,
-            -1,1,0
+            Vec(xoff+62.65, yoff-13.85), module, Polyphemus::RADIUS_PARAM+j
             ));
 
 
@@ -327,13 +346,11 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
-            Vec(xoff+35, yoff+3.5+28), module, Polyphemus::ANGLECV_PARAM+j,
-            -1,1,0
+            Vec(xoff+35, yoff+3.5+28), module, Polyphemus::ANGLECV_PARAM+j
             ));
  
         addParam(createParam<RoundLargeBlackKnob>(
-            Vec(xoff+62.65, yoff-13.85+43), module, Polyphemus::ANGLE_PARAM+j,
-            0,3.14,0
+            Vec(xoff+62.65, yoff-13.85+43), module, Polyphemus::ANGLE_PARAM+j
             ));
 
 

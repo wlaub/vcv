@@ -5,8 +5,8 @@
 struct Vulcan : Module {
 	enum ParamIds {
         DEPTH_PARAM,
-        CLOCK_PARAM,
         ROUTE_PARAM,
+        CLOCK_PARAM,
         POS_PARAM = CLOCK_PARAM+NSEQ,
         WIDTH_PARAM=POS_PARAM + NSEQ,
         RATE_PARAM =WIDTH_PARAM+NSEQ,
@@ -49,8 +49,28 @@ struct Vulcan : Module {
     float phase[2] = {0};
     int dir[2] = {1};
 
-	Vulcan() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Vulcan()
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+        DEPTH_CONFIGURE
+
+        configParam(ROUTE_PARAM, 0,1,1, "Route");
+
+
+        for(int j = 0; j < NSEQ; ++j)
+        {
+            configParam(CLOCK_PARAM+j, 0, 10, 5, "Clock");
+            configParam(POS_PARAM+j, 0, 10, 0, "Box Position");
+            configParam(WIDTH_PARAM+j, 0, 10, 10, "Box Width");
+
+            configParam(RATE_PARAM+j, 0,16,1, "Step Size?");
+            configParam(MODE_PARAM+j, 0,1,1, "Loop Mode?");
+
+        }
+
+       
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -242,16 +262,9 @@ VulcanWidget::VulcanWidget(Vulcan* module) {
         Vec(xoff+62.5, yoff+2.5), PortWidget::OUTPUT, module, Vulcan::OR_OUTPUT
         ));
 
-
-
     addParam(createParam<CKSS>(
-        Vec(128, 380-162.18-20.641), module, Vulcan::ROUTE_PARAM,
-        0, 1, 1
+        Vec(128, 380-162.18-20.641), module, Vulcan::ROUTE_PARAM
         ));
-
-
-
-
 
     for(int j = 0; j < NSEQ; ++j)
     {
@@ -269,8 +282,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) {
             Vec(xoff+2.5, yoff+2.5+gap*3), PortWidget::INPUT, module, Vulcan::RATE_INPUT+j
             ));
         addParam(createParam<RoundBlackSnapKnob>(
-            Vec(xoff+30.15, yoff+.15+gap*3), module, Vulcan::RATE_PARAM+j,
-            0, 16, 1
+            Vec(xoff+30.15, yoff+.15+gap*3), module, Vulcan::RATE_PARAM+j
             ));
 
 
@@ -278,8 +290,7 @@ VulcanWidget::VulcanWidget(Vulcan* module) {
             Vec(xoff+2.5, yoff+2.5+gap*3+35), PortWidget::INPUT, module, Vulcan::MODE_INPUT+j
             ));
         addParam(createParam<CKSS>(
-            Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j,
-            0, 1, 1
+            Vec(xoff+38, yoff+4.68+gap*3+35), module, Vulcan::MODE_PARAM+j
             ));
     
 

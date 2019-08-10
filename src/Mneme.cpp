@@ -37,8 +37,22 @@ struct Mneme : Module {
 
     ttt::CircularBuffer* buffer;
 
-    Mneme() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);}
+    Mneme() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
+        for(int j = 0; j < N; ++j)
+        {
+            configParam(DELAY_CV_PARAM+j, -1,1,0,"Tap position CV gain");
+            configParam(DELAY_PARAM+j, BUFL-1, 10, 10, "Tap position");
+            for(int i = 0; i < N; ++i)
+            {
+                configParam(FB_CV_PARAM + N*j+i, -1,1,0, "Feedback Gain");
+            }
+            configParam(IN_CV_PARAM+j, -1,1,0, "Input gain");
+            configParam(OUT_CV_PARAM+j, -1,1,0, "Output gain");
+        }
+        
+    }
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -162,16 +176,14 @@ MnemeWidget::MnemeWidget(Mneme* module) {
             {
                 param = createParam<LEDSliderRed>(
                     Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
-                    module, Mneme::FB_CV_PARAM + N*j+i,
-                    -1, 1, 0
+                    module, Mneme::FB_CV_PARAM + N*j+i
                 );
             }
             else
             {
                 param = createParam<LEDSliderBlue>(
                     Vec(xoff + 13.413+10.63/2 + i*(50-10.63)/(N-1), 380-yoff),
-                    module, Mneme::FB_CV_PARAM + N*j+i,
-                    -1, 1, 0
+                    module, Mneme::FB_CV_PARAM + N*j+i
                 );
             }
             center(param,1,1);

@@ -32,8 +32,20 @@ struct Ouroboros : Module {
 
     double phase[N] = {0};
 
-	Ouroboros() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Ouroboros()
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+        configParam(BASEFREQ_PARAM, -2,2,0, "Master frequency");
+        configParam(WAVE_PARAM, 0,4,0, "Squareness");
+
+        for(int j = 0; j < N; ++j)
+        {
+            CV_ATV_CONFIGURE(-2,2,0, FREQ, j)
+        }
+
+
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -136,8 +148,7 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
 
 
     addParam(createParam<RoundLargeBlackKnob>(
-        Vec(xoff+28.15, yoff-6.35), module, Ouroboros::BASEFREQ_PARAM,
-        -2, 2, 0
+        Vec(xoff+28.15, yoff-6.35), module, Ouroboros::BASEFREQ_PARAM
         ));
 
     addInput(createPort<PJ301MPort>(
@@ -146,8 +157,7 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
 
 
     addParam(createParam<RoundLargeBlackKnob>(
-        Vec(xoff+28.15+44, yoff-6.35), module, Ouroboros::WAVE_PARAM,
-        0, 4, 0
+        Vec(xoff+28.15+44, yoff-6.35), module, Ouroboros::WAVE_PARAM
         ));
 
 

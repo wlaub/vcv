@@ -47,8 +47,18 @@ struct Sisyphus : Module {
 
     cbuf buffer[N];
 
-	Sisyphus() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Sisyphus() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        for(int j = 0; j < N; ++j)
+        {
+            configParam(LENGTH_PARAM+j, 0,10,10, "Buffer length");
+            configParam(RATE_PARAM+j, 0, 10, 5, "Playback Rate");
+            configParam(MODE_PARAM+j, 0,1,0, "Playback Mode");
+        }
+
+       
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -208,8 +218,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) {
 
         xoff = 90.2;
         addParam(createParam<RoundBlackKnob>(
-            Vec(xoff, yoff-2.3), module, Sisyphus::LENGTH_PARAM+j,
-            0,10,10
+            Vec(xoff, yoff-2.3), module, Sisyphus::LENGTH_PARAM+j
             ));
         addInput(createPort<PJ301MPort>(
             Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::LENGTH_INPUT+j
@@ -217,8 +226,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) {
 
         xoff += 45;
         addParam(createParam<RoundBlackKnob>(
-            Vec(xoff, yoff-2.3), module, Sisyphus::RATE_PARAM+j,
-            0,10,5
+            Vec(xoff, yoff-2.3), module, Sisyphus::RATE_PARAM+j
             ));
         addInput(createPort<PJ301MPort>(
             Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::RATE_INPUT+j
@@ -226,8 +234,7 @@ SisyphusWidget::SisyphusWidget(Sisyphus* module) {
 
         xoff += 45;
         addParam(createParam<RoundBlackSnapKnob>(
-            Vec(xoff, yoff-2.3), module, Sisyphus::MODE_PARAM+j,
-            0,1,0
+            Vec(xoff, yoff-2.3), module, Sisyphus::MODE_PARAM+j
             ));
         addInput(createPort<PJ301MPort>(
             Vec(xoff+2.5, yoff+30), PortWidget::INPUT, module, Sisyphus::MODE_INPUT+j

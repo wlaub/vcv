@@ -100,14 +100,6 @@
       ]
     },
     {
-      "slug": "Athena",
-      "name": "Athena (WIP)",
-      "description": "Test Module",
-      "tags": [
-        "DELAY"
-      ]
-    },
-    {
       "slug": "Achilles",
       "name": "Achilles (WIP)",
       "description": "Karplus-Strong toolkit",

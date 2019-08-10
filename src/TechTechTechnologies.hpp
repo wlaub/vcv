@@ -6,49 +6,42 @@
 
 #include <GLFW/glfw3.h>
 
+//
+// What follows is misguided legacy macros. I am sorry.
+//
+//
+
 #define OUTPORT(x,y,modname,param, offset)\
-    auto *param = createPort<PJ301MPort>(\
-        Vec(x,y), PortWidget::OUTPUT, module, modname::param + offset\
-        );\
-    center(param,1,1);\
-    addOutput(param);\
+    addOutput(createOutputCentered<PJ301MPort>(\
+        Vec(x,y), module, modname::param + offset\
+        ));\
 \
 
 #define INPORT(x,y,modname,param, offset)\
-    auto *param = createPort<PJ301MPort>(\
-        Vec(x,y), PortWidget::INPUT, module, modname::param + offset\
-        );\
-    center(param,1,1);\
-    addInput(param);\
+    addInput(createInputCentered<PJ301MPort>(\
+        Vec(x,y), module, modname::param + offset\
+        ));\
 \
 
 #define KNOB(x,y,min, max, def, type, modname,param, offset)\
-    auto *param = createParam<Round ## type ## BlackKnob>(\
-        Vec(x,y),module, modname::param + offset,\
-        min, max, def\
-        );\
-    center(param,1,1);\
-    addParam(param);\
+    addParam(createParamCentered<Round ## type ## BlackKnob>(\
+        Vec(x,y),module, modname::param + offset\
+        ));\
 \
 
 #define SWITCH(x,y, modname, param, ...)\
-auto* param = createParam<CKSS>(\
-    Vec(x,y), module, modname::param,\
-    __VA_ARGS__\
-    );\
-center(param,1,1);\
-addParam(param);\
+    addParam(createParamCentered<CKSS>(\
+        Vec(x,y), module, modname::param\
+        ));\
 \
 
 #define BUTTON(x,y, type, modname, param, ...)\
-auto* param = createParam<type>(\
-    Vec(x,y), module, modname::param,\
-    __VA_ARGS__\
-    );\
-center(param,1,1);\
-addParam(param);\
+    addParam(createParamCentered<type>(\
+        Vec(x,y), module, modname::param\
+        ));\
 \
 
+#define DEPTH_CONFIGURE configParam(DEPTH_PARAM, 1, 16, 8, "Conversion bit depth");
 
 #define DEPTH_WIDGETS(x,y,modname)\
     addInput(createPort<PJ301MPort>(\
@@ -57,9 +50,7 @@ addParam(param);\
 \
 \
     addParam(createParam<RoundBlackSnapKnob>(\
-        Vec(x+27.5, y+1), module, modname::DEPTH_PARAM,\
-        1, 16, 8\
-        ));\
+        Vec(x+27.5, y+1), module, modname::DEPTH_PARAM));\
 \
     addOutput(createPort<PJ301MPort>(\
         Vec(x+60.25, y+2.5), PortWidget::OUTPUT, module, modname::DEPTH_OUTPUT\
@@ -82,8 +73,7 @@ addParam(param);\
         Vec(xoff+2.5, yoff+2.5), PortWidget::INPUT, module, name ## _INPUT+idx\
         ));\
     addParam(createParam<RoundBlackKnob>(\
-        Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx,\
-        0, 10, def\
+        Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx\
         ));\
 \
 
@@ -100,19 +90,21 @@ addParam(param);\
  \
 
 
+#define CV_ATV_CONFIGURE(min, max, def, name, idx)\
+configParam(name ## CV_PARAM + idx, -1,1,0, "CV Gain"); \
+configParam(name ## _PARAM + idx, min, max, def, "Value"); \
+
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
     addInput(createPort<PJ301MPort>(\
         Vec(xoff, yoff), PortWidget::INPUT, module, name ## _INPUT+idx\
         ));\
 \
     addParam(createParam<RoundTinyBlackKnob>(\
-        Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx,\
-        -1,1,0\
+        Vec(xoff+35, yoff+3.5), module, name ## CV_PARAM+idx\
         ));\
 \
     addParam(createParam<RoundLargeBlackKnob>(\
-        Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx,\
-        min,max,def\
+        Vec(xoff+62.65, yoff-6.35), module, name ## _PARAM+idx\
         ));\
 
 #define CV_ATV_VALUE(name, max, idx)\
@@ -284,8 +276,6 @@ extern Model* modelOuroboros;
 extern Model* modelOdysseus;
 
 extern Model* modelMneme;
-
-extern Model* modelAthena;
 
 extern Model* modelAchilles;
 

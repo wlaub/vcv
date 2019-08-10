@@ -61,8 +61,26 @@ struct Odysseus : Module {
     SchmittTrigger clearTrigger;
     SchmittTrigger clkTrigger;
 
-	Odysseus() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	Odysseus() 
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+        configParam(OFFSET_CV_PARAM, 0, 1, .5, "Offset CV gain");
+        configParam(NOISE_CV_PARAM, 0, 1, 0, "Noise CV Gain");
+
+        configParam(OFFSET_PARAM, 0, 1, .5, "Offset Level");
+        configParam(NOISE_PARAM, 0, 1, 0, "Noise Level");
+
+        configParam(FREQ_PARAM, 0, 1, 0, "S&H Frequency");
+        configParam(RATE_PARAM, 0, 1, 0, "Integration Rate");
+        configParam(DETECT_PARAM, 0, 1, 0, "Detect Threshold");
+
+        configParam(FS_PARAM, 0,1,0, "Fast/slow clock select");
+        configParam(SS_PARAM, 0,1,0, "Slow/slowest clock select");
+
+        configParam(AC_PARAM, 0,1,0, "Autoclear Enable");
+        configParam(CLEAR_PARAM, 0,1,0, "Clear Integrator");
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file

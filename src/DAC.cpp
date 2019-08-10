@@ -28,14 +28,25 @@ struct DAC : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL
 	};
 
-    int ready = 0;
-
     SchmittTrigger bitTrigger[BITL];
 
     Label* valLabel;
 
-	DAC() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+	DAC()
+    {
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        DEPTH_CONFIGURE
+        for(int x = 0; x < 4; ++x)
+        {
+            for(int y = 0; y < 4; ++y)
+            {
+                int i = x+y*4;
+                configParam(BITS_PARAM+i, 0,1,0, "");
+            }
+        }
+        valLabel = new Label();
+
+    }
 	void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
@@ -50,8 +61,6 @@ void DAC::step() {
 	//float deltaTime = 1.0 / engineGetSampleRate();
 
 	// Compute the frequency from the pitch parameter and input
-
-    if(ready == 0) return;
 
     DEPTH_STEP
 
@@ -94,9 +103,7 @@ struct DACWidget : ModuleWidget
 };
 
 DACWidget::DACWidget(DAC* module) {
-		setModule(module);
-//  DAC *module = new DAC();    
-//    setModule(module);
+    setModule(module);
     box.size = Vec(16 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
@@ -118,12 +125,14 @@ DACWidget::DACWidget(DAC* module) {
 
     DEPTH_WIDGETS(7.5, 46.5, DAC)
 
-    Label* label = new Label();
-    label->box.pos=Vec(90, insy-15);
-    label->text = "TESTTESTESTESTETETSDASDASDA";
-    addChild(label); 
     if(module)
+    {
+        Label* label = module->valLabel;
+        label->box.pos=Vec(90, insy-15);
+        label->text = "TESTTESTESTESTETETSDASDASDA";
+        addChild(label); 
         module->valLabel = label;
+    }
 
     insx = 200;
     gap = 4;
@@ -164,9 +173,7 @@ DACWidget::DACWidget(DAC* module) {
             center(jack);
 
             auto* button = createParam<CKSS>(
-                Vec(xoff+jack->box.size.x/2+gap, yoff), module, DAC::BITS_PARAM+i,
-                0,1,0
-                );
+                Vec(xoff+jack->box.size.x/2+gap, yoff), module, DAC::BITS_PARAM+i);
 
             center(button, 0);
 
@@ -190,8 +197,6 @@ DACWidget::DACWidget(DAC* module) {
 
         }
     }
-    if(module)
-        module->ready = 1;
 
 }
 
