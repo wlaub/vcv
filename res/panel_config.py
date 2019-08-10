@@ -55,26 +55,25 @@ class ControlConfig():
     LightWidget* light;
     """
 
+    paramconfig = 'configParam({id}, {min}, {max}, {default}, "{id}");'
+
     create_strings= {
         'param':"""
-    param = ParamWidget::create<{widget}>(
+    addParam(createParamCentered<{widget}>(
         Vec({xpos}, {ypos}), 
-        module, {name}::{id},
-        {min}, {max}, {default}
-    );
-    center(param,1,1);
-    addParam(param);
-        """,
+        module, {name}::{id}
+    ));
+    """,
         'input':"""
-    input = Port::create<PJ301MPort>(
-        Vec({xpos},{ypos}), Port::INPUT, module, {name}::{id}
+    input = createPort<PJ301MPort>(
+        Vec({xpos},{ypos}), PortWidget::INPUT, module, {name}::{id}
         );
     center(input,1,1);
     addInput(input);    
         """,
         'output':"""
-    output = Port::create<PJ301MPort>(
-        Vec({xpos},{ypos}), Port::OUTPUT, module, {name}::{id}
+    output = createPort<PJ301MPort>(
+        Vec({xpos},{ypos}), PortWidget::OUTPUT, module, {name}::{id}
         );
     center(output,1,1);
     addOutput(output);    

@@ -14,7 +14,12 @@ struct QMod : Module {
     float phase[4] = {0,0,0,0};
 
     QMod() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        /* +ENUMS */
+        #include "QMod_paramconfig.hpp"
+        /* -ENUMS */
+        
+    }
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file

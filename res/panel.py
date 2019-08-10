@@ -219,6 +219,21 @@ class Control(panel_config.ControlConfig):
     def get_auto_gain(self): return self.get_auto('ATV')
     def get_auto_offset(self): return self.get_auto('OFFSET')
 
+    def get_paramconfigs(self, modname):
+        """
+        Return panel config string for this control
+        """
+        try:
+            result = self.paramconfig.format(
+                name=modname, widget=self.widget,
+                id=self.get_enum_expr(), xpos = self.pos[0], ypos = self.pos[1],
+                **self.config
+                )
+        except KeyError as e:
+            result = f'FAILED to instantiate {self._id} due to missing param {e}'
+
+        return result
+
     def get_instantiation(self, modname):
         """
         Return the panel instantiation string for this control
@@ -496,6 +511,19 @@ class Panel():
             return True
         return False
 
+    def get_paramconfig_block(self):
+        """
+        Return the entire panel instantiation block for this panel
+        """
+        result = []
+        for ctrl in self.controls:
+            if ctrl.kind == 'param':
+                result.append(ctrl.get_paramconfigs(self.modname))
+
+        return '\n'.join(result)
+
+
+
     def get_instantiation_block(self):
         """
         Return the entire panel instantiation block for this panel
@@ -596,6 +624,14 @@ class Panel():
                 f.write(self.get_instantiation_block())
         except Exception as e:
             print(f'Failed to generate instantiation block\n{e}')
+
+        try:
+            with open(os.path.join(src_dir,f'{self.modname}_paramconfig.hpp'), 'w') as f:
+                f.write(self.get_paramconfig_block())
+        except Exception as e:
+            print(f'Failed to generate paramconfig block\n{e}')
+
+
 
         try:
             with open(os.path.join(src_dir,f'{self.modname}_enums.hpp'), 'w') as f:

@@ -41,7 +41,11 @@ struct {modname} : Module {{
     /* -TRIGGER_VARS */
 
 
-    {modname}() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {{}}
+    {modname}() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {{
+        /* +PARAM_CONFIGS */
+        #include "{modname}_paramconfig.hpp"
+        /* -PARAM_CONFIGS */
+    }}
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
@@ -104,6 +108,6 @@ instance = """
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *model{modname} = Model::create<{modname}, {modname}Widget>("{modname}");
+Model *model{modname} = createModel<{modname}, {modname}Widget>("{modname}");
 """
 

@@ -215,110 +215,74 @@
     addOutput(output);    
         
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(25.0, 201.0), 
-        module, QMod::PARAM_IN_GAIN,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_IN_GAIN
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(113.0, 157.0), 
-        module, QMod::PARAM_FREQ_OFFSET,
-        -3, 3, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_OFFSET
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(113.0, 113.0), 
-        module, QMod::PARAM_FREQ_ATV,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_ATV
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(113.0, 333.0), 
-        module, QMod::PARAM_FREQ_OFFSET+1,
-        -3, 3, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_OFFSET+1
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(113.0, 289.0), 
-        module, QMod::PARAM_FREQ_ATV+1,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_ATV+1
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(157.0, 157.0), 
-        module, QMod::PARAM_FREQ_OFFSET+2,
-        -3, 3, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_OFFSET+2
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(157.0, 113.0), 
-        module, QMod::PARAM_FREQ_ATV+2,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_ATV+2
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(157.0, 333.0), 
-        module, QMod::PARAM_FREQ_OFFSET+3,
-        -3, 3, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_OFFSET+3
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(157.0, 289.0), 
-        module, QMod::PARAM_FREQ_ATV+3,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_FREQ_ATV+3
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(69.0, 201.0), 
-        module, QMod::PARAM_IN_GAIN+1,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_IN_GAIN+1
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(245.0, 201.0), 
-        module, QMod::PARAM_IN_GAIN+2,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_IN_GAIN+2
+    ));
+    
 
-    param = createParam<RoundTinyBlackKnob>(
+    addParam(createParamCentered<RoundTinyBlackKnob>(
         Vec(201.0, 201.0), 
-        module, QMod::PARAM_IN_GAIN+3,
-        -1, 1, 0
-    );
-    center(param,1,1);
-    addParam(param);
-        
+        module, QMod::PARAM_IN_GAIN+3
+    ));
+    
