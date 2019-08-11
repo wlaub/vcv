@@ -49,3 +49,5 @@ input_clock_in[1] = clamp(input_clock_in[1], -10.0f, 10.0f);
 input_signal_in[1] = inputs[INPUT_SIGNAL_IN+1].value;
 input_signal_in[1] *= param_signal_in_atv[1];
 input_signal_in[1] = clamp(input_signal_in[1], -10.0f, 10.0f);
+output_conv_out[0] = outputs[OUTPUT_CONV_OUT].value;
+output_conv_out[1] = outputs[OUTPUT_CONV_OUT+1].value;

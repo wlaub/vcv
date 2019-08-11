@@ -474,7 +474,10 @@ struct Pleiades : Module {
     float tones[7] = {0, 1.0/7, 2.0/7, 3.0/7, 4.0/7, 5.0/7, 6.0/7};
 
     Pleiades() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        #include "Pleiades_paramconfig.hpp"   
+    
+    }
 
     void updateStepKnobs();
     void updateCenterFromStep();

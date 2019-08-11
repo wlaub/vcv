@@ -26,7 +26,9 @@ struct Convo : Module {
    
 
     Convo() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        #include "Convo_paramconfig.hpp"       
+    }
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
