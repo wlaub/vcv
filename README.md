@@ -38,7 +38,7 @@ Karplus Strong Toolkit (noise -> env -> delay -> filter)
 
 ### Pleiades (WIP) (Sequence format unstable)
 
-Tree Sequencer
+Tree Sequencer - this module is in active development. Please don't count on it being stable. At the time of this writing, the latest version in develop is nto compatible with the version in master.
 
 ### Mneme (WIP)
 
