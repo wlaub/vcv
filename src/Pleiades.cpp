@@ -592,12 +592,11 @@ struct Pleiades : Module {
 
     LightWidget** addressLights;
 
-    Pleiades() 
-    {
+    Pleiades() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        #include "Pleiades_paramconfig.hpp"   
+    
     }
-
-   
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - dataToJson, dataFromJson: serialization of internal data

@@ -288,3 +288,10 @@ if (!inputs[INPUT_NOISE_SLOPE].active)
 input_noise_slope[0] *= param_noise_slope_atv[0];
 input_noise_slope[0] = clamp(input_noise_slope[0], -10.0f, 10.0f);
 input_delay_clock = inputs[INPUT_DELAY_CLOCK].value;
+output_delay_out = outputs[OUTPUT_DELAY_OUT].value;
+output_env_gate = outputs[OUTPUT_ENV_GATE].value;
+output_env = outputs[OUTPUT_ENV].value;
+output_noise[0] = outputs[OUTPUT_NOISE].value;
+output_noise[1] = outputs[OUTPUT_NOISE+1].value;
+output_noise_out = outputs[OUTPUT_NOISE_OUT].value;
+output_delay_in = outputs[OUTPUT_DELAY_IN].value;

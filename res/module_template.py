@@ -110,6 +110,6 @@ instance = """
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *model{modname} = Model::create<{modname}, {modname}Widget>("{modname}");
+Model *model{modname} = createModel<{modname}, {modname}Widget>("{modname}");
 """
 

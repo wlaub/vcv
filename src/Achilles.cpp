@@ -30,7 +30,9 @@ struct Achilles : Module {
 
 
     Achilles() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);}
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        #include "Achilles_paramconfig.hpp"   
+    }
     void step() override;
 
     // For more advanced Module features, read Rack's engine.hpp header file
