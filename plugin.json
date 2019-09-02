@@ -138,7 +138,7 @@
     },
     {
       "slug": "Polyphemus2",
-      "name": "Polyphemus II",
+      "name": "Polyphemus II (WIP)",
       "description": "Single-pole VCF x4",
       "tags": [
         "low pass gate",
@@ -148,7 +148,7 @@
     },
     {
       "slug": "Prometheus2",
-      "name": "Prometheus II",
+      "name": "Prometheus II (WIP)",
       "description": "LFSR Oscillator",
       "tags": [
         "vco",
