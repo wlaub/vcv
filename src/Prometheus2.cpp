@@ -1,6 +1,8 @@
 
 #include "TechTechTechnologies.hpp"
 
+#define PRINT_SEARCH //printf
+
 typedef struct {
     unsigned short left;
     unsigned short _;
@@ -18,8 +20,15 @@ struct Prometheus2 : Module {
     #include "Prometheus2_vars.hpp"
     /* -TRIGGER_VARS */
 
+    unsigned short shift_register = 0;
+    unsigned short actual_length = 1;
+    float clock_phase = 0;
+
     unsigned char* raw_index[2];
     unsigned short get_taps(unsigned short length, unsigned short param0, unsigned short param1, unsigned char order);
+    unsigned short get_actual_length(unsigned short length);
+
+    SchmittTrigger clkTrigger, glitchTrigger;
 
     Prometheus2()
     {
@@ -65,6 +74,17 @@ struct Prometheus2 : Module {
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
+unsigned short Prometheus2::get_actual_length(unsigned short length)
+{
+    unsigned char* buffer = raw_index[0];
+    unsigned int base_address = ((unsigned int*)(buffer))[length];
+
+
+    unsigned short actual_size = *(unsigned short*)(buffer+base_address-2);
+
+    return actual_size;
+}
+
 unsigned short Prometheus2::get_taps(unsigned short length, unsigned short param0, unsigned short param1, unsigned char order)
 {
     unsigned char* buffer = raw_index[order];
@@ -73,7 +93,7 @@ unsigned short Prometheus2::get_taps(unsigned short length, unsigned short param
 
     unsigned short actual_size = *(unsigned short*)(buffer+base_address-2);
 
-printf("Length %i maps to actual length %i starting at address %i\n", length, actual_size, base_address);
+PRINT_SEARCH("Length %i maps to actual length %i starting at address %i\n", length, actual_size, base_address);
     unsigned short left;
     unsigned short right;
     unsigned short index;
@@ -84,15 +104,18 @@ printf("Length %i maps to actual length %i starting at address %i\n", length, ac
     right = *(unsigned short*)(buffer+base_address+2);
     index = 0;
 
-printf("There are %i options available here\n", right);
+PRINT_SEARCH("There are %i options available here\n", right);
 
     //I know there is a better way to do this, but I don't have bw to care rn.
     IndexEntry* entry;
+    if(param0 == 65535) param0 -= 1;
+    if(param1 == 65535) param1 -= 1;
+
     while(1)
     {
         entry = (IndexEntry*)(buffer+base_address+index*4);
-printf("%i ?? %i ?? %i\n", entry->left, param0, entry->right);
-printf("=%i/%i/%i\n", left, index, right);
+PRINT_SEARCH("%i ?? %i ?? %i\n", entry->left, param0, entry->right);
+PRINT_SEARCH("=%i/%i/%i\n", left, index, right);
 
         if(param0 < entry->left)
         {
@@ -117,27 +140,27 @@ printf("=%i/%i/%i\n", left, index, right);
     index = 0;
     unsigned int count = 0;
 
-printf("  There are %i options available here\n", right);
+PRINT_SEARCH("  There are %i options available here\n", right);
 
     while(count < 100)
     {
         count += 1;
         entry = (IndexEntry*)(buffer+base_address+index*4);
-printf("  %i ?? %i ?? %i\n", entry->left, param1, entry->right);
-printf("  =%i/%i/%i\n", left, index, right);
+PRINT_SEARCH("  %i ?? %i ?? %i\n", entry->left, param1, entry->right);
+PRINT_SEARCH("  =%i/%i/%i\n", left, index, right);
         if(param1 < entry->left)
         {
             right = index;
             index = (index+left)/2;
         }
-        else if(param1 >= entry->right)
+        else if(param1 >= entry->right && param1 != 65535)
         {
             left = index;
             index = (index+right)/2;
         }
         else
         {
-printf("<----%x\n", entry->value);
+PRINT_SEARCH("<----%x\n", entry->value);
             return entry->value;
         }
     }
@@ -155,6 +178,56 @@ void Prometheus2::step() {
     #include "Prometheus2_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
+    float period = .004;
+    float locked_period = period;
+
+    if(param_freq_lock == 1)
+    {
+        locked_period = period/actual_length;
+    }
+
+    if(deltaTime > locked_period)
+    {
+        clock_phase = locked_period;
+    }
+    else
+    {
+        clock_phase += deltaTime;
+    }
+
+    if(clock_phase >= locked_period)
+    {
+        clock_phase -= locked_period;
+
+        float length_value = param_length_offset+2+param_length_fine+input_length_cv;
+        
+        unsigned short length = pow(2,length_value);
+        if(length <2) length = 2;
+        if(length >= 4096) length = 4095;
+
+        float param0_value = clamp(param_param_0_coarse+input_param_0_cv,0.0f,1.0f);
+        float param1_value = clamp(param_param_1_coarse+input_param_1_cv,0.0f,1.0f);
+
+        unsigned short param0 = 65535*param0_value;
+        unsigned short param1 = 65535*param1_value;
+
+        if(glitchTrigger.process(param_glitch_button))
+        {
+            length = 4095;
+        }
+
+        unsigned short taps;
+        taps = get_taps(length, param0, param1, param_param_order);
+        actual_length = get_actual_length(length);
+
+        unsigned short feedback = 1^__builtin_popcount(taps&shift_register);
+
+        shift_register <<= 1;
+        shift_register |= (feedback&1);
+
+        output_out = (feedback&1);
+
+    }
 
 
     /*  +OUTPUT_PROCESSING */

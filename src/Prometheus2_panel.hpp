@@ -53,7 +53,7 @@
     ));
     
 
-    addParam(createParamCentered<RoundTinyBlackKnob>(
+    addParam(createParamCentered<CKSS>(
         Vec(100.0, 56.68), 
         module, Prometheus2::PARAM_GLITCH_BUTTON
     ));
@@ -77,7 +77,7 @@
     ));
     
 
-    addParam(createParamCentered<RoundTinyBlackKnob>(
+    addParam(createParamCentered<CKSS>(
         Vec(60.0, 56.68), 
         module, Prometheus2::PARAM_PARAM_ORDER
     ));
@@ -101,7 +101,7 @@
     ));
     
 
-    addParam(createParamCentered<RoundTinyBlackKnob>(
+    addParam(createParamCentered<CKSS>(
         Vec(20.0, 56.68000000000001), 
         module, Prometheus2::PARAM_FREQ_LOCK
     ));

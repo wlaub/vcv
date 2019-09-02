@@ -2345,8 +2345,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Outputs"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="out"
@@ -2473,7 +2472,7 @@
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2-4-4-1">RoundTinyBlackKnob</title>
+         id="title4026-5-1-2-6-8-2-4-4-1">CKSS</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -2533,7 +2532,7 @@
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2-4-4-9">RoundTinyBlackKnob</title>
+         id="title4026-5-1-2-6-8-2-4-4-9">CKSS</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -2593,7 +2592,7 @@
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2-4-4-8">RoundTinyBlackKnob</title>
+         id="title4026-5-1-2-6-8-2-4-4-8">CKSS</title>
     </path>
     <path
        inkscape:connector-curvature="0"
