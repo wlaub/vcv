@@ -24,6 +24,8 @@ struct Prometheus2 : Module {
     unsigned short actual_length = 1;
     float clock_phase = 0;
 
+    unsigned int glitch_waiting = 0;
+
     unsigned char* raw_index[2];
     unsigned short get_taps(unsigned short length, unsigned short param0, unsigned short param1, unsigned char order);
     unsigned short get_actual_length(unsigned short length);
@@ -178,31 +180,50 @@ void Prometheus2::step() {
     #include "Prometheus2_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
-    float period = .004;
-    float locked_period = period;
-
-    if(param_freq_lock == 1)
+    if(glitchTrigger.process(param_glitch_button+input_glitch_gate))
     {
-        locked_period = period/actual_length;
+        glitch_waiting = 1;
     }
 
-    if(deltaTime > locked_period)
+    int tick = 0;
+
+    if(!inputs[INPUT_EXT_CLK].active)
     {
-        clock_phase = locked_period;
+        float period = .004;
+        float locked_period = period;
+
+        if(param_freq_lock == 1 || input_freq_lock_gate > .5)
+        {
+            locked_period = period/actual_length;
+        }
+
+        if(deltaTime > locked_period)
+        {
+            clock_phase = locked_period;
+        }
+        else
+        {
+            clock_phase += deltaTime;
+        }
+
+        if(clock_phase >= locked_period)
+        {
+            clock_phase -= locked_period;
+            tick = 1;
+        }
     }
     else
     {
-        clock_phase += deltaTime;
+        tick = clkTrigger.process(input_ext_clk);
     }
 
-    if(clock_phase >= locked_period)
+    if(tick)
     {
-        clock_phase -= locked_period;
 
         float length_value = param_length_offset+2+param_length_fine+input_length_cv;
         
         unsigned short length = pow(2,length_value);
-        if(length <2) length = 2;
+//        if(length <2) length = 2;
         if(length >= 4096) length = 4095;
 
         float param0_value = clamp(param_param_0_coarse+input_param_0_cv,0.0f,1.0f);
@@ -211,8 +232,9 @@ void Prometheus2::step() {
         unsigned short param0 = 65535*param0_value;
         unsigned short param1 = 65535*param1_value;
 
-        if(glitchTrigger.process(param_glitch_button))
+        if(glitch_waiting == 1)
         {
+            glitch_waiting = 0;
             length = 4095;
         }
 

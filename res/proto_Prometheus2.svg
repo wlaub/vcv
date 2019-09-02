@@ -180,7 +180,7 @@
      inkscape:cx="86.712352"
      inkscape:cy="249.29117"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer10"
      showgrid="true"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -2280,12 +2280,11 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Inputs"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="length_cv"
-       d="M 32.49291,234.43999 A 12.492901,12.5 0 0 1 20,246.94001 12.492901,12.5 0 0 1 7.50709,234.43999 12.492901,12.5 0 0 1 20,221.93999 a 12.492901,12.5 0 0 1 12.49291,12.5 z"
+       d="M 72.49291,234.43999 A 12.492901,12.5 0 0 1 60,246.94001 12.492901,12.5 0 0 1 47.50709,234.43999 12.492901,12.5 0 0 1 60,221.93999 a 12.492901,12.5 0 0 1 12.49291,12.5 z"
        style="display:inline;fill:#00ff00;fill-opacity:1"
        inkscape:label="input">
       <desc
@@ -2309,7 +2308,7 @@
     <path
        inkscape:connector-curvature="0"
        id="param_0_cv"
-       d="M 72.4929,234.43998 A 12.492901,12.5 0 0 1 60,246.94002 12.492901,12.5 0 0 1 47.5071,234.43998 12.492901,12.5 0 0 1 60,221.93998 a 12.492901,12.5 0 0 1 12.4929,12.5 z"
+       d="M 32.4929,234.43998 A 12.492901,12.5 0 0 1 20,246.94002 12.492901,12.5 0 0 1 7.5071,234.43998 12.492901,12.5 0 0 1 20,221.93998 a 12.492901,12.5 0 0 1 12.4929,12.5 z"
        style="display:inline;fill:#00ff00;fill-opacity:1"
        inkscape:label="input">
       <desc
@@ -2337,6 +2336,27 @@
        inkscape:label="input">
       <desc
          id="desc6853-04-6-3">{
+'clip': [-10, 10],
+}</desc>
+    </path>
+    <path
+       inkscape:connector-curvature="0"
+       id="glitch_gate"
+       d="M 112.4929,101.11998 A 12.492901,12.5 0 0 1 100,113.62002 12.492901,12.5 0 0 1 87.5071,101.11998 12.492901,12.5 0 0 1 100,88.61998 a 12.492901,12.5 0 0 1 12.4929,12.5 z"
+       style="display:inline;fill:#00ff00;fill-opacity:1"
+       inkscape:label="input">
+      <desc
+         id="desc6853-04-3-7-8-3-5">{
+}</desc>
+    </path>
+    <path
+       inkscape:connector-curvature="0"
+       id="freq_lock_gate"
+       d="M 32.4929,101.11998 A 12.492901,12.5 0 0 1 20,113.62002 12.492901,12.5 0 0 1 7.5071,101.11998 12.492901,12.5 0 0 1 20,88.61998 a 12.492901,12.5 0 0 1 12.4929,12.5 z"
+       style="display:inline;fill:#00ff00;fill-opacity:1"
+       inkscape:label="input">
+      <desc
+         id="desc6853-04-3-7-8-3-56">{
 'clip': [-10, 10],
 }</desc>
     </path>
@@ -2446,21 +2466,6 @@
     </path>
     <path
        inkscape:connector-curvature="0"
-       id="param_0_fine"
-       d="M 60.00001,111.12 A 9.9943184,10.000001 0 0 0 69.99433,101.12001 9.9943184,10.000001 0 0 0 60.00001,91.12 9.9943184,10.000001 0 0 0 50.00567,101.12001 9.9943184,10.000001 0 0 0 60.00001,111.12 Z"
-       style="display:inline;fill:#00ffff;fill-opacity:1"
-       inkscape:label="param">
-      <desc
-         id="desc5112-1-8-1-9-6-29-5">{
-'min':-1,
-'max':1,
-'default':0,
-}</desc>
-      <title
-         id="title4026-5-1-2-6-8-2-4">RoundTinyBlackKnob</title>
-    </path>
-    <path
-       inkscape:connector-curvature="0"
        id="glitch_button"
        d="m 100,66.680002 a 9.9943184,10.000001 0 0 0 9.99433,-9.99999 A 9.9943184,10.000001 0 0 0 100,46.679998 9.9943184,10.000001 0 0 0 90.00567,56.680012 9.9943184,10.000001 0 0 0 100,66.680002 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
@@ -2477,7 +2482,7 @@
     <path
        inkscape:connector-curvature="0"
        id="length_cv_atv"
-       d="M 20.00001,200 A 9.9943184,10.000001 0 0 0 29.99433,190.00001 9.9943184,10.000001 0 0 0 20.00001,180 9.9943184,10.000001 0 0 0 10.00567,190.00001 9.9943184,10.000001 0 0 0 20.00001,200 Z"
+       d="M 60.00001,200 A 9.9943184,10.000001 0 0 0 69.99433,190.00001 9.9943184,10.000001 0 0 0 60.00001,180 9.9943184,10.000001 0 0 0 50.00567,190.00001 9.9943184,10.000001 0 0 0 60.00001,200 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2507,7 +2512,7 @@
     <path
        inkscape:connector-curvature="0"
        id="length_fine"
-       d="M 20.00001,111.12 A 9.9943184,10.000001 0 0 0 29.99433,101.12001 9.9943184,10.000001 0 0 0 20.00001,91.12 9.9943184,10.000001 0 0 0 10.00567,101.12001 9.9943184,10.000001 0 0 0 20.00001,111.12 Z"
+       d="M 60.00001,111.12 A 9.9943184,10.000001 0 0 0 69.99433,101.12001 9.9943184,10.000001 0 0 0 60.00001,91.12 9.9943184,10.000001 0 0 0 50.00567,101.12001 9.9943184,10.000001 0 0 0 60.00001,111.12 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2522,7 +2527,7 @@
     <path
        inkscape:connector-curvature="0"
        id="param_order"
-       d="M 60,66.680002 A 9.9943184,10.000001 0 0 0 69.99433,56.680012 9.9943184,10.000001 0 0 0 60,46.679998 9.9943184,10.000001 0 0 0 50.00567,56.680012 9.9943184,10.000001 0 0 0 60,66.680002 Z"
+       d="M 20,66.680002 A 9.9943184,10.000001 0 0 0 29.99433,56.680012 9.9943184,10.000001 0 0 0 20,46.679998 9.9943184,10.000001 0 0 0 10.00567,56.680012 9.9943184,10.000001 0 0 0 20,66.680002 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2537,7 +2542,7 @@
     <path
        inkscape:connector-curvature="0"
        id="param_0_coarse"
-       d="M 60.00001,155.56 A 9.9943184,10.000001 0 0 0 69.99433,145.56001 9.9943184,10.000001 0 0 0 60.00001,135.56 9.9943184,10.000001 0 0 0 50.00567,145.56001 9.9943184,10.000001 0 0 0 60.00001,155.56 Z"
+       d="M 20.00001,155.56 A 9.9943184,10.000001 0 0 0 29.99433,145.56001 9.9943184,10.000001 0 0 0 20.00001,135.56 9.9943184,10.000001 0 0 0 10.00567,145.56001 9.9943184,10.000001 0 0 0 20.00001,155.56 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2552,7 +2557,7 @@
     <path
        inkscape:connector-curvature="0"
        id="length_offset"
-       d="M 20,155.56 A 9.9943184,10.000001 0 0 0 29.99433,145.56001 9.9943184,10.000001 0 0 0 20,135.56 9.9943184,10.000001 0 0 0 10.00567,145.56001 9.9943184,10.000001 0 0 0 20,155.56 Z"
+       d="M 60,155.56 A 9.9943184,10.000001 0 0 0 69.99433,145.56001 9.9943184,10.000001 0 0 0 60,135.56 9.9943184,10.000001 0 0 0 50.00567,145.56001 9.9943184,10.000001 0 0 0 60,155.56 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2567,14 +2572,14 @@
     <path
        inkscape:connector-curvature="0"
        id="param_0_cv_atv"
-       d="M 60,200 A 9.9943184,10.000001 0 0 0 69.99433,190.00001 9.9943184,10.000001 0 0 0 60,180 9.9943184,10.000001 0 0 0 50.00567,190.00001 9.9943184,10.000001 0 0 0 60,200 Z"
+       d="M 20,200 A 9.9943184,10.000001 0 0 0 29.99433,190.00001 9.9943184,10.000001 0 0 0 20,180 9.9943184,10.000001 0 0 0 10.00567,190.00001 9.9943184,10.000001 0 0 0 20,200 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
          id="desc5112-1-8-1-9-6-29-5-2-07">{
 'min':0,
 'max':1,
-'default':0,
+'default':1,
 }</desc>
       <title
          id="title4026-5-1-2-6-8-2-4-4-2">RoundTinyBlackKnob</title>
@@ -2582,7 +2587,7 @@
     <path
        inkscape:connector-curvature="0"
        id="freq_lock"
-       d="M 20,66.68 A 9.9943184,10.000001 0 0 0 29.99433,56.68001 9.9943184,10.000001 0 0 0 20,46.68 9.9943184,10.000001 0 0 0 10.00567,56.68001 9.9943184,10.000001 0 0 0 20,66.68 Z"
+       d="M 60,66.68 A 9.9943184,10.000001 0 0 0 69.99433,56.68001 9.9943184,10.000001 0 0 0 60,46.68 9.9943184,10.000001 0 0 0 50.00567,56.68001 9.9943184,10.000001 0 0 0 60,66.68 Z"
        style="display:inline;fill:#00ffff;fill-opacity:1"
        inkscape:label="param">
       <desc
@@ -2593,21 +2598,6 @@
 }</desc>
       <title
          id="title4026-5-1-2-6-8-2-4-4-8">CKSS</title>
-    </path>
-    <path
-       inkscape:connector-curvature="0"
-       id="param_1_fine"
-       d="m 100,111.12 a 9.9943184,10.000001 0 0 0 9.99433,-9.99999 A 9.9943184,10.000001 0 0 0 100,91.12 9.9943184,10.000001 0 0 0 90.00567,101.12001 9.9943184,10.000001 0 0 0 100,111.12 Z"
-       style="display:inline;fill:#00ffff;fill-opacity:1"
-       inkscape:label="param">
-      <desc
-         id="desc5112-1-8-1-9-6-29-5-2-40">{
-'min':-1,
-'max':1,
-'default':0,
-}</desc>
-      <title
-         id="title4026-5-1-2-6-8-2-4-4-60">RoundTinyBlackKnob</title>
     </path>
     <path
        inkscape:connector-curvature="0"
@@ -2915,7 +2905,8 @@
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="621.67719"
        y="7.974268"
-       id="text6967"><tspan
+       id="text6967"
+       sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan6969"
          x="621.67719"
@@ -2937,7 +2928,8 @@
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="409.70505"
        y="10.831109"
-       id="text6991"><tspan
+       id="text6991"
+       sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan6993"
          x="409.70505"
@@ -3007,7 +2999,7 @@
          x="409.70505"
          y="213.95612"
          id="tspan7019"
-         style="font-size:12.5px;line-height:1.25">    'norm': 10,</tspan><tspan
+         style="font-size:12.5px;line-height:1.25">    'norm': 0,</tspan><tspan
          sodipodi:role="line"
          x="409.70505"
          y="229.58112"
@@ -3058,7 +3050,8 @@
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="619.35333"
        y="47.97641"
-       id="text7039"><tspan
+       id="text7039"
+       sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan7041"
          x="619.35333"
