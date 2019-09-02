@@ -73,68 +73,75 @@ unsigned short Prometheus2::get_taps(unsigned short length, unsigned short param
 
     unsigned short actual_size = *(unsigned short*)(buffer+base_address-2);
 
-//printf("Length %i maps to actual length %i starting at address %i\n", length, actual_size, base_address);
+printf("Length %i maps to actual length %i starting at address %i\n", length, actual_size, base_address);
+    unsigned short left;
+    unsigned short right;
+    unsigned short index;
 
-    unsigned short left0 = 0;
-    unsigned short right0 = *(unsigned short*)(buffer+base_address+2);
-    unsigned short index0 = 0;
 
-//printf("There are %i options available here\n", right0);
+
+    left = 0;
+    right = *(unsigned short*)(buffer+base_address+2);
+    index = 0;
+
+printf("There are %i options available here\n", right);
 
     //I know there is a better way to do this, but I don't have bw to care rn.
+    IndexEntry* entry;
     while(1)
     {
-        IndexEntry* entry0 = (IndexEntry*)(buffer+base_address+index0*4);
-        printf("%i ?? %i ?? %i\n", entry0->left, param0, entry0->right);
-        printf("=%i/%i/%i\n", left0, index0, right0);
+        entry = (IndexEntry*)(buffer+base_address+index*4);
+printf("%i ?? %i ?? %i\n", entry->left, param0, entry->right);
+printf("=%i/%i/%i\n", left, index, right);
 
-        if(param0 < entry0->left)
+        if(param0 < entry->left)
         {
-            right0=index0;
-            index0 = (index0+left0)/2;
+            right=index;
+            index = (index+left)/2;
         }
-        else if(param0 >= entry0->right)
+        else if(param0 >= entry->right)
         {
-            left0=index0;
-            index0 = (index0+right0)/2;
+            left=index;
+            index = (index+right)/2;
         }
         else
         {
-            unsigned int sub_address = base_address+*(unsigned short*)(buffer+base_address+6+index0*4);
-            unsigned short left1 = 0;
-            unsigned short right1 = *(unsigned short*)(buffer+sub_address+2);
-            unsigned short index1 = 0;
-
-//printf("  There are %i options available here\n", right1);
-
-           
-            unsigned int count = 0;
-            while(count < 100)
-            {
-                count += 1;
-                IndexEntry* entry1 = (IndexEntry*)(buffer+sub_address+index1*4);
-//printf("  %i ?? %i ?? %i\n", entry1->left, param1, entry1->right);
-//printf("  =%i/%i/%i\n", left1, index1, right1);
-                if(param1 < entry1->left)
-                {
-                    right1 = index1;
-                    index1 = (index1+left1)/2;
-                }
-                else if(param1 >= entry1->right)
-                {
-                    left1 = index1;
-                    index1 = (index1+right1)/2;
-                }
-                else
-                {
-//printf("<----%x\n", entry1->value);
-                    return entry1->value;
-                }
-            }
-            return 0;
-            
+            break;
         }
     }
+
+//    unsigned int sub_address = base_address+*(unsigned short*)(buffer+base_address+6+index0*4);
+    base_address+=entry->value;
+    left = 0;
+    right = *(unsigned short*)(buffer+base_address+2);
+    index = 0;
+    unsigned int count = 0;
+
+printf("  There are %i options available here\n", right);
+
+    while(count < 100)
+    {
+        count += 1;
+        entry = (IndexEntry*)(buffer+base_address+index*4);
+printf("  %i ?? %i ?? %i\n", entry->left, param1, entry->right);
+printf("  =%i/%i/%i\n", left, index, right);
+        if(param1 < entry->left)
+        {
+            right = index;
+            index = (index+left)/2;
+        }
+        else if(param1 >= entry->right)
+        {
+            left = index;
+            index = (index+right)/2;
+        }
+        else
+        {
+printf("<----%x\n", entry->value);
+            return entry->value;
+        }
+    }
+    return 0;
 
     
 }
