@@ -23,6 +23,7 @@ struct Prometheus2 : Module {
     unsigned short shift_register = 0;
     unsigned short actual_length = 1;
     float clock_phase = 0;
+    float glitch_phase= 0;
 
     unsigned int glitch_waiting = 0;
 
@@ -30,7 +31,7 @@ struct Prometheus2 : Module {
     unsigned short get_taps(unsigned short length, unsigned short param0, unsigned short param1, unsigned char order);
     unsigned short get_actual_length(unsigned short length);
 
-    SchmittTrigger clkTrigger, glitchTrigger;
+    SchmittTrigger clkTrigger, glitchTrigger, glitchGateTrigger;
 
     Prometheus2()
     {
@@ -180,9 +181,30 @@ void Prometheus2::step() {
     #include "Prometheus2_inputs.hpp"
     /*  -INPUT_PROCESSING */
 
-    if(glitchTrigger.process(param_glitch_button+input_glitch_gate))
+
+
+    if(glitchTrigger.process(param_glitch_button))
+    {
+        glitch_phase = 0;
+        glitch_waiting = 1;
+    }
+
+    if(glitchGateTrigger.process(input_glitch_gate))
     {
         glitch_waiting = 1;
+    }
+
+    if(param_glitch_button == 1)
+    {
+        double glitch_period = 1/param_glitch_rate;
+
+        glitch_phase += deltaTime;
+
+        if(glitch_phase > glitch_period)
+        {
+            glitch_phase -= glitch_period;
+            glitch_waiting = 1;
+        }
     }
 
     int tick = 0;
@@ -195,7 +217,7 @@ void Prometheus2::step() {
         float period = 1/freq;
         float locked_period = period;
 
-        if(param_freq_lock == 1 || input_freq_lock_gate > .5)
+        if(param_freq_lock == 1)
         {
             locked_period = period/actual_length;
         }
@@ -229,8 +251,12 @@ void Prometheus2::step() {
 //        if(length <2) length = 2;
         if(length >= 4096) length = 4095;
 
-        float param0_value = clamp(param_param_0_coarse+input_param_0_cv,0.0f,1.0f);
-        float param1_value = clamp(param_param_1_coarse+input_param_1_cv,0.0f,1.0f);
+        float param0_value = clamp(
+                0.1*param_param_0_fine
+                +param_param_0_coarse
+                +input_param_0_cv,
+                0.0f,1.0f);
+        float param1_value = .5;
 
         unsigned short param0 = 65535*param0_value;
         unsigned short param1 = 65535*param1_value;
@@ -242,7 +268,7 @@ void Prometheus2::step() {
         }
 
         unsigned short taps;
-        taps = get_taps(length, param0, param1, param_param_order);
+        taps = get_taps(length, param0, param1, 0);
         actual_length = get_actual_length(length);
 
         unsigned short feedback = 1^__builtin_popcount(taps&shift_register);
