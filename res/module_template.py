@@ -77,22 +77,16 @@ void {modname}::step() {{
 
 
 struct {modname}Widget : ModuleWidget {{
-    {modname}Widget({modname} *module) : ModuleWidget(module) {{
+    {modname}Widget({modname} *module) {{
         box.size = Vec({width} * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
+        addModule(module);
 
-        {{
-            SVGPanel *panel = new SVGPanel();
-            panel->box.size = box.size;
-            panel->setBackground(SVG::load(assetPlugin(plugin, "res/{modname}.svg")));
-            addChild(panel);
-        }}
+        setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/{modname}.svg")));
 
-
-
-        addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-        addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-        addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-        addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
+        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
         /* +CONTROL INSTANTIATION */
         #include "{modname}_panel.hpp"

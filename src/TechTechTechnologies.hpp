@@ -286,3 +286,6 @@ extern Model* modelConvo;
 extern Model* modelPleiades;
 
 extern Model* modelPolyphemus2;
+
+extern Model* modelPrometheus2;
+

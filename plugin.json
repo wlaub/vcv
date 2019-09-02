@@ -145,6 +145,17 @@
         "quad",
         "vcf"
       ]
+    },
+    {
+      "slug": "Prometheus2",
+      "name": "Prometheus II",
+      "description": "LFSR Oscillator",
+      "tags": [
+        "vco",
+        "noise",
+        "logic"
+      ]
     }
+ 
   ]
 }
