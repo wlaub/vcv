@@ -189,7 +189,10 @@ void Prometheus2::step() {
 
     if(!inputs[INPUT_EXT_CLK].active)
     {
-        float period = .004;
+        double freq = input_voct+param_pitch_coarse+param_pitch_fine;
+        freq = 261.626*pow(2, freq);
+
+        float period = 1/freq;
         float locked_period = period;
 
         if(param_freq_lock == 1 || input_freq_lock_gate > .5)
