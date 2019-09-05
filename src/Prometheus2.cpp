@@ -252,11 +252,12 @@ void Prometheus2::step() {
         if(length >= 4096) length = 4095;
 
         float param0_value = clamp(
-                0.1*param_param_0_fine
                 +param_param_0_coarse
                 +input_param_0_cv,
                 0.0f,1.0f);
-        float param1_value = .5;
+        float param1_value = clamp(
+                param_param_0_fine,
+                0.0f, 1.0f);
 
         unsigned short param0 = 65535*param0_value;
         unsigned short param1 = 65535*param1_value;
