@@ -20,6 +20,15 @@ struct Prometheus2 : Module {
     #include "Prometheus2_vars.hpp"
     /* -TRIGGER_VARS */
 
+    struct ttt::Biquad** filters;
+
+    int filt_order = 2;
+
+    float out_value = 0;
+
+    double x0 = 0;
+    double y0 = 0;
+
     unsigned short shift_register = 0;
     unsigned short actual_length = 1;
     float clock_phase = 0;
@@ -39,6 +48,15 @@ struct Prometheus2 : Module {
         /* +CONFIGS */
         #include "Prometheus2_configs.hpp"
         /* -CONFIGS */
+
+        #include "prom_filter.hpp"
+
+        filters = new struct ttt::Biquad*[filt_order];
+
+        for(int i = 0; i < filt_order; ++i)
+        {
+            filters[i] = new struct ttt::Biquad(1, sos[i]);
+        }
 
         for(int i = 0; i < 2; ++i)
         {
@@ -277,10 +295,31 @@ void Prometheus2::step() {
         shift_register <<= 1;
         shift_register |= (feedback&1);
 
-        output_out = (feedback&1);
+        out_value = 10*(feedback&1)-5;
 
     }
 
+    double dc_coupled = out_value;
+    double ac_coupled = out_value;
+
+    for(int i = 0; i < filt_order; ++i)
+    {
+        ac_coupled = filters[i]->step(ac_coupled, 0);
+    }
+
+    /*
+    ac_coupled = dc_coupled-.1*y0;;
+    x0 = dc_coupled;
+    y0 = ac_coupled; 
+*/
+    if(param_bias_control == 0)
+    {
+        output_out = dc_coupled;
+    }
+    else
+    {
+        output_out = ac_coupled;
+    }
 
     /*  +OUTPUT_PROCESSING */
     #include "Prometheus2_outputs.hpp"

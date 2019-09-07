@@ -95,7 +95,7 @@
     ));
     
 
-    addParam(createParamCentered<RoundTinyBlackKnob>(
+    addParam(createParamCentered<CKSS>(
         Vec(40.0, 101.12), 
         module, Prometheus2::PARAM_BIAS_CONTROL
     ));

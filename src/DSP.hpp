@@ -7,6 +7,19 @@
 
 namespace ttt
 {
+struct Biquad
+{
+    double** w;
+    double b[3];
+    double a[3];
+
+    int* head;
+    int nfilt;
+
+    Biquad(int number);
+    Biquad(int number, const double sections[6]);
+    double step(double x, int i);
+};
 
 float buffer_clamp(float val, float min, float max);
 

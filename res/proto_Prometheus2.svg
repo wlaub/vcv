@@ -230,7 +230,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2595,7 +2595,7 @@
 'default':0,
 }</desc>
       <title
-         id="title4026-5-1-2-6-8-2-4-4-2-5-9">RoundTinyBlackKnob</title>
+         id="title4026-5-1-2-6-8-2-4-4-2-5-9">CKSS</title>
     </path>
     <path
        inkscape:connector-curvature="0"
