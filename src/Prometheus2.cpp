@@ -333,7 +333,7 @@ void Prometheus2::step() {
 */
     if(param_bias_control == 0)
     {
-        output_out = dc_coupled;
+        output_out = dc_coupled+5;
     }
     else
     {
