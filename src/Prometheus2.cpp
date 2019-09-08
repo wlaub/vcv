@@ -265,7 +265,7 @@ void Prometheus2::step() {
 
         float length_value = param_length_offset+2+param_length_fine+input_length_cv;
         
-        unsigned short length = pow(2,length_value);
+        unsigned short length = 4096/pow(2,length_value);
 //        if(length <2) length = 2;
         if(length >= 4096) length = 4095;
 
