@@ -29,6 +29,10 @@ struct Prometheus2 : Module {
     double x0 = 0;
     double y0 = 0;
 
+    float glitch_light = 0;
+    float taps_light = 0;
+    unsigned short last_taps = 0;
+
     unsigned short shift_register = 0;
     unsigned short actual_length = 1;
     float clock_phase = 0;
@@ -118,7 +122,6 @@ PRINT_SEARCH("Length %i maps to actual length %i starting at address %i\n", leng
     unsigned short left;
     unsigned short right;
     unsigned short index;
-
 
 
     left = 0;
@@ -225,6 +228,14 @@ void Prometheus2::step() {
         }
     }
 
+    glitch_light *= .9995;
+    if(glitch_waiting)
+    {
+        glitch_light = 1;
+    }
+    light_light_left = glitch_light;
+    light_light_right = glitch_light;
+
     int tick = 0;
 
     if(!inputs[INPUT_EXT_CLK].active)
@@ -297,7 +308,15 @@ void Prometheus2::step() {
 
         out_value = 10*(feedback&1)-5;
 
+        if(taps != last_taps)
+        {
+            last_taps = taps;
+            taps_light = 1- taps_light;
+        }
+
     }
+
+    light_light_center = taps_light;
 
     double dc_coupled = out_value;
     double ac_coupled = out_value;

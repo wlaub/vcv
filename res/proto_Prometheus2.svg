@@ -176,11 +176,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.17"
-     inkscape:cx="96.89728"
-     inkscape:cy="183.89064"
+     inkscape:zoom="2.34"
+     inkscape:cx="53.936085"
+     inkscape:cy="176.50964"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer11"
      showgrid="false"
      inkscape:window-width="1598"
      inkscape:window-height="880"
@@ -191,7 +191,7 @@
      showguides="false"
      inkscape:guide-bbox="true"
      inkscape:snap-global="true"
-     inkscape:snap-bbox="false"
+     inkscape:snap-bbox="true"
      inkscape:snap-grids="true"
      inkscape:object-paths="true"
      inkscape:snap-intersection-paths="false"
@@ -201,7 +201,7 @@
      inkscape:snap-object-midpoints="false"
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-nodes="true"
-     inkscape:snap-bbox-midpoints="false"
+     inkscape:snap-bbox-midpoints="true"
      inkscape:showpageshadow="false">
     <inkscape:grid
        originy="12.24"
@@ -632,9 +632,9 @@
        style="opacity:1;fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect20062"
        width="80"
-       height="133.3201"
+       height="123.34"
        x="20"
-       y="662.38202" />
+       y="672.36212" />
     <rect
        style="opacity:1;fill:#ffcc00;fill-opacity:1;stroke:none;stroke-width:0.5669291;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect20064"
@@ -674,16 +674,16 @@
        style="display:inline;opacity:1;fill:#00aa00;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect20062-6"
        width="20"
-       height="133.32008"
+       height="123.34"
        x="100"
-       y="662.38202" />
+       y="672.36212" />
     <rect
        style="display:inline;opacity:1;fill:#00aa00;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect20062-1"
        width="20"
-       height="133.3201"
+       height="123.34"
        x="0"
-       y="662.38202" />
+       y="672.36206" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -2647,8 +2647,44 @@
      inkscape:groupmode="layer"
      id="layer11"
      inkscape:label="Lights"
-     style="display:inline"
-     sodipodi:insensitive="true" />
+     style="display:inline">
+    <path
+       inkscape:connector-curvature="0"
+       id="light_left"
+       d="m 10,66.170019 a 4.4999948,4.5000004 0 0 0 4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,4.5 4.4999948,4.5000004 0 0 0 4.5,4.5 z"
+       style="display:inline;fill:#cccccc;fill-opacity:1"
+       inkscape:label="light">
+      <desc
+         id="desc5112-1-8-1-9-6-29-8-9-6">{
+}</desc>
+      <title
+         id="title4026-5-1-2-6-8-2-5-1-7">MediumLight&lt;GreenLight&gt;</title>
+    </path>
+    <path
+       inkscape:connector-curvature="0"
+       id="light_right"
+       d="m 110,66.17008 a 4.4999948,4.5000004 0 0 0 4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,4.5 4.4999948,4.5000004 0 0 0 4.5,4.5 z"
+       style="display:inline;fill:#cccccc;fill-opacity:1"
+       inkscape:label="light">
+      <desc
+         id="desc5112-1-8-1-9-6-29-8-9-6-2">{
+}</desc>
+      <title
+         id="title4026-5-1-2-6-8-2-5-1-7-9">MediumLight&lt;GreenLight&gt;</title>
+    </path>
+    <path
+       inkscape:connector-curvature="0"
+       id="light_center"
+       d="m 60,216.71998 a 4.4999948,4.5000004 0 0 0 4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,-4.5 4.4999948,4.5000004 0 0 0 -4.5,4.5 4.4999948,4.5000004 0 0 0 4.5,4.5 z"
+       style="display:inline;fill:#cccccc;fill-opacity:1"
+       inkscape:label="light">
+      <desc
+         id="desc5112-1-8-1-9-6-29-8-9-6-2-2">{
+}</desc>
+      <title
+         id="title4026-5-1-2-6-8-2-5-1-7-9-7">MediumLight&lt;GreenLight&gt;</title>
+    </path>
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer8"

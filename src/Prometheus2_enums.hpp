@@ -28,7 +28,9 @@
         NUM_OUTPUTS
     };
     enum LightIds {
-
+        ENUMS(LIGHT_LIGHT_CENTER,1),
+        ENUMS(LIGHT_LIGHT_LEFT,1),
+        ENUMS(LIGHT_LIGHT_RIGHT,1),
         NUM_LIGHTS
     };
     

@@ -118,3 +118,21 @@
         module, Prometheus2::PARAM_VOCT_ATV
     ));
     
+
+    light = createLightCentered<MediumLight<GreenLight>>(
+        Vec(10.0,61.670018999999996), module, Prometheus2::LIGHT_LIGHT_LEFT       
+    );
+    addChild(light);
+        
+
+    light = createLightCentered<MediumLight<GreenLight>>(
+        Vec(110.0,61.67008), module, Prometheus2::LIGHT_LIGHT_RIGHT       
+    );
+    addChild(light);
+        
+
+    light = createLightCentered<MediumLight<GreenLight>>(
+        Vec(60.0,212.21998), module, Prometheus2::LIGHT_LIGHT_CENTER       
+    );
+    addChild(light);
+        

@@ -77,10 +77,9 @@ class ControlConfig():
     addOutput(output);    
         """,
        'light':"""
-    light = ModuleLightWidget::create<{widget}>(
+    light = createLightCentered<{widget}>(
         Vec({xpos},{ypos}), module, {name}::{id}       
     );
-    center(light,1,1):
     addChild(light);
         """,
     }

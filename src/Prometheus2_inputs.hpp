@@ -18,6 +18,9 @@ float param_bias_control;
 float param_param_0_fine;
 float param_glitch_rate;
 float param_voct_atv;
+float light_light_left;
+float light_light_right;
+float light_light_center;
 
 /* Read params */
 
