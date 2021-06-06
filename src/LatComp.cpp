@@ -47,8 +47,10 @@ struct LatComp : Module {
     float max_timeout = 10;   
 
     int label_counter = 0;
- 
+
+    float pulse_len = 5e-3; 
     dsp::PulseGenerator loopback_pulse;
+    dsp::PulseGenerator loopback_holdoff;
     
     ttt::CircularBuffer* delays[N_DELAY];
     ttt::CircularBuffer* data;
@@ -87,7 +89,7 @@ struct LatComp : Module {
         {
             if(waiting == 0)
             {
-                loopback_pulse.trigger(5e-3f);
+                loopback_pulse.trigger(pulse_len);
                 waiting = 1;
                 wait_counter = 0;
             }
@@ -98,6 +100,8 @@ struct LatComp : Module {
 
                 if(inputs[LOOP_IN_INPUT].getVoltage() > 5.f || duration > current_timeout)
                 {
+
+                    loopback_holdoff.trigger(pulse_len*1.5);
 
                     data->push(duration);
                     waiting = 2;
@@ -127,6 +131,7 @@ struct LatComp : Module {
                     else
                     {
                         current_timeout = max*1.1;
+                        if(current_timeout < min_timeout) current_timeout = min_timeout;
                     }
                     
 
@@ -143,7 +148,9 @@ struct LatComp : Module {
             }
             else if (waiting == 2)
             {
-                if(inputs[LOOP_IN_INPUT].getVoltage() < 1.f)
+                bool holdoff = loopback_holdoff.process(args.sampleTime);
+ 
+                if(inputs[LOOP_IN_INPUT].getVoltage() < 1.f && !holdoff)
                 {
                     waiting = 0;
                 }
