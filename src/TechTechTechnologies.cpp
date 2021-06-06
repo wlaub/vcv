@@ -153,8 +153,20 @@ void TTTEncoder::setValue(float v)
     value = v;
     if (lights_ready)
     {
-        for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
-        lights[char(value)]->color = color;
+        if(mode < 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
+        }
+        else if(mode == 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = nvgRGBAf(0,0,0,0);
+            lights[char(value)]->color = color;
+        }
+        else if(mode > 0)
+        {
+            for(int i = 0; i < 7; ++i) lights[i]->color = color;
+        }
+ 
     }
 
 //    EventChange e;
@@ -308,6 +320,13 @@ void EncoderController::update(int amount)
     widget->setValue(values[group][index]);
 }
 
+void EncoderController::setMode(int new_mode)
+{
+    widget->mode = new_mode;
+    mode = new_mode;
+    update(0);
+}
+
 void EncoderController::setValues(unsigned char* v, unsigned char tgroup)
 { //
     if(tgroup >= ngroup)
@@ -424,6 +443,12 @@ void init(rack::Plugin *p) {
     p->addModel(modelConvo);
 
     p->addModel(modelPleiades);   
+
+    p->addModel(modelPolyphemus2);
+
+    p->addModel(modelPrometheus2);
+
+    p->addModel(modelLatComp);
 
     // Any other pluginInstance initialization may go here.
     // As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.

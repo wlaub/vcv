@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns3="http://www.openswatchbook.org/uri/2009/osb" xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:ns6="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="380" id="svg2" version="1.1" width="120" ns2:docname="proto_Prometheus2.svg" ns1:version="0.91 r13725">
+  <defs id="defs4">
+    <linearGradient id="linearGradient18103">
+      <stop id="stop18105" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18107" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient id="linearGradient18091" ns3:paint="solid">
+      <stop id="stop18093" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" gradientUnits="userSpaceOnUse" id="linearGradient18109-6" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-6" />
+    <linearGradient id="linearGradient18103-6">
+      <stop id="stop18105-6" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18107-2" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(2.3333333,0,0,0.85714435,174.16667,-321.78617)" gradientUnits="userSpaceOnUse" id="linearGradient18109-0" x1="47.5" x2="77.5" y1="302.5" y2="302.5" ns1:collect="always" ns4:href="#linearGradient18103-4" />
+    <linearGradient id="linearGradient18103-4">
+      <stop id="stop18105-9" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18162" offset="0.5" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18107-3" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18170-2" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8" />
+    <linearGradient id="linearGradient18103-4-8">
+      <stop id="stop18105-9-9" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18264" offset="0.5" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18162-2" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop id="stop18107-3-3" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18260-7" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-9" />
+    <linearGradient id="linearGradient18103-4-8-9">
+      <stop id="stop18105-9-9-5" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18264-0" offset="0.5" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18162-2-3" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop id="stop18107-3-3-4" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" id="linearGradient18260-1" x1="-157.5" x2="-87.5" y1="-220" y2="-220" ns1:collect="always" ns4:href="#linearGradient18103-4-8-5" />
+    <linearGradient id="linearGradient18103-4-8-5">
+      <stop id="stop18105-9-9-3" offset="0" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18264-4" offset="0.5" style="stop-color:#666666;stop-opacity:1;" />
+      <stop id="stop18162-2-2" offset="0.5" style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop id="stop18107-3-3-3" offset="1" style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <ns2:namedview bordercolor="#666666" borderopacity="1.0" id="base" pagecolor="#ffffff" showgrid="false" showguides="false" units="px" ns1:bbox-nodes="false" ns1:bbox-paths="false" ns1:current-layer="layer11" ns1:cx="53.936085" ns1:cy="176.50964" ns1:document-units="px" ns1:guide-bbox="true" ns1:object-nodes="true" ns1:object-paths="true" ns1:pageopacity="0.0" ns1:pageshadow="2" ns1:showpageshadow="false" ns1:snap-bbox="true" ns1:snap-bbox-edge-midpoints="true" ns1:snap-bbox-midpoints="true" ns1:snap-global="true" ns1:snap-grids="true" ns1:snap-intersection-paths="false" ns1:snap-nodes="true" ns1:snap-object-midpoints="false" ns1:window-height="880" ns1:window-maximized="0" ns1:window-width="1598" ns1:window-x="0" ns1:window-y="18" ns1:zoom="2.34">
+    <ns1:grid dotted="false" empspacing="4" enabled="true" id="grid8011" originx="0" originy="12.24" snapvisiblegridlinesonly="true" spacingx="20" spacingy="11.11" type="xygrid" visible="true" />
+    <ns1:grid enabled="false" id="grid20080" spacingx="18" spacingy="18" type="xygrid" />
+  </ns2:namedview>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <ns6:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </ns6:Work>
+    </rdf:RDF>
+  </metadata>
+  <g id="layer1" style="display:inline" transform="translate(0,-672.36204)" ns1:groupmode="layer" ns1:label="Aesthetic">
+    <g id="flowRoot4472" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none" transform="matrix(1.0044694,0,0,1.0044694,-1.2631837e-4,595.01225)" />
+    <g id="text69834" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:125%;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none" transform="matrix(1.0044694,0,0,1.0044694,-1.2631837e-4,595.01225)" />
+    <g id="g6140" transform="matrix(3.7795272,0,0,3.7795269,14.892581,-129.3355)" />
+    <g id="g10497-212" transform="translate(29.3108,-87.440018)" />
+    <rect height="123.34" id="rect20062" style="opacity:1;fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="80" x="20" y="672.36212" />
+    <rect height="177.75999" id="rect20064" style="opacity:1;fill:#ffcc00;fill-opacity:1;stroke:none;stroke-width:0.5669291;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="40" x="40" y="795.70203" />
+    <rect height="44.439999" id="rect20066" style="opacity:1;fill:#ff9955;fill-opacity:1;stroke:none;stroke-width:0.5669291;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="120" x="0" y="973.46204" />
+    <rect height="177.75999" id="rect20068" style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:0.5669291;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="40" x="0" y="795.70203" />
+    <rect height="177.75999" id="rect20070" style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:0.5669291;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="40" x="80" y="795.70203" />
+    <rect height="44.440113" id="rect20072" style="opacity:1;fill:#44aa00;fill-opacity:1;stroke:none;stroke-width:0.60607266;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="120" x="0" y="1017.902" />
+    <rect height="123.34" id="rect20062-6" style="display:inline;opacity:1;fill:#00aa00;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="20" x="100" y="672.36212" />
+    <rect height="123.34" id="rect20062-1" style="display:inline;opacity:1;fill:#00aa00;fill-opacity:1;stroke:none;stroke-width:0.60607296;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" width="20" x="0" y="672.36206" />
+  </g>
+  <g id="layer7" style="display:inline" ns1:groupmode="layer" ns1:label="Functional">
+    <path d="m 0,123.34 120,0" id="path20074" style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="m 0,301.1 120,0" id="path20619" style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="m 0,345.54 120,0" id="path20621" style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="M 40,301.1 40,123.34" id="path20623" style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="M 80,123.34 80,301.1" id="path20625" style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="M 100,123.34 100,-9.98" id="path6327-0" style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" ns1:connector-curvature="0" />
+    <path d="M 20,123.34 20,-9.98" id="path6327-6" style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" ns1:connector-curvature="0" />
+    <text id="text6377" style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;text-anchor:middle;text-align:center;" x="20" y="12.24" ns2:linespacing="125%" xml:space="preserve"><tspan id="tspan6379" x="20" y="12.24" ns2:role="line" /></text>
+    <flowRoot id="flowRoot6381" style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" xml:space="preserve"><flowRegion id="flowRegion6383"><rect height="11.11" id="rect6385" width="80" x="20" y="1.13" /></flowRegion><flowPara id="flowPara6387">Pr</flowPara></flowRoot>    <text id="text6389" style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" x="59.962471" y="26.922541" ns2:linespacing="125%" xml:space="preserve"><tspan id="tspan6391" style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:11.25px;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif Medium'" x="59.962471" y="26.922541" ns2:role="line">Prometheus II</tspan></text>
+    <rect height="380" id="rect6414" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none" width="120" x="0" y="5.6843419e-14" />
+  </g>
+  <g id="layer9" style="display:inline" ns2:insensitive="true" ns1:groupmode="layer" ns1:label="Ticks">
+    <path d="m 223.56699,-74.822022 0.86604,-0.50001 2,3.46409 -0.86605,0.50001 z" id="path17302" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
+    <path d="m 215.56698,-75.322072 0.86604,0.50001 -2.00001,3.46413 -0.86605,-0.50002 z" id="path17304" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
+    <path d="m 230.14232,-88.433332 0.49999,0.86601 -3.4641,2 -0.5,-0.86601 z" id="path17306" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-x="-2.2913641" ns1:transform-center-y="-1.3229313" />
+    <path d="m 209.35767,-87.567252 0.49999,-0.86601 3.46413,2.00001 -0.5,0.86602 z" id="path17308" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-x="2.2913613" ns1:transform-center-y="-1.3229112" />
+    <path d="m 219.5,-94.000302 h 1 v 4.00002 h -1 z" id="path17310" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-y="-2.645836" />
+    <path d="m 263.49326,-73.974833 0.86605,-0.50001 1.99999,3.46409 -0.86605,0.50001 z" id="path17316" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
+    <path d="m 255.49325,-74.474883 0.86604,0.50001 -2.00001,3.46413 -0.86605,-0.50002 z" id="path17318" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" />
+    <path d="m 270.06859,-87.586143 0.49999,0.86601 -3.4641,2 -0.5,-0.86601 z" id="path17320" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-x="-2.2913641" ns1:transform-center-y="-1.3229313" />
+    <path d="m 249.28394,-86.720063 0.49999,-0.86601 3.46413,2.00001 -0.5,0.86602 z" id="path17322" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-x="2.2913613" ns1:transform-center-y="-1.3229112" />
+    <path d="m 259.42626,-93.153113 h 1 v 4.00002 h -1 z" id="path17324" style="display:inline;fill:#000000;fill-opacity:1;stroke:none" ns1:connector-curvature="0" ns1:transform-center-y="-2.645836" />
+  </g>
+  <flowRoot id="flowRoot12370" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none" xml:space="preserve"><flowRegion id="flowRegion12372"><rect height="17.961672" id="rect12374" width="22.836981" x="304.83521" y="-472.40958" /></flowRegion><flowPara id="flowPara12376" style="font-size:10px;line-height:1.25">&#160;</flowPara></flowRoot>  </svg>

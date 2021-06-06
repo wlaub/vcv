@@ -135,6 +135,36 @@
       "tags": [
         "Sequencer"
       ]
+    },
+    {
+      "slug": "Polyphemus2",
+      "name": "Polyphemus II (WIP)",
+      "description": "Single-pole VCF x4",
+      "tags": [
+        "low pass gate",
+        "quad",
+        "vcf"
+      ]
+    },
+    {
+      "slug": "Prometheus2",
+      "name": "Prometheus II (WIP)",
+      "description": "LFSR Oscillator",
+      "tags": [
+        "vco",
+        "noise",
+        "logic"
+      ]
+    },
+    {
+      "slug": "LatComp",
+      "name": "Latency Compensator",
+      "description": "Ues a loopback to measure latency and provides multiple delays with the measured latency for synchronizing with external hardware through a high-latency interface.",
+      "tags": [
+        "delay",
+        "utility",
+        "external"
+      ]
     }
   ]
 }

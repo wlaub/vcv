@@ -34,7 +34,7 @@ Ramp/random walk generator. This module is still in development. Current impleme
 
 ### Achilles (WIP) (II?)
 
-Karplus Strong Toolkit (noise -> env -> delay -> filter)
+Karplus Strong Toolkit
 
 ### Pleiades (WIP) (Sequence format unstable)
 
