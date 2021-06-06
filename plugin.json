@@ -155,7 +155,16 @@
         "noise",
         "logic"
       ]
+    },
+    {
+      "slug": "LatComp",
+      "name": "Latency Compensator",
+      "description": "Ues a loopback to measure latency and provides multiple delays with the measured latency for synchronizing with external hardware through a high-latency interface.",
+      "tags": [
+        "delay",
+        "utility",
+        "external"
+      ]
     }
- 
   ]
 }
