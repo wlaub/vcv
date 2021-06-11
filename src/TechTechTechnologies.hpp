@@ -290,3 +290,5 @@ extern Model* modelPolyphemus2;
 extern Model* modelPrometheus2;
 
 extern Model* modelLatComp;
+
+extern Model* modelMetadataMain;

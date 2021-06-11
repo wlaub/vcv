@@ -165,6 +165,12 @@
         "utility",
         "external"
       ]
+    },
+    {
+      "slug": "MetadataMain",
+      "name": "Metadata Main",
+      "description": "Used to add custom description metadata to a patch file for use by other programs.",
+      "tags": []
     }
   ]
 }
