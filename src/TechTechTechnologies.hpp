@@ -292,3 +292,5 @@ extern Model* modelPrometheus2;
 extern Model* modelLatComp;
 
 extern Model* modelMetadataMain;
+
+extern Model* modelMetadataFiles;

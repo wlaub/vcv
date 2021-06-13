@@ -184,6 +184,7 @@ struct MetadataMainWidget : ModuleWidget {
             //save the patch here
 //            APP->patch->save(asset::autosavePath);
 //            printf("Save patch triggered from metadata main.\n");
+//            APP->window->screenshot(1);
             APP->patch->saveDialog();
         }
 

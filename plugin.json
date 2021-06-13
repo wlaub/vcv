@@ -171,6 +171,12 @@
       "name": "Metadata Main",
       "description": "Used to add custom description metadata to a patch file for use by other programs.",
       "tags": []
+    },
+    {
+      "slug": "MetadataFiles",
+      "name": "Metadata Files",
+      "description": "Used to add metadata containing listings of certain kinds of files to a patch file for use by other programs.",
+      "tags": []
     }
   ]
 }
