@@ -171,7 +171,7 @@ struct MetadataFilesWidget : ModuleWidget {
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
         float shift = 63.5+6.35/2;
-        float y = 25.4;
+        float y = 25.4-3.125;
         addParam(createParamCentered<LEDBezel>(mm2px(Vec(shift+6.35, y)), module, MetadataFiles::SCREEN_BUTTON_PARAM));
         addChild(createLightCentered<LEDBezelLight<GreenLight>>(mm2px(Vec(shift+6.35, y)), module, MetadataFiles::SCREEN_LIGHT));
 
@@ -181,12 +181,12 @@ struct MetadataFilesWidget : ModuleWidget {
             Vec(box.size.x-mm2px(6.35*1.5), mm2px(y)), module, MetadataFiles::ADD_FILE_PARAM));
  
 
-        type_choice = createWidget<FileTypeChoice>(mm2px(Vec(3.175, 35.675-12.7)));
+        type_choice = createWidget<FileTypeChoice>(mm2px(Vec(3.175, y-2.425)));
         type_choice->box.size = mm2px(Vec(63.5, 6.35));
         addChild(type_choice);
 
-        files_field = createWidget<NewlineTextField>(mm2px(Vec(3.175, 48.375-12.7)));
-        files_field->box.size = Vec(box.size.x-mm2px(6.35), mm2px(69.85+12.7));
+        files_field = createWidget<NewlineTextField>(mm2px(Vec(3.175, y+10.275 /*48.375-12.7*/)));
+        files_field->box.size = Vec(box.size.x-mm2px(6.35), mm2px(118.225-y-10.275));
         files_field->multiline = true;
         addChild(files_field);
 
