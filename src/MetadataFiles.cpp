@@ -340,6 +340,7 @@ struct MetadataFilesWidget : ModuleWidget {
                 char timestamp[256];
                 strftime(timestamp, 256, "%Y%m%d-%H%M%S", localtime(&rawtime));
                 std::string filename = asset::user("screenshots");
+                system::createDirectory(filename);
                 filename += "/";
                 filename += timestamp;
                 filename += ".png";
