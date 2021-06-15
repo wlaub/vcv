@@ -196,6 +196,21 @@ struct MetadataFilesWidget : ModuleWidget {
 
     }
 
+    void add_file(const char* path)
+    {
+            if(path)
+            {
+                if(!files_field->text.empty() && files_field->text[files_field->text.length()-1]!='\n')
+                {
+                    files_field->text += "\n";
+                }
+                files_field->text += path;
+
+                dir = string::directory(path);
+            }
+ 
+    }
+
     void step() override {
         ModuleWidget::step();
         if(!module) return;
@@ -306,11 +321,20 @@ struct MetadataFilesWidget : ModuleWidget {
                 memcpy(&data[flipY * fbWidth * 4], tmp, fbWidth * 4);
             }
 
+            time_t rawtime;
+            time(&rawtime);
+            char timestamp[256];
+            strftime(timestamp, 256, "%Y%m%d-%H%M%S", localtime(&rawtime));
+            std::string filename = asset::user("screenshots");
+            filename += "/";
+            filename += timestamp;
+            filename += ".png";
 
-            std::string filename = asset::user("screenshots") + "/test.png";
 
             stbi_write_png(filename.c_str(), fbWidth, fbHeight, 4, data, fbWidth * 4);
             printf("Wrote screenshot to %s\n", filename.c_str());
+
+            add_file(filename.c_str());
 
             delete[] data;
             nvgluBindFramebuffer(NULL);
@@ -326,16 +350,7 @@ struct MetadataFilesWidget : ModuleWidget {
             mod->add_file_request = 0;
 
             char* path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
-            if(path)
-            {
-                if(!files_field->text.empty() && files_field->text[files_field->text.length()-1]!='\n')
-                {
-                    files_field->text += "\n";
-                }
-                files_field->text += path;
-
-                dir = string::directory(path);
-            }
+            add_file(path);
         }
 
 
