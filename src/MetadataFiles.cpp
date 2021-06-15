@@ -198,7 +198,7 @@ struct MetadataFilesWidget : ModuleWidget {
 
     void add_file(const char* path)
     {
-            if(path)
+            if(path && files_field->text.find(path) >= files_field->text.length())
             {
                 if(!files_field->text.empty() && files_field->text[files_field->text.length()-1]!='\n')
                 {
