@@ -220,129 +220,143 @@ struct MetadataFilesWidget : ModuleWidget {
         if(mod->screen_request == 1)
         {
             mod->screen_request = 0;
-
-            /*
-            The following screenshot code is derived from existing Rack code, and inherits GPLv3 license
-            Based on RackWidget rendering code in src/app/RackWidget.cpp
-            https://github.com/VCVRack/Rack/blob/v1/src/app/RackWidget.cpp            
-            and plugin screenshot code in src/window.cpp
-            https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L420
-            */
-
-            math::Rect bb = APP->scene->rack->moduleContainer->getChildrenBoundingBox();
-//            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
-            
-            // Draw scene
-
-            //APP->scene->box.size = bb.size;
-            APP->scene->box.size.x *= 2;
-            APP->scene->box = bb;
-            bb = APP->scene->box;
-
-            float pixelRatio = 1;
-
-            //Set up the frame buffer to be rendered to
-            int fbWidth = bb.size.x;
-            int fbHeight = bb.size.y;
-            NVGLUframebuffer* fb = nvgluCreateFramebuffer(APP->window->vg, fbWidth, fbHeight, 0);
-            nvgluBindFramebuffer(fb);
-
-            //Begin rendering
-            nvgBeginFrame(APP->window->vg, fbWidth, fbHeight, pixelRatio);
-            nvgScale(APP->window->vg, pixelRatio, pixelRatio);
-
-            //Setup the draw args w/ the target framebuffer
-            widget::Widget::DrawArgs args;
-            args.vg = APP->window->vg;
-            args.clipBox = bb.zeroPos();
-            args.fb = fb;
-
-            //Draw the rack background          
-            APP->scene->rack->draw(args);
-
-//            args.clipBox = bb.zeroPos();
-//            args.clipBox.pos.x = 200;
-
-            nvgTranslate(args.vg, -bb.pos.x, -bb.pos.y);
-
-            //Draw modules
-            Widget* mods = APP->scene->rack->moduleContainer;
-
-            for (widget::Widget* child : mods->children) {
-
-                ModuleWidget* w = dynamic_cast<ModuleWidget*>(child);
-                assert(w);
-
-                float xpos = child->box.pos.x;
-                float ypos = child->box.pos.y;
-
-                nvgSave(args.vg);
-                nvgTranslate(args.vg, xpos, ypos);
-                w->draw(args);
-                nvgRestore(args.vg);
-                nvgluBindFramebuffer(fb); //The module might bind its own framebuffer in its draw function
-
-//                printf("Drawing module %s at %f, %f\n", xpos, ypos, w->module->model->name.c_str());
-
+            if( strcmp(type_choice->getTypeKey(), "image") )
+            { //Only take screenshots for image files
             }
+            else
+            {
+                /*
+                The following screenshot code is derived from existing Rack code, and inherits GPLv3 license
+                Based on RackWidget rendering code in src/app/RackWidget.cpp
+                https://github.com/VCVRack/Rack/blob/v1/src/app/RackWidget.cpp            
+                and plugin screenshot code in src/window.cpp
+                https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L420
+                */
+
+                math::Rect bb = APP->scene->rack->moduleContainer->getChildrenBoundingBox();
+    //            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
+                
+                // Draw scene
+
+                //APP->scene->box.size = bb.size;
+                APP->scene->box.size.x *= 2;
+                APP->scene->box = bb;
+                bb = APP->scene->box;
+
+                float pixelRatio = 1;
+
+                //Set up the frame buffer to be rendered to
+                int fbWidth = bb.size.x;
+                int fbHeight = bb.size.y;
+                NVGLUframebuffer* fb = nvgluCreateFramebuffer(APP->window->vg, fbWidth, fbHeight, 0);
+                nvgluBindFramebuffer(fb);
+
+                //Begin rendering
+                nvgBeginFrame(APP->window->vg, fbWidth, fbHeight, pixelRatio);
+                nvgScale(APP->window->vg, pixelRatio, pixelRatio);
+
+                //Setup the draw args w/ the target framebuffer
+                widget::Widget::DrawArgs args;
+                args.vg = APP->window->vg;
+                args.clipBox = bb.zeroPos();
+                args.fb = fb;
+
+                //Draw the rack background          
+                APP->scene->rack->draw(args);
+
+    //            args.clipBox = bb.zeroPos();
+    //            args.clipBox.pos.x = 200;
+
+                nvgTranslate(args.vg, -bb.pos.x, -bb.pos.y);
+
+                //Draw modules
+                Widget* mods = APP->scene->rack->moduleContainer;
+
+                for (widget::Widget* child : mods->children) {
+
+                    ModuleWidget* w = dynamic_cast<ModuleWidget*>(child);
+                    assert(w);
+
+                    float xpos = child->box.pos.x;
+                    float ypos = child->box.pos.y;
+
+                    nvgSave(args.vg);
+                    nvgTranslate(args.vg, xpos, ypos);
+                    w->draw(args);
+                    nvgRestore(args.vg);
+                    nvgluBindFramebuffer(fb); //The module might bind its own framebuffer in its draw function
+
+    //                printf("Drawing module %s at %f, %f\n", xpos, ypos, w->module->model->name.c_str());
+
+                }
 
 
-            // Draw cables
-            float old_opacity = settings::cableOpacity;
-            settings::cableOpacity = 1;
-            for (widget::Widget* w : APP->scene->rack->cableContainer->children) {
-                CableWidget* cw = dynamic_cast<CableWidget*>(w);
-                assert(cw);
-                cw->draw(args);
-                cw->drawPlugs(args);
-//                printf("Cable at %f, %f \n", cw->getOutputPos().x, cw->getOutputPos().y);
+                // Draw cables
+                float active_opacity = 1;
+                float inactive_opacity = 0.33;
+                float old_opacity = settings::cableOpacity;
+                settings::cableOpacity = active_opacity;
+                for (widget::Widget* w : APP->scene->rack->cableContainer->children) {
+                    CableWidget* cw = dynamic_cast<CableWidget*>(w);
+                    assert(cw);
 
-            }
-            settings::cableOpacity = old_opacity;
+                    Module* inMod = cw->cable->inputModule;
+                    Module* outMod = cw->cable->outputModule;
+                    settings::cableOpacity = active_opacity;
+                    if((inMod && inMod->bypass) || (outMod && outMod->bypass))
+                    {   //i.e. the cable is connected to a disabled module
+                        settings::cableOpacity = inactive_opacity;
+                    }
 
-            //Done
-            glViewport(0, 0, fbWidth, fbHeight);
-            glClearColor(0.0, 0.0, 0.0, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+                    cw->draw(args);
+                    cw->drawPlugs(args);
+    //                printf("Cable at %f, %f \n", cw->getOutputPos().x, cw->getOutputPos().y);
+                }
+                settings::cableOpacity = old_opacity;
 
-            nvgEndFrame(APP->window->vg);
+                //Done
+                glViewport(0, 0, fbWidth, fbHeight);
+                glClearColor(0.0, 0.0, 0.0, 1.0);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            //Extract the pixel data
-            uint8_t* data = new uint8_t[fbHeight * fbWidth * 4];
-            glReadPixels(0, 0, fbWidth, fbHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-//            printf("Size: %i, %i\n", fbWidth, fbHeight);
+                nvgEndFrame(APP->window->vg);
 
-            //Flip the image vertically
-            for (int y = 0; y < fbHeight / 2; y++) {
-                int flipY = fbHeight - y - 1;
-                uint8_t tmp[fbWidth * 4];
-                memcpy(tmp, &data[y * fbWidth * 4], fbWidth * 4);
-                memcpy(&data[y * fbWidth * 4], &data[flipY * fbWidth * 4], fbWidth * 4);
-                memcpy(&data[flipY * fbWidth * 4], tmp, fbWidth * 4);
-            }
+                //Extract the pixel data
+                uint8_t* data = new uint8_t[fbHeight * fbWidth * 4];
+                glReadPixels(0, 0, fbWidth, fbHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //            printf("Size: %i, %i\n", fbWidth, fbHeight);
 
-            time_t rawtime;
-            time(&rawtime);
-            char timestamp[256];
-            strftime(timestamp, 256, "%Y%m%d-%H%M%S", localtime(&rawtime));
-            std::string filename = asset::user("screenshots");
-            filename += "/";
-            filename += timestamp;
-            filename += ".png";
+                //Flip the image vertically
+                for (int y = 0; y < fbHeight / 2; y++) {
+                    int flipY = fbHeight - y - 1;
+                    uint8_t tmp[fbWidth * 4];
+                    memcpy(tmp, &data[y * fbWidth * 4], fbWidth * 4);
+                    memcpy(&data[y * fbWidth * 4], &data[flipY * fbWidth * 4], fbWidth * 4);
+                    memcpy(&data[flipY * fbWidth * 4], tmp, fbWidth * 4);
+                }
+
+                time_t rawtime;
+                time(&rawtime);
+                char timestamp[256];
+                strftime(timestamp, 256, "%Y%m%d-%H%M%S", localtime(&rawtime));
+                std::string filename = asset::user("screenshots");
+                filename += "/";
+                filename += timestamp;
+                filename += ".png";
 
 
-            stbi_write_png(filename.c_str(), fbWidth, fbHeight, 4, data, fbWidth * 4);
-            printf("Wrote screenshot to %s\n", filename.c_str());
+                stbi_write_png(filename.c_str(), fbWidth, fbHeight, 4, data, fbWidth * 4);
+                printf("Wrote screenshot to %s\n", filename.c_str());
 
-            add_file(filename.c_str());
+                add_file(filename.c_str());
 
-            delete[] data;
-            nvgluBindFramebuffer(NULL);
+                delete[] data;
+                nvgluBindFramebuffer(NULL);
 
             /*
             End of screenshot code
             */            
-
+            }
         }
 
         if(mod->add_file_request == 1)
