@@ -1,5 +1,7 @@
 #include "TechTechTechnologies.hpp"
 #include <osdialog.h>
+#include <stb_image_write.h>
+#include "settings.hpp"
 
 struct FileTypeItem : ui::MenuItem {
     enum FileTypes {
@@ -203,6 +205,120 @@ struct MetadataFilesWidget : ModuleWidget {
         if(mod->screen_request == 1)
         {
             mod->screen_request = 0;
+
+            /*
+            Based on Rack window rendering and plugin screenshot code
+            https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L421
+            */
+
+            int fbWidth, fbHeight;
+            glfwGetFramebufferSize(APP->window->win, &fbWidth, &fbHeight);
+            int winWidth, winHeight;
+            glfwGetWindowSize(APP->window->win, &winWidth, &winHeight);
+            
+            printf("Sizes: %i, %i\n%i, %i\n", fbWidth, fbHeight, winWidth, winHeight);
+
+            math::Rect bb = APP->scene->rack->moduleContainer->getChildrenBoundingBox();
+            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
+
+            math::Rect old_bb = APP->scene->box;
+            printf("scene bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
+
+            
+            // Draw scene
+
+            //APP->scene->box.size = bb.size;
+            APP->scene->box.size.x *= 2;
+            APP->scene->box = bb;
+            bb = APP->scene->box;
+
+
+            old_bb = APP->scene->box;
+            printf("new scene bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
+
+            //Save the old zoom and offset
+            math::Vec old_offset = APP->scene->rackScroll->offset;
+            float old_zoom = rack::settings::zoom;
+
+            //Change the zoom factor to 1
+            rack::settings::zoom = 0.5;
+            APP->scene->rackScroll->step();
+
+            //Moves to the upper left of the modules bounding box
+            Vec target = bb.pos;
+            target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
+            APP->scene->rackScroll->offset = target;
+
+            float pixelRatio = 1;
+
+            //Update scene
+            APP->scene->step();
+
+            //Render
+            fbWidth = bb.size.x;
+            fbHeight = bb.size.y;
+            NVGLUframebuffer* fb = nvgluCreateFramebuffer(APP->window->vg, fbWidth, fbHeight, 0);
+            nvgluBindFramebuffer(fb);
+//            float pixelRatio = 1;
+            nvgBeginFrame(APP->window->vg, fbWidth, fbHeight, pixelRatio);
+            nvgScale(APP->window->vg, pixelRatio, pixelRatio);
+
+
+            widget::Widget::DrawArgs args;
+            args.vg = APP->window->vg;
+            args.clipBox = APP->scene->box.zeroPos();
+
+            APP->scene->draw(args);
+
+            old_bb = args.clipBox;
+            printf("clipbox bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
+
+            glViewport(0, 0, fbWidth, fbHeight);
+            glClearColor(0.0, 0.0, 0.0, 1.0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            nvgEndFrame(APP->window->vg);
+//glfwSwapBuffers(APP->window->win);
+
+            int width, height;
+            width = fbWidth;
+            height = fbHeight;
+            uint8_t* data = new uint8_t[height * width * 4];
+            glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            printf("Size: %i, %i\n", width, height);
+
+
+            for (int y = 0; y < height / 2; y++) {
+                int flipY = height - y - 1;
+                uint8_t tmp[width * 4];
+                memcpy(tmp, &data[y * width * 4], width * 4);
+                memcpy(&data[y * width * 4], &data[flipY * width * 4], width * 4);
+                memcpy(&data[flipY * width * 4], tmp, width * 4);
+            }
+
+
+            std::string filename = asset::user("screenshots") + "/test.png";
+            stbi_write_png(filename.c_str(), width, height, 4, data, width * 4);
+
+            printf("Wrote screenshot to %s\n", filename.c_str());
+
+            //Restore original view
+            //Change the zoom factor to 1
+            rack::settings::zoom = old_zoom;
+            APP->scene->rackScroll->zoomPos = APP->scene->rackScroll->box.size.mult(0.5f);
+            APP->scene->rackScroll->step();
+
+            //Moves to the upper left of the modules bounding box
+            target = old_offset;
+            //target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
+            APP->scene->rackScroll->offset = target;
+
+
+
+//            APP->scene->rackScroll->offset = old_offset;
+//            rack::settings::zoom = old_zoom;
+            
+
+            delete[] data;
             //Screenshot here
             //APP->patch->saveDialog();
         }
