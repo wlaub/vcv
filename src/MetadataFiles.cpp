@@ -237,47 +237,98 @@ struct MetadataFilesWidget : ModuleWidget {
             printf("new scene bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
 
             //Save the old zoom and offset
-            math::Vec old_offset = APP->scene->rackScroll->offset;
-            float old_zoom = rack::settings::zoom;
+//            math::Vec old_offset = APP->scene->rackScroll->offset;
+//            float old_zoom = rack::settings::zoom;
 
             //Change the zoom factor to 1
-            rack::settings::zoom = 0.5;
-            APP->scene->rackScroll->step();
+//            rack::settings::zoom = 0.5;
+//            APP->scene->rackScroll->step();
 
             //Moves to the upper left of the modules bounding box
-            Vec target = bb.pos;
-            target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
-            APP->scene->rackScroll->offset = target;
+//            Vec target = bb.pos;
+//            target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
+//            APP->scene->rackScroll->offset = target;
 
             float pixelRatio = 1;
 
             //Update scene
-            APP->scene->step();
+//            APP->scene->step();
 
             //Render
             fbWidth = bb.size.x;
             fbHeight = bb.size.y;
             NVGLUframebuffer* fb = nvgluCreateFramebuffer(APP->window->vg, fbWidth, fbHeight, 0);
             nvgluBindFramebuffer(fb);
+
 //            float pixelRatio = 1;
+
             nvgBeginFrame(APP->window->vg, fbWidth, fbHeight, pixelRatio);
             nvgScale(APP->window->vg, pixelRatio, pixelRatio);
 
-
             widget::Widget::DrawArgs args;
             args.vg = APP->window->vg;
-            args.clipBox = APP->scene->box.zeroPos();
+            args.clipBox = bb.zeroPos();
+            args.fb = fb;
 
-            APP->scene->draw(args);
+            APP->scene->rack->draw(args);
 
-            old_bb = args.clipBox;
-            printf("clipbox bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
+            args.clipBox = bb.zeroPos();
+//            args.clipBox.pos.x = 200;
 
+
+            nvgTranslate(args.vg, -bb.pos.x, -bb.pos.y);
+            //Draw modules
+            Widget* mods = APP->scene->rack->moduleContainer;
+
+            for (widget::Widget* child : mods->children) {
+
+                ModuleWidget* w = dynamic_cast<ModuleWidget*>(child);
+                assert(w);
+
+                if(!w->module->model->name.compare("Spectre"))
+                {
+                    //Spectre breaks it for some reason.
+                    continue;
+                }
+
+                float xpos = child->box.pos.x;
+                float ypos = child->box.pos.y;
+
+                nvgSave(args.vg);
+                nvgTranslate(args.vg, xpos, ypos);
+    //            w->drawShadow(args);
+                w->draw(args);
+            
+                nvgRestore(args.vg);
+
+//                printf("Drawing module %s at %f, %f\n", xpos, ypos, w->module->model->name.c_str());
+
+            }
+
+
+            // Draw cables
+
+            float old_opacity = settings::cableOpacity;
+            settings::cableOpacity = 1;
+            for (widget::Widget* w : APP->scene->rack->cableContainer->children) {
+                CableWidget* cw = dynamic_cast<CableWidget*>(w);
+                assert(cw);
+                cw->draw(args);
+                cw->drawPlugs(args);
+//                printf("Cable at %f, %f \n", cw->getOutputPos().x, cw->getOutputPos().y);
+
+            }
+            settings::cableOpacity = old_opacity;
+
+            //Done
             glViewport(0, 0, fbWidth, fbHeight);
             glClearColor(0.0, 0.0, 0.0, 1.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
             nvgEndFrame(APP->window->vg);
-//glfwSwapBuffers(APP->window->win);
+
+
+
 
             int width, height;
             width = fbWidth;
@@ -303,14 +354,14 @@ struct MetadataFilesWidget : ModuleWidget {
 
             //Restore original view
             //Change the zoom factor to 1
-            rack::settings::zoom = old_zoom;
-            APP->scene->rackScroll->zoomPos = APP->scene->rackScroll->box.size.mult(0.5f);
-            APP->scene->rackScroll->step();
+//            rack::settings::zoom = old_zoom;
+//            APP->scene->rackScroll->zoomPos = APP->scene->rackScroll->box.size.mult(0.5f);
+//            APP->scene->rackScroll->step();
 
             //Moves to the upper left of the modules bounding box
-            target = old_offset;
+//            target = old_offset;
             //target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
-            APP->scene->rackScroll->offset = target;
+//            APP->scene->rackScroll->offset = target;
 
 
 
@@ -319,8 +370,8 @@ struct MetadataFilesWidget : ModuleWidget {
             
 
             delete[] data;
-            //Screenshot here
-            //APP->patch->saveDialog();
+            
+
         }
 
         if(mod->add_file_request == 1)
