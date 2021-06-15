@@ -207,23 +207,15 @@ struct MetadataFilesWidget : ModuleWidget {
             mod->screen_request = 0;
 
             /*
-            Based on Rack window rendering and plugin screenshot code
-            https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L421
+            The following screenshot code is derived from existing Rack code, and inherits GPLv3 license
+            Based on RackWidget rendering code in src/app/RackWidget.cpp
+            https://github.com/VCVRack/Rack/blob/v1/src/app/RackWidget.cpp            
+            and plugin screenshot code in src/window.cpp
+            https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L420
             */
 
-            int fbWidth, fbHeight;
-            glfwGetFramebufferSize(APP->window->win, &fbWidth, &fbHeight);
-            int winWidth, winHeight;
-            glfwGetWindowSize(APP->window->win, &winWidth, &winHeight);
-            
-            printf("Sizes: %i, %i\n%i, %i\n", fbWidth, fbHeight, winWidth, winHeight);
-
             math::Rect bb = APP->scene->rack->moduleContainer->getChildrenBoundingBox();
-            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
-
-            math::Rect old_bb = APP->scene->box;
-            printf("scene bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
-
+//            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
             
             // Draw scene
 
@@ -232,51 +224,32 @@ struct MetadataFilesWidget : ModuleWidget {
             APP->scene->box = bb;
             bb = APP->scene->box;
 
-
-            old_bb = APP->scene->box;
-            printf("new scene bb:\n%f, %f\n%f, %f\n", old_bb.pos.x, old_bb.pos.y, old_bb.size.x, old_bb.size.y);
-
-            //Save the old zoom and offset
-//            math::Vec old_offset = APP->scene->rackScroll->offset;
-//            float old_zoom = rack::settings::zoom;
-
-            //Change the zoom factor to 1
-//            rack::settings::zoom = 0.5;
-//            APP->scene->rackScroll->step();
-
-            //Moves to the upper left of the modules bounding box
-//            Vec target = bb.pos;
-//            target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
-//            APP->scene->rackScroll->offset = target;
-
             float pixelRatio = 1;
 
-            //Update scene
-//            APP->scene->step();
-
-            //Render
-            fbWidth = bb.size.x;
-            fbHeight = bb.size.y;
+            //Set up the frame buffer to be rendered to
+            int fbWidth = bb.size.x;
+            int fbHeight = bb.size.y;
             NVGLUframebuffer* fb = nvgluCreateFramebuffer(APP->window->vg, fbWidth, fbHeight, 0);
             nvgluBindFramebuffer(fb);
 
-//            float pixelRatio = 1;
-
+            //Begin rendering
             nvgBeginFrame(APP->window->vg, fbWidth, fbHeight, pixelRatio);
             nvgScale(APP->window->vg, pixelRatio, pixelRatio);
 
+            //Setup the draw args w/ the target framebuffer
             widget::Widget::DrawArgs args;
             args.vg = APP->window->vg;
             args.clipBox = bb.zeroPos();
             args.fb = fb;
 
+            //Draw the rack background          
             APP->scene->rack->draw(args);
 
-            args.clipBox = bb.zeroPos();
+//            args.clipBox = bb.zeroPos();
 //            args.clipBox.pos.x = 200;
 
-
             nvgTranslate(args.vg, -bb.pos.x, -bb.pos.y);
+
             //Draw modules
             Widget* mods = APP->scene->rack->moduleContainer;
 
@@ -285,21 +258,14 @@ struct MetadataFilesWidget : ModuleWidget {
                 ModuleWidget* w = dynamic_cast<ModuleWidget*>(child);
                 assert(w);
 
-                if(!w->module->model->name.compare("Spectre"))
-                {
-                    //Spectre breaks it for some reason.
-                    continue;
-                }
-
                 float xpos = child->box.pos.x;
                 float ypos = child->box.pos.y;
 
                 nvgSave(args.vg);
                 nvgTranslate(args.vg, xpos, ypos);
-    //            w->drawShadow(args);
                 w->draw(args);
-            
                 nvgRestore(args.vg);
+                nvgluBindFramebuffer(fb); //The module might bind its own framebuffer in its draw function
 
 //                printf("Drawing module %s at %f, %f\n", xpos, ypos, w->module->model->name.c_str());
 
@@ -307,7 +273,6 @@ struct MetadataFilesWidget : ModuleWidget {
 
 
             // Draw cables
-
             float old_opacity = settings::cableOpacity;
             settings::cableOpacity = 1;
             for (widget::Widget* w : APP->scene->rack->cableContainer->children) {
@@ -327,50 +292,32 @@ struct MetadataFilesWidget : ModuleWidget {
 
             nvgEndFrame(APP->window->vg);
 
+            //Extract the pixel data
+            uint8_t* data = new uint8_t[fbHeight * fbWidth * 4];
+            glReadPixels(0, 0, fbWidth, fbHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+//            printf("Size: %i, %i\n", fbWidth, fbHeight);
 
-
-
-            int width, height;
-            width = fbWidth;
-            height = fbHeight;
-            uint8_t* data = new uint8_t[height * width * 4];
-            glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            printf("Size: %i, %i\n", width, height);
-
-
-            for (int y = 0; y < height / 2; y++) {
-                int flipY = height - y - 1;
-                uint8_t tmp[width * 4];
-                memcpy(tmp, &data[y * width * 4], width * 4);
-                memcpy(&data[y * width * 4], &data[flipY * width * 4], width * 4);
-                memcpy(&data[flipY * width * 4], tmp, width * 4);
+            //Flip the image vertically
+            for (int y = 0; y < fbHeight / 2; y++) {
+                int flipY = fbHeight - y - 1;
+                uint8_t tmp[fbWidth * 4];
+                memcpy(tmp, &data[y * fbWidth * 4], fbWidth * 4);
+                memcpy(&data[y * fbWidth * 4], &data[flipY * fbWidth * 4], fbWidth * 4);
+                memcpy(&data[flipY * fbWidth * 4], tmp, fbWidth * 4);
             }
 
 
             std::string filename = asset::user("screenshots") + "/test.png";
-            stbi_write_png(filename.c_str(), width, height, 4, data, width * 4);
 
+            stbi_write_png(filename.c_str(), fbWidth, fbHeight, 4, data, fbWidth * 4);
             printf("Wrote screenshot to %s\n", filename.c_str());
 
-            //Restore original view
-            //Change the zoom factor to 1
-//            rack::settings::zoom = old_zoom;
-//            APP->scene->rackScroll->zoomPos = APP->scene->rackScroll->box.size.mult(0.5f);
-//            APP->scene->rackScroll->step();
-
-            //Moves to the upper left of the modules bounding box
-//            target = old_offset;
-            //target = target.mult(APP->scene->rackScroll->zoomWidget->zoom);
-//            APP->scene->rackScroll->offset = target;
-
-
-
-//            APP->scene->rackScroll->offset = old_offset;
-//            rack::settings::zoom = old_zoom;
-            
-
             delete[] data;
-            
+            nvgluBindFramebuffer(NULL);
+
+            /*
+            End of screenshot code
+            */            
 
         }
 
