@@ -132,6 +132,18 @@ Utility module providing 8 digital outputs generated from text boxes. Numbers ma
 
 * 8x outputs: 8x analog outputs that behave the same way as the DAC A output
 
+## Utility Modules
+
+### Latency Compensator
+
+This module measures an unknown delay by sending a pulse and measuring the time before the pulse returns. It provides several delays of the same length for use in aligning internally generated signals with delayed signals. In my application, I use this module to compensate for the latency through an ES-8 (when it's working), using output 8 and input 4 as a dedicated loopback channel for the latency measurement.
+
+### Metadata modules
+
+These modules add descriptive metadata to the patch file for use by other programs. In particular I use these to provide information about recordings generated from VCV without having to leave the window.
+
+The files metadata module, when configured for image files, can also take a screenshot of the entire patch. When used, the screenshot control locks out ofor 10 seconds to prevent accidental screenshot spamming. The program may hang for a couple seconds while taking a screenshot, and it's possible that there are modules that prevent the screenshot function from working correctly.
+
 ## WIP Modules
 
 ### Achilles
