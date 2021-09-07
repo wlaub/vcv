@@ -141,6 +141,13 @@ struct RoundTinyBlackKnob : RoundBlackKnob {
         setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
+
+struct RoundTinyBlackSnapKnob : RoundBlackSnapKnob {
+    RoundTinyBlackSnapKnob() {
+        setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
+    }
+};
+ 
  
 struct DWhite : SVGSwitch {
     bool momentary=true;
@@ -294,3 +301,7 @@ extern Model* modelLatComp;
 extern Model* modelMetadataMain;
 
 extern Model* modelMetadataFiles;
+
+extern Model* modelDecayTimer;
+
+

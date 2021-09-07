@@ -177,6 +177,15 @@
       "name": "Metadata Files",
       "description": "Used to add metadata containing listings of certain kinds of files to a patch file for use by other programs.",
       "tags": []
+    },
+    {
+      "slug": "DecayTimer",
+      "name": "Decay Timer",
+      "description": "Comparator with hysteresis and pulse duration time",
+      "tags": [
+        "Digital",
+        "Utility"
+      ]
     }
   ]
 }
