@@ -1,5 +1,7 @@
 #include "TechTechTechnologies.hpp"
 
+#include <osdialog.h>
+
 #define EDGE_PULSE 1e-3
 #define LOGIC_HIGH 5
 
@@ -13,6 +15,7 @@ struct DecayTimer : Module {
         POST_PULSE_LENGTH_PARAM,
         POST_PULSE_COUNT_PARAM,
         POST_PULSE_RATE_PARAM,
+        SAVE_BUTTON_PARAM,
         NUM_PARAMS
     };
     enum InputIds {
@@ -75,6 +78,9 @@ struct DecayTimer : Module {
 
     int prev_manual = 0;
 
+    int prev_save = 0;
+    int save_request = 0;
+
     DecayTimer() {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
         configParam(THRESHOLD_PARAM, -12.f, 12.f, 0.f, "Comparator Threshold");
@@ -85,6 +91,7 @@ struct DecayTimer : Module {
         configParam(POST_PULSE_LENGTH_PARAM, 0.f, 1.f, 0.01f, "Pulse Duration");
         configParam(POST_PULSE_COUNT_PARAM, 0.f, 10.f, 0.f, "Pulse Count");
         configParam(POST_PULSE_RATE_PARAM, 0.f, 10.f, 0.1f, "Pulse Spacing");
+        configParam(SAVE_BUTTON_PARAM, 0.f, 1.f, 0.f, "Save the current measurement to a json file");
     }
 
     void process(const ProcessArgs& args) override {
@@ -271,12 +278,21 @@ struct DecayTimer : Module {
         outputs[POST_PULSE_OUT_OUTPUT].setVoltage(pulse_value? LOGIC_HIGH : 0.f);
 //        outputs[POST_PULSE_OUT_OUTPUT].setVoltage((pulse_state == PULSE_IDLE)? LOGIC_HIGH : 0.f);
 //        outputs[POST_PULSE_OUT_OUTPUT].setVoltage(LOGIC_HIGH*reset_hold);
+
+        /* Save Button */
+
+        int save = params[SAVE_BUTTON_PARAM].getValue();
+        if(save != 0 && prev_save == 0)
+        {
+            save_request = 1;
+        }
  
         /* Finalization */
 
         prev_gate = gate_value;
         prev_do_meas = do_measurement;
         prev_manual = manual;
+        prev_save = save;
 
         /* Labels */
         ++label_counter;
@@ -312,20 +328,17 @@ struct DecayTimer : Module {
                 min_time = min_count*args.sampleTime;
             }
 
-
             char tstr[4096];
             sprintf(tstr,
-            "Average:\n%.4f ms\nMin:\n%.3f\nMax:\n%.3f\nMaxDev:\n%.3f\nCount: %i\n",
+            "Average:\n%.4f ms\nMin:\n%.3f ms\nMax:\n%.3f ms\nMaxDev:\n%.1f ppm\nCount: %i\n",
             meas_time*1000,
             min_time*1000,
             max_time*1000,
-            (max_time-min_time)*1000,
+            (max_time-min_time)*1000000/meas_time,
             meas_count
             );
             meas_label->text = tstr;
         }
-
-
 
     }
 };
@@ -334,6 +347,91 @@ struct DecayTimer : Module {
 struct DecayTimerWidget : ModuleWidget {
     Label* config_label;
     Label* meas_label;
+
+    Label* data_label;
+    TextField* data_field;
+    TextField* filename_field;
+
+    json_t* toJson() override {
+        json_t* rootJ = ModuleWidget::toJson();
+
+        json_object_set_new(rootJ, "custom_data", json_string(data_field->text.c_str()));
+        json_object_set_new(rootJ, "data_filename", json_string(filename_field->text.c_str()));
+
+        return rootJ;
+    }
+
+    void fromJson(json_t* rootJ) override {
+        ModuleWidget::fromJson(rootJ);
+        
+        json_t* textJ;
+
+        textJ = json_object_get(rootJ, "custom_data");
+        if(textJ) data_field->text = json_string_value(textJ);
+
+        textJ = json_object_get(rootJ, "data_filename");
+        if(textJ) filename_field->text = json_string_value(textJ);
+    }
+
+    void step() override {
+        ModuleWidget::step();
+        if(!module) return;
+
+        DecayTimer* mod = ((DecayTimer*) module);
+        
+        if(mod->save_request == 1)
+        {
+            mod->save_request = 0;
+
+            std::string filename = asset::user("timer_data");
+            system::createDirectory(filename);
+            filename += "/";
+            filename += filename_field->text;
+            filename += ".json";
+            FILE* fp;
+            
+            json_t* rootJ;
+     
+            fp = std::fopen(filename.c_str(), "r");
+            if(fp)
+            {
+                json_error_t error;
+                rootJ = json_loadf(fp, 0, &error);
+                if(!rootJ)
+                {
+                    std::string message = string::f("JSON parsing error at %s %d:%d %s", error.source, error.line, error.column, error.text);
+                    osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+                    return;
+                }
+            }
+            else
+            {
+                rootJ = json_object();
+            }
+
+            json_t* arrayJ;
+
+            arrayJ = json_object_get(rootJ, "data");
+            if(!arrayJ)
+            {
+                arrayJ = json_array();
+                json_object_set_new(rootJ, "data", arrayJ);
+            }
+
+            //Then merge the data array with the json data array
+
+            FILE* file = std::fopen(filename.c_str(), "w");
+
+            json_dumpf(rootJ, file, JSON_INDENT(4));
+
+            std::fclose(file);
+            printf("Saved timer data to %s\n", filename.c_str());
+
+        }
+
+    }
+
+
 
     DecayTimerWidget(DecayTimer* module) {
         setModule(module);
@@ -381,13 +479,33 @@ struct DecayTimerWidget : ModuleWidget {
 //        addChild(createWidget<Widget>(mm2px(Vec(6.3, 74.707))));
 
         config_label = createWidget<Label>(mm2px(Vec(6.3, 74.7)));
-        config_label->box.size = mm2px(Vec(88.95, 42));
+        config_label->box.size = mm2px(Vec(88.95, 21));
         config_label->text = "Lat (ms):\n ----.-- \nMin:\n ----.-- \n Max:\n ----.--\nN samples";
         addChild(config_label);
         if(module)
         {
             module->config_label = config_label;
         }
+
+        data_label = createWidget<Label>(mm2px(Vec(6.3, 95)));
+        data_label->box.size = mm2px(Vec(32, 6.35));
+        data_label->text = "Custom Data:";
+        addChild(data_label);
+ 
+        data_field = createWidget<TextField>(mm2px(Vec(6.3+30, 95)));
+        data_field->box.size = mm2px(Vec(31.5, 6.35));
+        data_field->multiline = false;
+        addChild(data_field);
+
+        filename_field = createWidget<TextField>(mm2px(Vec(6.3*3, 105)));
+        filename_field->box.size = mm2px(Vec(77, 6.35));
+        filename_field->multiline = false;
+        filename_field->text = "decaytimer_data";
+        addChild(filename_field);
+
+        addParam(createParamCentered<LEDBezel>(mm2px(Vec(6.3*2, 105+6.35/2)), module, DecayTimer::SAVE_BUTTON_PARAM));
+ 
+
  
 
     }
