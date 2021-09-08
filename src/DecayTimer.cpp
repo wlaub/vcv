@@ -5,6 +5,98 @@
 #define EDGE_PULSE 1e-3
 #define LOGIC_HIGH 5
 
+struct DecayMeasurement 
+{
+
+    int timestamp = 0;
+    float sample_period = 0;
+    float duration = 0;
+    float threshold_low = 0;
+    float threshold_high = 0;
+    float pulse_holdoff = 0;
+    float pulse_length = 0;
+    float pulse_spacing = 0;
+
+    int pulse_count;
+    char custom_data[256] = {0};
+
+    int equals(DecayMeasurement* other)
+    {
+        return timestamp == other->timestamp;
+    }
+
+    json_t* toJson()
+    {
+        json_t* rootJ = json_object();
+
+        json_object_set_new(rootJ, "timestamp", json_integer(timestamp));
+        json_object_set_new(rootJ, "duration", json_real(timestamp));
+        json_object_set_new(rootJ, "sample_period", json_real(sample_period));
+        json_object_set_new(rootJ, "custom_data", json_string(custom_data));
+
+        json_t* config = json_object();
+        json_object_set_new(rootJ, "config", config);
+
+        json_object_set_new(config, "threshold_low", json_real(threshold_low));
+        json_object_set_new(config, "threshold_high", json_real(threshold_high));
+        json_object_set_new(config, "pulse_count", json_integer(pulse_count));
+        json_object_set_new(config, "pulse_length", json_real(pulse_length));
+        json_object_set_new(config, "pulse_spacing", json_real(pulse_spacing));
+        json_object_set_new(config, "pulse_holdoff", json_real(pulse_holdoff));
+
+        return rootJ;
+    }
+
+    int get_json_int(json_t* rootJ, const char* key, int def=-1)
+    {
+        json_t* obj = json_object_get(rootJ, key);
+        if(obj)
+        {
+            return json_integer_value(obj);
+        }
+        return def;
+    }
+    float get_json_float(json_t* rootJ, const char* key, float def=-1)
+    {
+        json_t* obj = json_object_get(rootJ, key);
+        if(obj)
+        {
+            return json_real_value(obj);
+        }
+        return def;
+    }
+
+
+    void fromJson(json_t* rootJ)
+    {
+
+        json_t* config;
+        json_t* obj;
+
+        timestamp = get_json_int(rootJ, "timestamp");
+        duration = get_json_float(rootJ, "duration");
+        sample_period = get_json_float(rootJ, "sample_period");
+        
+        obj = json_object_get(rootJ, "custom_data");
+        if(obj)
+        {
+            sprintf(custom_data, json_string_value(obj));
+        }
+
+        config = json_object_get(rootJ, "config");
+        if(!config) return;
+        
+        pulse_count = get_json_int(config, "pulse_count");
+        threshold_low = get_json_float(config, "threshold_low");
+        threshold_high = get_json_float(config, "threshold_high");
+        pulse_length = get_json_float(config, "pulse_length");
+        pulse_holdoff = get_json_float(config, "pulse_holdoff");
+        pulse_spacing = get_json_float(config, "pulse_spacing");
+
+    }
+
+};
+
 struct DecayTimer : Module {
     enum ParamIds {
         THRESHOLD_PARAM,
@@ -419,6 +511,24 @@ struct DecayTimerWidget : ModuleWidget {
             }
 
             //Then merge the data array with the json data array
+
+            struct DecayMeasurement* test = new DecayMeasurement;
+
+
+            int matched = 0;
+            for(int i = 0; i < json_array_size(arrayJ); ++i)
+            {
+                struct DecayMeasurement* ref = new DecayMeasurement;
+                ref->fromJson(json_array_get(arrayJ, i));
+                if(test->equals(ref))
+                {
+                    matched = 1;
+                }
+            }
+            if(matched == 0)
+            {
+                json_array_append(arrayJ, test->toJson());
+            }
 
             FILE* file = std::fopen(filename.c_str(), "w");
 
