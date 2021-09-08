@@ -2,13 +2,15 @@
 
 #include <osdialog.h>
 
+#include <chrono>
+
 #define EDGE_PULSE 1e-3
 #define LOGIC_HIGH 5
 
 struct DecayMeasurement 
 {
 
-    int timestamp = 0;
+    long timestamp = 0;
     float sample_period = 0;
     float duration = 0;
     float threshold_low = 0;
@@ -16,6 +18,10 @@ struct DecayMeasurement
     float pulse_holdoff = 0;
     float pulse_length = 0;
     float pulse_spacing = 0;
+    float bias_max = 0;
+    float bias_min = 0;
+
+    int valid = 1;
 
     int pulse_count;
     char custom_data[256] = {0};
@@ -30,7 +36,10 @@ struct DecayMeasurement
         json_t* rootJ = json_object();
 
         json_object_set_new(rootJ, "timestamp", json_integer(timestamp));
-        json_object_set_new(rootJ, "duration", json_real(timestamp));
+        json_object_set_new(rootJ, "valid", json_integer(valid));
+        json_object_set_new(rootJ, "duration", json_real(duration));
+        json_object_set_new(rootJ, "bias_min", json_real(bias_min));
+        json_object_set_new(rootJ, "bias_max", json_real(bias_max));
         json_object_set_new(rootJ, "sample_period", json_real(sample_period));
         json_object_set_new(rootJ, "custom_data", json_string(custom_data));
 
@@ -47,7 +56,7 @@ struct DecayMeasurement
         return rootJ;
     }
 
-    int get_json_int(json_t* rootJ, const char* key, int def=-1)
+    long get_json_int(json_t* rootJ, const char* key, int def=-1)
     {
         json_t* obj = json_object_get(rootJ, key);
         if(obj)
@@ -76,7 +85,10 @@ struct DecayMeasurement
         timestamp = get_json_int(rootJ, "timestamp");
         duration = get_json_float(rootJ, "duration");
         sample_period = get_json_float(rootJ, "sample_period");
-        
+        bias_max = get_json_float(rootJ, "bias_max");
+        bias_min = get_json_float(rootJ, "bias_min");
+        valid = get_json_int(rootJ, "valid");
+ 
         obj = json_object_get(rootJ, "custom_data");
         if(obj)
         {
@@ -114,6 +126,7 @@ struct DecayTimer : Module {
         RESET_IN_INPUT,
         CMP_IN_INPUT,
         GATE_IN_INPUT,
+        BIAS_IN_INPUT,
         NUM_INPUTS
     };
     enum OutputIds {
@@ -137,6 +150,7 @@ struct DecayTimer : Module {
 
     Label* meas_label;
     Label* config_label;
+    TextField* data_field;
 
     dsp::PulseGenerator done_pulse;
     dsp::PulseGenerator done_pulse_holdoff;
@@ -173,6 +187,9 @@ struct DecayTimer : Module {
     int prev_save = 0;
     int save_request = 0;
 
+    struct DecayMeasurement* current_meas;
+    std::list<struct DecayMeasurement>* data_list;
+
     DecayTimer() {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
         configParam(THRESHOLD_PARAM, -12.f, 12.f, 0.f, "Comparator Threshold");
@@ -184,6 +201,8 @@ struct DecayTimer : Module {
         configParam(POST_PULSE_COUNT_PARAM, 0.f, 10.f, 0.f, "Pulse Count");
         configParam(POST_PULSE_RATE_PARAM, 0.f, 10.f, 0.1f, "Pulse Spacing");
         configParam(SAVE_BUTTON_PARAM, 0.f, 1.f, 0.f, "Save the current measurement to a json file");
+
+        data_list = new std::list<struct DecayMeasurement>;
     }
 
     void process(const ProcessArgs& args) override {
@@ -199,6 +218,7 @@ struct DecayTimer : Module {
             reset_hold = 1;
             min_count = -1;
             max_count = 0;
+            data_list->clear();
         }
 
         /* Comparator Section */
@@ -261,6 +281,11 @@ struct DecayTimer : Module {
  
         /*Timer section*/
 
+        int pulse_num = params[POST_PULSE_COUNT_PARAM].getValue() ;
+        float pulse_length = params[POST_PULSE_LENGTH_PARAM].getValue();
+        float pulse_spacing = params[POST_PULSE_RATE_PARAM].getValue();
+        float pulse_holdoff = params[HOLDOFF_PARAM].getValue();
+
         int do_measurement = 0;
         if(inputs[GATE_IN_INPUT].active && inputs[GATE_IN_INPUT].getVoltage() > 1.f)
         {
@@ -274,7 +299,26 @@ struct DecayTimer : Module {
         meas_finished = 0;
         if(do_measurement != 0 && reset_hold == 0)
         {
+            float bias = inputs[BIAS_IN_INPUT].getVoltage();
+            if(prev_do_meas == 0)
+            {
+                current_meas = new struct DecayMeasurement;
+                current_meas->bias_min = bias;
+                current_meas->bias_max = bias;
+                current_meas->threshold_low = threshold_low;
+                current_meas->threshold_high = threshold_high;
+                current_meas->pulse_count = pulse_num;
+                current_meas->pulse_holdoff = pulse_holdoff;
+                current_meas->pulse_length = pulse_length;
+                current_meas->pulse_spacing = pulse_spacing;
+                current_meas->sample_period = args.sampleTime;
+                current_meas->timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+            }
             ++current_total_meas;
+            if(bias < current_meas->bias_min) current_meas->bias_min = bias;
+            if(bias > current_meas->bias_max) current_meas->bias_max = bias;
+            
         }
         if(do_measurement == 0)
         {
@@ -291,17 +335,30 @@ struct DecayTimer : Module {
                 }
                 total_meas = current_total_meas;
                 ++meas_count;
+
+                current_meas->duration = delta*args.sampleTime;
+                sprintf(current_meas->custom_data, "%s", data_field->text.c_str());
+                if(
+                    current_meas->threshold_low != threshold_low ||
+                    current_meas->threshold_high != threshold_high ||
+                    current_meas->pulse_count != pulse_num ||
+                    current_meas->pulse_holdoff != pulse_holdoff ||
+                    current_meas->pulse_length != pulse_length ||
+                    current_meas->pulse_spacing != pulse_spacing ||
+                    current_meas->sample_period != args.sampleTime
+                )
+                {
+                    current_meas->valid = 0;
+                }
+
+                data_list->push_back(*current_meas);
+
                 meas_finished = 1;
             }
             reset_hold = 0;
         }
 
         /*Done Pulse section*/
-
-        int pulse_num = params[POST_PULSE_COUNT_PARAM].getValue() ;
-        float pulse_length = params[POST_PULSE_LENGTH_PARAM].getValue();
-        float pulse_spacing = params[POST_PULSE_RATE_PARAM].getValue();
-        float pulse_holdoff = params[HOLDOFF_PARAM].getValue();
 
         int manual = 0;
         if(params[MANUAL_TRIGGER_PARAM].getValue() != 0)
@@ -368,13 +425,11 @@ struct DecayTimer : Module {
         }
 
         outputs[POST_PULSE_OUT_OUTPUT].setVoltage(pulse_value? LOGIC_HIGH : 0.f);
-//        outputs[POST_PULSE_OUT_OUTPUT].setVoltage((pulse_state == PULSE_IDLE)? LOGIC_HIGH : 0.f);
-//        outputs[POST_PULSE_OUT_OUTPUT].setVoltage(LOGIC_HIGH*reset_hold);
 
         /* Save Button */
 
         int save = params[SAVE_BUTTON_PARAM].getValue();
-        if(save != 0 && prev_save == 0)
+        if(save != 0 && prev_save == 0 && save_request == 0)
         {
             save_request = 1;
         }
@@ -473,8 +528,6 @@ struct DecayTimerWidget : ModuleWidget {
         
         if(mod->save_request == 1)
         {
-            mod->save_request = 0;
-
             std::string filename = asset::user("timer_data");
             system::createDirectory(filename);
             filename += "/";
@@ -512,22 +565,30 @@ struct DecayTimerWidget : ModuleWidget {
 
             //Then merge the data array with the json data array
 
-            struct DecayMeasurement* test = new DecayMeasurement;
-
-
-            int matched = 0;
+            std::list<struct DecayMeasurement> source_list;
             for(int i = 0; i < json_array_size(arrayJ); ++i)
             {
                 struct DecayMeasurement* ref = new DecayMeasurement;
                 ref->fromJson(json_array_get(arrayJ, i));
-                if(test->equals(ref))
-                {
-                    matched = 1;
-                }
+                source_list.push_back(*ref);
             }
-            if(matched == 0)
+
+            for(struct DecayMeasurement meas : *(mod->data_list))
             {
-                json_array_append(arrayJ, test->toJson());
+                json_t* entry = meas.toJson();
+                int matched = 0;
+                for(struct DecayMeasurement ref: source_list)
+                {
+                    if(meas.equals(&ref))
+                    {
+                        matched = 1;
+                        break;
+                    }
+                }
+                if(matched == 0)
+                {
+                    json_array_append(arrayJ, entry);
+                }
             }
 
             FILE* file = std::fopen(filename.c_str(), "w");
@@ -536,6 +597,8 @@ struct DecayTimerWidget : ModuleWidget {
 
             std::fclose(file);
             printf("Saved timer data to %s\n", filename.c_str());
+
+            mod->save_request = 0;
 
         }
 
@@ -597,23 +660,31 @@ struct DecayTimerWidget : ModuleWidget {
             module->config_label = config_label;
         }
 
-        data_label = createWidget<Label>(mm2px(Vec(6.3, 95)));
+        addInput(createInputCentered<PJ301MPort>(mm2px(Vec(6.3*2, 95+4)), module, DecayTimer::BIAS_IN_INPUT));
+
+        float ypos = 95;
+        float xpos = 10;
+        data_label = createWidget<Label>(mm2px(Vec(6.3+xpos, ypos)));
         data_label->box.size = mm2px(Vec(32, 6.35));
         data_label->text = "Custom Data:";
         addChild(data_label);
- 
-        data_field = createWidget<TextField>(mm2px(Vec(6.3+30, 95)));
+
+        data_field = createWidget<TextField>(mm2px(Vec(6.3+xpos+30, ypos)));
         data_field->box.size = mm2px(Vec(31.5, 6.35));
         data_field->multiline = false;
         addChild(data_field);
+        if(module)
+        {
+            module->data_field = data_field;
+        }
 
-        filename_field = createWidget<TextField>(mm2px(Vec(6.3*3, 105)));
+        filename_field = createWidget<TextField>(mm2px(Vec(6.3*3, ypos+10)));
         filename_field->box.size = mm2px(Vec(77, 6.35));
         filename_field->multiline = false;
         filename_field->text = "decaytimer_data";
         addChild(filename_field);
 
-        addParam(createParamCentered<LEDBezel>(mm2px(Vec(6.3*2, 105+6.35/2)), module, DecayTimer::SAVE_BUTTON_PARAM));
+        addParam(createParamCentered<LEDBezel>(mm2px(Vec(6.3*2, ypos+10+6.35/2)), module, DecayTimer::SAVE_BUTTON_PARAM));
  
 
  
