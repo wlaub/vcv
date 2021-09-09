@@ -20,6 +20,7 @@ struct DecayMeasurement
     float pulse_spacing = 0;
     float bias_max = 0;
     float bias_min = 0;
+    float bias_avg = 0;
 
     int valid = 1;
 
@@ -40,6 +41,7 @@ struct DecayMeasurement
         json_object_set_new(rootJ, "duration", json_real(duration));
         json_object_set_new(rootJ, "bias_min", json_real(bias_min));
         json_object_set_new(rootJ, "bias_max", json_real(bias_max));
+        json_object_set_new(rootJ, "bias_avg", json_real(bias_avg));
         json_object_set_new(rootJ, "sample_period", json_real(sample_period));
         json_object_set_new(rootJ, "custom_data", json_string(custom_data));
 
@@ -87,6 +89,7 @@ struct DecayMeasurement
         sample_period = get_json_float(rootJ, "sample_period");
         bias_max = get_json_float(rootJ, "bias_max");
         bias_min = get_json_float(rootJ, "bias_min");
+        bias_avg = get_json_float(rootJ, "bias_avg");
         valid = get_json_int(rootJ, "valid");
  
         obj = json_object_get(rootJ, "custom_data");
@@ -315,10 +318,12 @@ struct DecayTimer : Module {
                 current_meas->timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
             }
+            
             ++current_total_meas;
             if(bias < current_meas->bias_min) current_meas->bias_min = bias;
             if(bias > current_meas->bias_max) current_meas->bias_max = bias;
-            
+            current_meas->bias_avg += bias;
+
         }
         if(do_measurement == 0)
         {
@@ -337,6 +342,7 @@ struct DecayTimer : Module {
                 ++meas_count;
 
                 current_meas->duration = delta*args.sampleTime;
+                current_meas->bias_avg/=delta;
                 sprintf(current_meas->custom_data, "%s", data_field->text.c_str());
                 if(
                     current_meas->threshold_low != threshold_low ||
