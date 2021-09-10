@@ -20,7 +20,7 @@ struct DecayMeasurement
     float pulse_spacing = 0;
     float bias_max = 0;
     float bias_min = 0;
-    float bias_avg = 0;
+    double bias_avg = 0;
 
     int valid = 1;
 
@@ -167,12 +167,13 @@ struct DecayTimer : Module {
     int prev_gate = 0;
     int gate_value = 0;
 
-    int meas_count = 0;
-    int total_meas = 0;
-    int current_total_meas = 0;
+    long meas_count = 0;
+    long total_meas = 0;
+    long current_total_meas = 0;
+    long current_meas_count = 0;
 
-    int min_count = -1;
-    int max_count = 0;
+    long min_count = -1;
+    long max_count = 0;
 
     int meas_samples = 0;
     int pulse_counter = 0;
@@ -302,7 +303,7 @@ struct DecayTimer : Module {
         meas_finished = 0;
         if(do_measurement != 0 && reset_hold == 0)
         {
-            float bias = inputs[BIAS_IN_INPUT].getVoltage();
+            double bias = inputs[BIAS_IN_INPUT].getVoltage();
             if(prev_do_meas == 0)
             {
                 current_meas = new struct DecayMeasurement;
@@ -316,9 +317,11 @@ struct DecayTimer : Module {
                 current_meas->pulse_spacing = pulse_spacing;
                 current_meas->sample_period = args.sampleTime;
                 current_meas->timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
+                current_meas_count = 0;
             }
-            
+            //Technically, there have been 0 samples elapsed since starting
+            //But this won't increment after the last sample
+            ++current_meas_count;
             ++current_total_meas;
             if(bias < current_meas->bias_min) current_meas->bias_min = bias;
             if(bias > current_meas->bias_max) current_meas->bias_max = bias;
@@ -329,7 +332,8 @@ struct DecayTimer : Module {
         {
             if(prev_do_meas != 0 && reset_hold == 0)
             {
-                int delta = current_total_meas - total_meas;
+//                int delta = current_total_meas - total_meas;
+                int delta = current_meas_count ;
                 if(delta > max_count)
                 {
                     max_count = delta;
@@ -481,14 +485,33 @@ struct DecayTimer : Module {
                 min_time = min_count*args.sampleTime;
             }
 
+            float bias_avg = 0;
+            float bias_min = 0;
+            float bias_max = 0;
+            if(current_meas)
+            {
+                if(do_measurement)
+                {
+                    bias_avg = current_meas->bias_avg/(current_meas_count);
+                }
+                else
+                {
+                    bias_avg = current_meas->bias_avg;
+                }
+                bias_min = current_meas->bias_min;
+                bias_max = current_meas->bias_max;
+            }
+ 
+
             char tstr[4096];
             sprintf(tstr,
-            "Average:\n%.4f ms\nMin:\n%.3f ms\nMax:\n%.3f ms\nMaxDev:\n%.1f ppm\nCount: %i\n",
+            "Average:\n%.4f ms\nMin:\n%.3f ms\nMax:\n%.3f ms\nMaxDev:\n%.1f ppm\nCount: %i\nBias: %f\n%f\n%f",
             meas_time*1000,
             min_time*1000,
             max_time*1000,
             (max_time-min_time)*1000000/meas_time,
-            meas_count
+            meas_count,
+            bias_min,bias_avg,bias_max
             );
             meas_label->text = tstr;
         }
