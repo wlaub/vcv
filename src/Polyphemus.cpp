@@ -84,7 +84,161 @@ struct Polyphemus : Module {
 
        
     }
-	void step() override;
+
+    void process(const ProcessArgs& args) override {
+      float deltaTime = args.sampleTime;
+
+        //TODO: Logarithmic controls
+        //TODO: clipping control?
+        //TODO: normalization gain control for r=1?
+
+        if(ready == 0) return;
+
+        float x, y;
+        float r, a;
+        float gain;
+
+        double norm = CV_ATV_VALUE(NORM, 1, 0);
+        float stab = CV_ATV_VALUE(STAB, 1, 0);
+        float rglob = CV_ATV_VALUE(RADIUS, 1, N);
+        float aglob = CV_ATV_VALUE(ANGLE, 3.14, N);
+
+        norm = CLIP(0, norm, 1);
+
+        norm = 1 - split_log(norm, 20, 80);
+
+        float maxrad = 1 + stab*.001;
+
+        gain = params[GAIN_PARAM].value;
+
+        float g = 1;
+
+        for(int j = 0; j < N; ++j)
+        { 
+
+            //retrieve pole params from inputs
+            //radius is -1 ~ 1, angle is 0 ~ 3.14
+            //inputs are 0 ~ 10 w/ attenuverters
+
+            r = CV_ATV_VALUE(RADIUS, 1, j);
+            a = CV_ATV_VALUE(ANGLE, 3.14, j);
+
+            r += rglob;
+            a += aglob;
+
+            //clip to +/- 1
+            r = CLIP(-maxrad, r, maxrad);
+            a = CLIP(0, a, 6.28);
+
+            if(j == floor(plot_idx))
+            {
+                outputs[X_OUTPUT].value = 6.67*r*cos(a);
+                outputs[Y_OUTPUT].value = 10*r*sin(a);
+            }
+
+            filters[j].r = r;
+            filters[j].p = a;
+            //Set filter params from inputs
+
+            float c = cos(a);
+
+            filters[j].a = -2*r*c;
+            filters[j].b = r*r;
+        }
+        plot_idx+=.001;
+        if(plot_idx >= N) plot_idx -= N;
+
+        //Compute the total inverse gain at each filter frequency 
+        //and store the smallest value in g
+        g = -1;
+        for(int i = 0; i < N; ++i)
+        {
+            float p = filters[i].p;  //the angle of concern
+            
+            float tg = 1;
+            for(int j = 0; j < N; ++j)
+            {
+                a = filters[j].a;
+                float b = filters[j].b;
+                float c = cos(p);
+                float k = (a+2*b*c);
+                tg *= (1-b)*(1-b)+2*(1-b)*c*k+k*k;
+
+            }
+            if(tg < g || g<0)
+            {
+                g = tg;
+            }
+        }
+    /*    if(g == 0)
+        {
+            g = 10E-6;
+        }*/
+
+        g = sqrt(g);
+
+        g = (1-norm)+norm*g;
+
+        float fsig[NFILT];
+
+        for(int i = 0; i < NSIG; ++i)
+        {
+            fsig[i] = inputs[SIGNAL_INPUT+i].value;
+        }
+
+        //fsig[NFILT-2] is slow square wave
+        stepphase += deltaTime*STEPFREQ;
+        if(stepphase >= 1) stepphase -= 1;
+        fsig[NFILT-2] = (stepphase > 0.5) ?5:0; 
+
+
+        //fsig[NFILT-1] is white noise
+        fsig[NFILT-1] = 10*(rand()/float(RAND_MAX)-.5);
+
+
+        //apply filter to value
+        for(int i = 0; i < NFILT; ++i)
+        {
+            x = fsig[i]*g*gain;
+            for(int j = 0; j <N; ++j)
+            {
+                y = x;
+                y -= filters[j].a*filters[j].data[i][filters[j].head[i]];
+                filters[j].head[i] ^= 1;
+                y -= filters[j].b*filters[j].data[i][filters[j].head[i]];
+
+                filters[j].data[i][filters[j].head[i]] = y;
+                x = y;
+
+            }
+            float clip = 100;
+
+            if(x > clip)
+            {
+                x = clip;
+            }
+            else if(x<-clip)
+            {
+                x = -clip;
+            }
+
+            outputs[SIGNAL_OUTPUT+i].value = x;
+     
+        }
+
+    /*
+        r = filters[0].r;
+        a = filters[0].p;
+                char tstr[256];
+                sprintf(tstr, "%f, %f, %f", r, a, g);
+    //            sprintf(tstr, "%f, %e", norm, g);
+                if(testLabel)
+                    testLabel->text = tstr;
+    */
+
+    }
+
+
 
 	// For more advanced Module features, read Rack's engine.hpp header file
 	// - dataToJson, dataFromJson: serialization of internal data
@@ -96,159 +250,6 @@ struct Polyphemus : Module {
 A = 2*r*cos(theta)
 B = r^2
 */
-
-void Polyphemus::process(const ProcessArgs& args) override {
-  float deltaTime = args.sampleTime;
-
-    //TODO: Logarithmic controls
-    //TODO: clipping control?
-    //TODO: normalization gain control for r=1?
-
-    if(ready == 0) return;
-
-    float x, y;
-    float r, a;
-    float gain;
-
-    double norm = CV_ATV_VALUE(NORM, 1, 0);
-    float stab = CV_ATV_VALUE(STAB, 1, 0);
-    float rglob = CV_ATV_VALUE(RADIUS, 1, N);
-    float aglob = CV_ATV_VALUE(ANGLE, 3.14, N);
-
-    norm = CLIP(0, norm, 1);
-
-    norm = 1 - split_log(norm, 20, 80);
-
-    float maxrad = 1 + stab*.001;
-
-    gain = params[GAIN_PARAM].value;
-
-    float g = 1;
-
-    for(int j = 0; j < N; ++j)
-    { 
-
-        //retrieve pole params from inputs
-        //radius is -1 ~ 1, angle is 0 ~ 3.14
-        //inputs are 0 ~ 10 w/ attenuverters
-
-        r = CV_ATV_VALUE(RADIUS, 1, j);
-        a = CV_ATV_VALUE(ANGLE, 3.14, j);
-
-        r += rglob;
-        a += aglob;
-
-        //clip to +/- 1
-        r = CLIP(-maxrad, r, maxrad);
-        a = CLIP(0, a, 6.28);
-
-        if(j == floor(plot_idx))
-        {
-            outputs[X_OUTPUT].value = 6.67*r*cos(a);
-            outputs[Y_OUTPUT].value = 10*r*sin(a);
-        }
-
-        filters[j].r = r;
-        filters[j].p = a;
-        //Set filter params from inputs
-
-        float c = cos(a);
-
-        filters[j].a = -2*r*c;
-        filters[j].b = r*r;
-    }
-    plot_idx+=.001;
-    if(plot_idx >= N) plot_idx -= N;
-
-    //Compute the total inverse gain at each filter frequency 
-    //and store the smallest value in g
-    g = -1;
-    for(int i = 0; i < N; ++i)
-    {
-        float p = filters[i].p;  //the angle of concern
-        
-        float tg = 1;
-        for(int j = 0; j < N; ++j)
-        {
-            a = filters[j].a;
-            float b = filters[j].b;
-            float c = cos(p);
-            float k = (a+2*b*c);
-            tg *= (1-b)*(1-b)+2*(1-b)*c*k+k*k;
-
-        }
-        if(tg < g || g<0)
-        {
-            g = tg;
-        }
-    }
-/*    if(g == 0)
-    {
-        g = 10E-6;
-    }*/
-
-    g = sqrt(g);
-
-    g = (1-norm)+norm*g;
-
-    float fsig[NFILT];
-
-    for(int i = 0; i < NSIG; ++i)
-    {
-        fsig[i] = inputs[SIGNAL_INPUT+i].value;
-    }
-
-    //fsig[NFILT-2] is slow square wave
-    stepphase += deltaTime*STEPFREQ;
-    if(stepphase >= 1) stepphase -= 1;
-    fsig[NFILT-2] = (stepphase > 0.5) ?5:0; 
-
-
-    //fsig[NFILT-1] is white noise
-    fsig[NFILT-1] = 10*(rand()/float(RAND_MAX)-.5);
-
-
-    //apply filter to value
-    for(int i = 0; i < NFILT; ++i)
-    {
-        x = fsig[i]*g*gain;
-        for(int j = 0; j <N; ++j)
-        {
-            y = x;
-            y -= filters[j].a*filters[j].data[i][filters[j].head[i]];
-            filters[j].head[i] ^= 1;
-            y -= filters[j].b*filters[j].data[i][filters[j].head[i]];
-
-            filters[j].data[i][filters[j].head[i]] = y;
-            x = y;
-
-        }
-        float clip = 100;
-
-        if(x > clip)
-        {
-            x = clip;
-        }
-        else if(x<-clip)
-        {
-            x = -clip;
-        }
-
-        outputs[SIGNAL_OUTPUT+i].value = x;
- 
-    }
-
-/*
-    r = filters[0].r;
-    a = filters[0].p;
-            char tstr[256];
-            sprintf(tstr, "%f, %f, %f", r, a, g);
-//            sprintf(tstr, "%f, %e", norm, g);
-            if(testLabel)
-                testLabel->text = tstr;
-*/
-
-}
 
 struct PolyphemusWidget : ModuleWidget
 {
