@@ -1,15 +1,15 @@
 {
   "slug": "TechTechTechnologies",
   "name": "TechTech Technologies",
-  "version": "1.0.0",
-  "license": "None",
+  "version": "2.0.0",
+  "license": "CC0-1.0",
   "brand": "TechTech Technologies",
   "author": "William Laub",
   "authorEmail": "",
   "authorUrl": "",
   "pluginUrl": "",
   "manualUrl": "",
-  "sourceUrl": "https://github.com/wlaub",
+  "sourceUrl": "https://github.com/wlaub/vcv",
   "donateUrl": "",
   "modules": [
     {
@@ -126,14 +126,6 @@
       "description": "FIR filter sampler",
       "tags": [
         "Effect"
-      ]
-    },
-    {
-      "slug": "Pleiades",
-      "name": "Pleiades (WIP)",
-      "description": "Sequencer",
-      "tags": [
-        "Sequencer"
       ]
     },
     {

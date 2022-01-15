@@ -1,8 +1,8 @@
-#include "rack0.hpp"
+#include "rack.hpp"
 //#include "dsp/digital.hpp"
 //#include "dsp/functions.hpp"
 #include "DSP.hpp"
-#include "window.hpp"
+//#include "window.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -167,95 +167,6 @@ struct DWhiteLatch : SVGSwitch {
 
 static const float KNOB_SENSITIVITY = 0.0015f;
 
-struct EncoderController;
-
-struct TTTEncoder : RoundBlackKnob {
-    bool flip=false;
-    bool lights_ready = false;
-    bool spinning = false;
-
-    float lastAngle = 0;
-    float value = 0;
-    bool dirty = false;
-    int mode = 0;
-
-    NVGcolor color = nvgRGBAf(0,0,0,1);
-
-    EncoderController* controller;
-
-    TTTEncoder();
-   
-    ModuleLightWidget* lights[7];
-
-    void configureLights();
-
-    void setValue(float v);
-
-    void onHoverKey(const event::HoverKey &e) override;
-    void onDragMove(const event::DragMove &e) override;
-    void reset() override;
-    void draw(const DrawArgs &args) override;
-    void step() override;
-    void dataFromJson(json_t *rootJ);
-
-};
-
-struct ITTTEncoder : TTTEncoder {
-    ITTTEncoder() {
-        TTTEncoder();
-        flip=true;
-    }
-};
-
-struct EncoderController {
-    unsigned char ngroup = 3;
-    unsigned char values[3][7];
-    unsigned char defaults[7];
-    TTTEncoder* widget;
-    unsigned char index = 0;
-    unsigned char group = 0;
-
-    int mode = 0;
-
-    int delta = 0;
-
-    EncoderController(TTTEncoder* w, const unsigned char* defs)
-    {
-        widget = w;
-        widget->controller = this;
-        for (int i = 0; i < 7; ++i)
-        {
-            defaults[i] = defs[i];
-        }
-        clear();
-        setIndex(0);
-    }
-
-    int process();
-
-    void setColor(EncoderController* src);
-    void setColor(float r,float g, float b);
-    void setValues(unsigned char* v, unsigned char tgroup=255);
-
-    int getValue();
-    int getValue(int idx);
-
-    void clear();
-    void reset();
-
-    void setMode(int new_mode);
-
-    void reset(unsigned char i)
-    { //TODO: Should be called when the widget gets reset
-        values[group][i] = defaults[i];
-        update(0);
-    }
-
-    void setIndex(unsigned char idx, unsigned char tgroup=255);
-
-    void update(int amount);
-};
-
 
 ////////////////////
 // module widgets
@@ -289,8 +200,6 @@ extern Model* modelAchilles;
 extern Model* modelQMod;
 
 extern Model* modelConvo;
-
-extern Model* modelPleiades;
 
 extern Model* modelPolyphemus2;
 
