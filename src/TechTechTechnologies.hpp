@@ -138,13 +138,13 @@ struct NumField : TextField {
 
 struct RoundTinyBlackKnob : RoundBlackKnob {
     RoundTinyBlackKnob() {
-        setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
+        setSVG(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
 
 struct RoundTinyBlackSnapKnob : RoundBlackSnapKnob {
     RoundTinyBlackSnapKnob() {
-        setSVG(SVG::load(assetPlugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
+        setSVG(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
  
@@ -152,15 +152,15 @@ struct RoundTinyBlackSnapKnob : RoundBlackSnapKnob {
 struct DWhite : SVGSwitch {
     bool momentary=true;
     DWhite() {
-        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
-        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
+        addFrame(SVG::load(asset::plugin(pluginInstance, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(asset::plugin(pluginInstance, "res/Components/1DWHT_1.svg")));
     }
 };
 
 struct DWhiteLatch : SVGSwitch {
     DWhiteLatch() {
-        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_0.svg")));
-        addFrame(SVG::load(assetPlugin(pluginInstance, "res/Components/1DWHT_1.svg")));
+        addFrame(SVG::load(asset::plugin(pluginInstance, "res/Components/1DWHT_0.svg")));
+        addFrame(SVG::load(asset::plugin(pluginInstance, "res/Components/1DWHT_1.svg")));
     }
 };
 

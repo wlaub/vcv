@@ -96,9 +96,62 @@ struct MetadataMain : Module {
             break;
         }
  
+    }
 
+    bool fields_ready = false;
+
+    TextField* desc_field;
+    TextField* tags_field;
+    TextField* auth_field;
+    TextField* time_field;
+
+    Label* time_label;
+
+    json_t* dataToJson() override {
+        json_t* rootJ = json_object();
+        if(!fields_ready) return rootJ;
+        json_object_set_new(rootJ, "description", json_string(desc_field->text.c_str()));
+        json_object_set_new(rootJ, "tags", json_string(tags_field->text.c_str()));
+        json_object_set_new(rootJ, "authors", json_string(auth_field->text.c_str()));
+        json_object_set_new(rootJ, "override_time", json_string(time_field->text.c_str()));
+
+        json_object_set_new(rootJ, "trigger_time", json_integer(trigger_time));
+
+        json_t* time_source = 0;
+        float source = params[MetadataMain::TIME_SOURCE_PARAM].getValue();
+
+        switch(int(source))
+        {
+            case 0: 
+                time_source = json_string("file");
+            break;
+            case 1: 
+                time_source = json_string("trigger");
+            break;
+            case 2:
+                time_source = json_string("override");
+            break;
+            default:
+                time_source = json_string("error");
+            break;
+        }
+       
+        json_object_set_new(rootJ, "time_source", time_source);
+
+        return rootJ;
 
     }
+
+
+
+    bool json_dirty = false;
+    json_t* widget_data;
+
+    void dataFromJson(json_t* rootJ) override {
+        json_dirty = true;
+        widget_data = rootJ;
+    }
+
 };
 
 
@@ -167,7 +220,25 @@ struct MetadataMainWidget : ModuleWidget {
         if(!module) return;
 
         MetadataMain* mod = ((MetadataMain*) module);
-        
+
+        if(mod->json_dirty)
+        {
+            loadJson(mod->widget_data);
+            mod->json_dirty = false;
+        }
+       
+        if(!mod->fields_ready)
+        {
+            mod->desc_field = desc_field;
+            mod->auth_field = auth_field;
+            mod->time_field = time_field;
+            mod->tags_field = tags_field;
+
+            mod->time_label = time_label;
+           
+            mod->fields_ready = true;
+        }
+ 
         char timestring[256];
         time_t timeval = mod->trigger_time;
 
@@ -192,46 +263,8 @@ struct MetadataMainWidget : ModuleWidget {
 
     }
 
-    json_t* toJson() override {
-        json_t* rootJ = ModuleWidget::toJson();
-
-        MetadataMain* mod = (MetadataMain*) module;
-
-        json_object_set_new(rootJ, "description", json_string(desc_field->text.c_str()));
-        json_object_set_new(rootJ, "tags", json_string(tags_field->text.c_str()));
-        json_object_set_new(rootJ, "authors", json_string(auth_field->text.c_str()));
-        json_object_set_new(rootJ, "override_time", json_string(time_field->text.c_str()));
-
-        json_object_set_new(rootJ, "trigger_time", json_integer(mod->trigger_time));
-
-        json_t* time_source = 0;
-        float source = mod->params[MetadataMain::TIME_SOURCE_PARAM].getValue();
-
-        switch(int(source))
-        {
-            case 0: 
-                time_source = json_string("file");
-            break;
-            case 1: 
-                time_source = json_string("trigger");
-            break;
-            case 2:
-                time_source = json_string("override");
-            break;
-            default:
-                time_source = json_string("error");
-            break;
-        }
-       
-        json_object_set_new(rootJ, "time_source", time_source);
-
-        return rootJ;
-
-    }
-
-    void fromJson(json_t* rootJ) override {
-        ModuleWidget::fromJson(rootJ);
-
+    void loadJson(json_t* rootJ) {
+//        ModuleWidget::fromJson(rootJ);
         
         json_t* textJ;
 
