@@ -27,7 +27,7 @@ struct Prometheus : Module {
 
     int ready = 0;
 
-    SchmittTrigger gateTrigger[NLFSR];
+    dsp::SchmittTrigger gateTrigger[NLFSR];
     
 
     Label* testLabel;
