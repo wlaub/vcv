@@ -47,7 +47,7 @@ struct DAC : Module {
         valLabel = new Label();
 
     }
-	void step() override;
+    void step() override;
 
 	// For more advanced Module features, read Rack's engine.hpp header file
 	// - dataToJson, dataFromJson: serialization of internal data

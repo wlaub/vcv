@@ -81,7 +81,6 @@ struct Odysseus : Module {
         configParam(AC_PARAM, 0,1,0, "Autoclear Enable");
         configParam(CLEAR_PARAM, 0,1,0, "Clear Integrator");
     }
-	void step() override;
 
     float curve_lut(float val, float lut[][2], int len)
     {

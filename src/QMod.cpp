@@ -20,7 +20,6 @@ struct QMod : Module {
         /* -ENUMS */
         
     }
-    void step() override;
 
     void process(const ProcessArgs& args) override {
         float deltaTime = args.sampleTime;
