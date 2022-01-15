@@ -28,7 +28,7 @@ struct DAC : Module {
 		NUM_LIGHTS=BIT_LIGHT+BITL
 	};
 
-    SchmittTrigger bitTrigger[BITL];
+    dsp::SchmittTrigger bitTrigger[BITL];
 
     Label* valLabel;
 
