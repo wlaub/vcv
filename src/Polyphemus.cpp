@@ -97,8 +97,8 @@ A = 2*r*cos(theta)
 B = r^2
 */
 
-void Polyphemus::step() {
-  float deltaTime = 1.0 / engineGetSampleRate();
+void Polyphemus::process(const ProcessArgs& args) override {
+  float deltaTime = args.sampleTime;
 
     //TODO: Logarithmic controls
     //TODO: clipping control?
