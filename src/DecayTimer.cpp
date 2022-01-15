@@ -525,7 +525,7 @@ struct DecayTimer : Module {
 
     json_t* toJson() override {
         json_t* rootJ = json_object();
-
+        if(!fields_ready) return rootJ;
         json_object_set_new(rootJ, "custom_data", json_string(data_field->text.c_str()));
         json_object_set_new(rootJ, "data_filename", json_string(filename_field->text.c_str()));
 
@@ -553,7 +553,6 @@ struct DecayTimerWidget : ModuleWidget {
     TextField* filename_field;
 
     void loadJson(json_t* rootJ){
-        ModuleWidget::fromJson(rootJ);
         
         json_t* textJ;
 

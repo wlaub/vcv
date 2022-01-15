@@ -4,6 +4,7 @@
 #include "DSP.hpp"
 //#include "window.hpp"
 
+#include <libgen.h>
 #include <GLFW/glfw3.h>
 
 //

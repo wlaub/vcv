@@ -155,6 +155,37 @@ struct MetadataFiles : Module {
 
 
     }
+
+    bool fields_ready = false;
+
+    NewlineTextField* files_field;
+    FileTypeChoice * type_choice;
+    std::string dir;
+
+    json_t* dataToJson() override {
+        json_t* rootJ = json_object();
+        if(!fields_ready) return rootJ;
+        json_object_set_new(rootJ, "files", json_string(files_field->text.c_str()));
+        json_object_set_new(rootJ, "dir", json_string(dir.c_str()));
+
+        json_object_set_new(rootJ, "file_type", json_string(type_choice->getTypeKey()));
+
+        json_object_set_new(rootJ, "file_type_id", json_integer(type_choice->value));
+
+        return rootJ;
+    }
+
+
+    bool load_json = false;
+    json_t* widget_json;
+    void dataFromJson(json_t* rootJ) override
+    {
+        widget_json = rootJ;
+        load_json = true;
+    }
+
+
+
 };
 
 
@@ -206,7 +237,15 @@ struct MetadataFilesWidget : ModuleWidget {
                 }
                 files_field->text += path;
 
-                dir = string::directory(path);
+//                dir = string::directory(path);
+                char* tpath = strdup(path);
+                dir = dirname(tpath);
+                free(tpath);
+                if(module)
+                {
+                    MetadataFiles* mod = ((MetadataFiles*) module);
+                    mod->dir=dir; 
+                }
             }
  
     }
@@ -216,7 +255,22 @@ struct MetadataFilesWidget : ModuleWidget {
         if(!module) return;
 
         MetadataFiles* mod = ((MetadataFiles*) module);
-        
+       
+        if(!mod->fields_ready)
+        {
+            mod->files_field = files_field;
+            mod->type_choice = type_choice;
+            mod->dir = dir;
+            mod->fields_ready = true;
+        }
+
+        if(mod->load_json)
+        {
+            loadJson(mod->widget_json);
+            mod->load_json = false;
+        }
+ 
+ 
         if(mod->screen_request == 1)
         {
             mod->screen_request = 0;
@@ -233,7 +287,7 @@ struct MetadataFilesWidget : ModuleWidget {
                 https://github.com/VCVRack/Rack/blob/v1/src/window.cpp#L420
                 */
 
-                math::Rect bb = APP->scene->rack->moduleContainer->getChildrenBoundingBox();
+                math::Rect bb = APP->scene->rack->getModuleContainer()->getChildrenBoundingBox();
     //            printf("moduleContainer bb:\n%f, %f\n%f, %f\n", bb.pos.x, bb.pos.y, bb.size.x, bb.size.y);
                 
                 // Draw scene
@@ -270,7 +324,7 @@ struct MetadataFilesWidget : ModuleWidget {
                 nvgTranslate(args.vg, -bb.pos.x, -bb.pos.y);
 
                 //Draw modules
-                Widget* mods = APP->scene->rack->moduleContainer;
+                Widget* mods = APP->scene->rack->getModuleContainer();
 
                 for (widget::Widget* child : mods->children) {
 
@@ -296,20 +350,20 @@ struct MetadataFilesWidget : ModuleWidget {
                 float inactive_opacity = 0.33;
                 float old_opacity = settings::cableOpacity;
                 settings::cableOpacity = active_opacity;
-                for (widget::Widget* w : APP->scene->rack->cableContainer->children) {
+                for (widget::Widget* w : APP->scene->rack->getCableContainer()->children) {
                     CableWidget* cw = dynamic_cast<CableWidget*>(w);
                     assert(cw);
 
                     Module* inMod = cw->cable->inputModule;
                     Module* outMod = cw->cable->outputModule;
                     settings::cableOpacity = active_opacity;
-                    if((inMod && inMod->bypass) || (outMod && outMod->bypass))
+                    if((inMod && inMod->isBypassed()) || (outMod && outMod->isBypassed()))
                     {   //i.e. the cable is connected to a disabled module
                         settings::cableOpacity = inactive_opacity;
                     }
 
                     cw->draw(args);
-                    cw->drawPlugs(args);
+//                    cw->drawPlugs(args);
     //                printf("Cable at %f, %f \n", cw->getOutputPos().x, cw->getOutputPos().y);
                 }
                 settings::cableOpacity = old_opacity;
@@ -372,27 +426,7 @@ struct MetadataFilesWidget : ModuleWidget {
     }
 
 
-
-    json_t* toJson() override {
-        json_t* rootJ = ModuleWidget::toJson();
-
-        MetadataFiles* mod = (MetadataFiles*) module;
-
-        json_object_set_new(rootJ, "files", json_string(files_field->text.c_str()));
-        json_object_set_new(rootJ, "dir", json_string(dir.c_str()));
-
-        json_object_set_new(rootJ, "file_type", json_string(type_choice->getTypeKey()));
-
-        json_object_set_new(rootJ, "file_type_id", json_integer(type_choice->value));
-
-
-
-        return rootJ;
-
-    }
-
-    void fromJson(json_t* rootJ) override {
-        ModuleWidget::fromJson(rootJ);
+    void loadJson(json_t* rootJ) {
 
         MetadataFiles* mod = (MetadataFiles*) module;
         
@@ -402,7 +436,15 @@ struct MetadataFilesWidget : ModuleWidget {
         if(textJ) files_field->text = json_string_value(textJ);
 
         textJ = json_object_get(rootJ, "dir");
-        if(textJ) dir=json_string_value(textJ);
+        if(textJ){
+            dir=json_string_value(textJ);
+                if(module)
+                {
+                    MetadataFiles* mod = ((MetadataFiles*) module);
+                    mod->dir=dir; 
+                }
+ 
+        }
 
         json_t* tint = json_object_get(rootJ, "file_type_id");
         if(tint) type_choice->value = json_integer_value(tint);
