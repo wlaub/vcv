@@ -105,8 +105,8 @@ mDACWidget::mDACWidget(mDAC* module) {
     {
 
         float yoff = i*35+85;
-        addOutput(createPort<PJ301MPort>(
-            Vec(77.5, yoff+2.5), PortWidget::OUTPUT, module, mDAC::ANLG_OUTPUT+i
+        addOutput(createOutput<PJ301MPort>(
+            Vec(77.5, yoff+2.5), module, mDAC::ANLG_OUTPUT+i
             ));
 
         infields[i] = new NumField();
