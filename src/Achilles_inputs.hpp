@@ -166,7 +166,7 @@ if (!inputs[INPUT_FM].active)
     input_fm = 10;
 }
 input_fm *= param_fm_atv;
-input_fm = max(input_fm, 0.0f);
+input_fm = std::max(input_fm, 0.0f);
 input_feedback = inputs[INPUT_FEEDBACK].value;
 if (!inputs[INPUT_FEEDBACK].active) 
 {
