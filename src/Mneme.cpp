@@ -53,81 +53,82 @@ struct Mneme : Module {
         }
         
     }
-    void step() override;
+    void process(const ProcessArgs& args) override {
+
+        float deltaTime = args.sampleTime;
+
+        if(ready == 0) return;
+
+        //One big circular buffer
+        //Push data into buffer
+
+        vals[0] = inputs[SIGNAL_INPUT].value*params[IN_CV_PARAM].value;
+        pos[0] = 0;
+
+        buffer->push(vals[0]);
+
+        for(int j = 0; j < N; ++j)
+        {
+            pos[j+1] = (inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value)*(BUFL-1)
+                   + params[DELAY_PARAM+j].value+pos[j];
+            //maybe clip the length?
+            //account for sample rate
+
+            vals[j+1] = buffer->get_tap_floating(pos[j+1]);
+        }
+
+        for(int j = 0; j < N+1; ++j)
+        {
+            float accum = 0;
+
+            int k = 0; //k tracks the source index
+            //Calculated feedpack to point j where
+            // j = 0 is the input to the first tap
+            // j = N is the output of the Nth tap
+            //
+            for(int i = 0; i < N; ++i)
+            {
+                if(i==j) ++k;
+                else
+                {
+                    accum += vals[k]*params[FB_CV_PARAM+j*N+i].value;
+                }
+                ++k;
+            }
+            //Input j=0 is into tap 1
+            //Input j=N-1 is fed intp tap N
+            //j=0 was already done to acquire the input
+            if(j != N && j!= 0)
+                accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
+
+            if(j==0)
+            {
+                buffer->add(0, accum);
+            }
+            if(j>0)
+            {
+                buffer->add_floating(pos[j], accum);
+    //            outputs[SIGNAL_OUTPUT+j-1].value = (accum+vals[j])*params[OUT_CV_PARAM+j-1].value;
+                outputs[SIGNAL_OUTPUT+j-1].value = 
+                    buffer->get_tap_floating(pos[j])*params[OUT_CV_PARAM+j-1].value;
+            }
+        }
+     
+         
+    //    char tstr[256];
+    //    sprintf(tstr, ": %f", pos[0]);
+    //    if(testLabel)
+    //        testLabel->text = tstr;
+        
+    }
+
+
 
     // For more advanced Module features, read Rack's engine.hpp header file
     // - dataToJson, dataFromJson: serialization of internal data
     // - onSampleRateChange: event triggered by a change of sample rate
     // - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
-
-void Mneme::step() {
-    float deltaTime = 1.0 / engineGetSampleRate();
-
-    if(ready == 0) return;
-
-    //One big circular buffer
-    //Push data into buffer
-
-    vals[0] = inputs[SIGNAL_INPUT].value*params[IN_CV_PARAM].value;
-    pos[0] = 0;
-
-    buffer->push(vals[0]);
-
-    for(int j = 0; j < N; ++j)
-    {
-        pos[j+1] = (inputs[DELAY_INPUT+j].value*params[DELAY_CV_PARAM+j].value)*(BUFL-1)
-               + params[DELAY_PARAM+j].value+pos[j];
-        //maybe clip the length?
-        //account for sample rate
-
-        vals[j+1] = buffer->get_tap_floating(pos[j+1]);
-    }
-
-    for(int j = 0; j < N+1; ++j)
-    {
-        float accum = 0;
-
-        int k = 0; //k tracks the source index
-        //Calculated feedpack to point j where
-        // j = 0 is the input to the first tap
-        // j = N is the output of the Nth tap
-        //
-        for(int i = 0; i < N; ++i)
-        {
-            if(i==j) ++k;
-            else
-            {
-                accum += vals[k]*params[FB_CV_PARAM+j*N+i].value;
-            }
-            ++k;
-        }
-        //Input j=0 is into tap 1
-        //Input j=N-1 is fed intp tap N
-        //j=0 was already done to acquire the input
-        if(j != N && j!= 0)
-            accum += inputs[SIGNAL_INPUT+j].value * params[IN_CV_PARAM+j].value;
-
-        if(j==0)
-        {
-            buffer->add(0, accum);
-        }
-        if(j>0)
-        {
-            buffer->add_floating(pos[j], accum);
-//            outputs[SIGNAL_OUTPUT+j-1].value = (accum+vals[j])*params[OUT_CV_PARAM+j-1].value;
-            outputs[SIGNAL_OUTPUT+j-1].value = 
-                buffer->get_tap_floating(pos[j])*params[OUT_CV_PARAM+j-1].value;
-        }
-    }
- 
-     
-//    char tstr[256];
-//    sprintf(tstr, ": %f", pos[0]);
-//    if(testLabel)
-//        testLabel->text = tstr;
-    
-}
 
 struct MnemeWidget : ModuleWidget
 {
