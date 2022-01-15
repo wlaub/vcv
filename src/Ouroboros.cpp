@@ -48,69 +48,71 @@ struct Ouroboros : Module {
     }
 	void step() override;
 
+    void process(const ProcessArgs& args) override {
+        float deltaTime = args.sampleTime;
+
+        if(ready == 0) return;
+        
+        double freq = inputs[BASEFREQ_INPUT].value + params[BASEFREQ_PARAM].value;
+        freq = 261.626*pow(2, freq);
+
+        double wave = inputs[WAVE_INPUT].value + params[WAVE_PARAM].value;
+
+        for(int j = 0; j < N; ++j)
+        {
+            //Determine frequency
+
+            double feff = params[FREQ_PARAM+j].value;
+            double fscale = params[FREQCV_PARAM+j].value;
+            if(inputs[FREQ_INPUT+j].active)
+            {
+                feff += fscale*inputs[FREQ_INPUT+j].value;
+            }
+            else
+            {
+                int idx = j-1;
+                if(idx < 0) idx += N;
+                feff += fscale*outputs[SIGNAL_OUTPUT+idx].value;
+            }
+            feff = freq*pow(2, feff);
+
+            phase[j] += feff*deltaTime;
+            if(phase[j] >= 1) phase[j] -=1;
+        }
+
+        wave =pow(2,wave);
+
+        for(int j = 0; j < N; ++j)
+        {
+            double result = sin(6.28*phase[j]);
+
+            if(result > 0)
+                result = pow(result, 1/wave);
+            else
+                result = -pow(-result, 1/wave);
+
+            outputs[SIGNAL_OUTPUT+j].value = 5*result;
+     
+        }
+
+    /*
+                char tstr[256];
+                sprintf(tstr, "%f, %f, %f", r, a, g);
+    //            sprintf(tstr, "%f, %e", norm, g);
+                if(testLabel)
+                    testLabel->text = tstr;
+    */
+
+    }
+
+
+
 	// For more advanced Module features, read Rack's engine.hpp header file
 	// - dataToJson, dataFromJson: serialization of internal data
 	// - onSampleRateChange: event triggered by a change of sample rate
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 };
 
-
-void Ouroboros::step() {
-  float deltaTime = 1.0 / engineGetSampleRate();
-
-    if(ready == 0) return;
-    
-    double freq = inputs[BASEFREQ_INPUT].value + params[BASEFREQ_PARAM].value;
-    freq = 261.626*pow(2, freq);
-
-    double wave = inputs[WAVE_INPUT].value + params[WAVE_PARAM].value;
-
-    for(int j = 0; j < N; ++j)
-    {
-        //Determine frequency
-
-        double feff = params[FREQ_PARAM+j].value;
-        double fscale = params[FREQCV_PARAM+j].value;
-        if(inputs[FREQ_INPUT+j].active)
-        {
-            feff += fscale*inputs[FREQ_INPUT+j].value;
-        }
-        else
-        {
-            int idx = j-1;
-            if(idx < 0) idx += N;
-            feff += fscale*outputs[SIGNAL_OUTPUT+idx].value;
-        }
-        feff = freq*pow(2, feff);
-
-        phase[j] += feff*deltaTime;
-        if(phase[j] >= 1) phase[j] -=1;
-    }
-
-    wave =pow(2,wave);
-
-    for(int j = 0; j < N; ++j)
-    {
-        double result = sin(6.28*phase[j]);
-
-        if(result > 0)
-            result = pow(result, 1/wave);
-        else
-            result = -pow(-result, 1/wave);
-
-        outputs[SIGNAL_OUTPUT+j].value = 5*result;
- 
-    }
-
-/*
-            char tstr[256];
-            sprintf(tstr, "%f, %f, %f", r, a, g);
-//            sprintf(tstr, "%f, %e", norm, g);
-            if(testLabel)
-                testLabel->text = tstr;
-*/
-
-}
 
 struct OuroborosWidget : ModuleWidget
 {
@@ -142,8 +144,8 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
     xoff = 12.5;
     yoff = 380-302.5-20;
 
-    addInput(createPort<PJ301MPort>(
-        Vec(xoff, yoff), PortWidget::INPUT, module, Ouroboros::BASEFREQ_INPUT
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff, yoff), module, Ouroboros::BASEFREQ_INPUT
         ));
 
 
@@ -151,8 +153,8 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
         Vec(xoff+28.15, yoff-6.35), module, Ouroboros::BASEFREQ_PARAM
         ));
 
-    addInput(createPort<PJ301MPort>(
-        Vec(xoff+28+44+40.5, yoff), PortWidget::INPUT, module, Ouroboros::WAVE_INPUT
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff+28+44+40.5, yoff), module, Ouroboros::WAVE_INPUT
         ));
 
 
@@ -169,8 +171,8 @@ OuroborosWidget::OuroborosWidget(Ouroboros* module) {
 
         CV_ATV_PARAM(xoff, yoff, Ouroboros::FREQ, -2,2,0,j)
 
-        addOutput(createPort<PJ301MPort>(
-            Vec(xoff+112.5, yoff), PortWidget::OUTPUT, module, Ouroboros::SIGNAL_OUTPUT+j
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff+112.5, yoff), module, Ouroboros::SIGNAL_OUTPUT+j
             ));
 
 
