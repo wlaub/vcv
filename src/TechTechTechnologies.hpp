@@ -70,8 +70,8 @@
 
 
 #define PARAM_PAIR(xoff, yoff, name, def, idx)\
-    addInput(createPort<PJ301MPort>(\
-        Vec(xoff+2.5, yoff+2.5), PortWidget::INPUT, module, name ## _INPUT+idx\
+    addInput(createInput<PJ301MPort>(\
+        Vec(xoff+2.5, yoff+2.5), module, name ## _INPUT+idx\
         ));\
     addParam(createParam<RoundBlackKnob>(\
         Vec(xoff+30.15, yoff+.15), module, name ## _PARAM+idx\
