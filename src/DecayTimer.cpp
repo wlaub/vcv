@@ -517,6 +517,30 @@ struct DecayTimer : Module {
         }
 
     }
+
+
+    bool fields_ready = false;
+//    TextField* data_field;
+    TextField* filename_field;
+
+    json_t* toJson() override {
+        json_t* rootJ = json_object();
+
+        json_object_set_new(rootJ, "custom_data", json_string(data_field->text.c_str()));
+        json_object_set_new(rootJ, "data_filename", json_string(filename_field->text.c_str()));
+
+        return rootJ;
+    }
+
+
+    bool load_json = false;
+    json_t* widget_json;
+    void dataFromJson(json_t* rootJ) override
+    {
+        widget_json = rootJ;
+        load_json = true;
+    }
+
 };
 
 
@@ -528,16 +552,7 @@ struct DecayTimerWidget : ModuleWidget {
     TextField* data_field;
     TextField* filename_field;
 
-    json_t* toJson() override {
-        json_t* rootJ = ModuleWidget::toJson();
-
-        json_object_set_new(rootJ, "custom_data", json_string(data_field->text.c_str()));
-        json_object_set_new(rootJ, "data_filename", json_string(filename_field->text.c_str()));
-
-        return rootJ;
-    }
-
-    void fromJson(json_t* rootJ) override {
+    void loadJson(json_t* rootJ){
         ModuleWidget::fromJson(rootJ);
         
         json_t* textJ;
@@ -554,6 +569,19 @@ struct DecayTimerWidget : ModuleWidget {
         if(!module) return;
 
         DecayTimer* mod = ((DecayTimer*) module);
+
+        if(!mod->fields_ready)
+        {
+            mod->data_field = data_field;
+            mod->filename_field = filename_field;
+            mod->fields_ready = true;
+        }
+
+        if(mod->load_json)
+        {
+            loadJson(mod->widget_json);
+            mod->load_json = false;
+        }
         
         if(mod->save_request == 1)
         {
