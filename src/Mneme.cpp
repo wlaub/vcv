@@ -142,7 +142,7 @@ MnemeWidget::MnemeWidget(Mneme* module) {
     {
         SVGPanel *panel = new SVGPanel();
         panel->box.size = box.size;
-        panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/Mneme.svg")));
+        panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/Mneme.svg")));
         addChild(panel);
     }
 

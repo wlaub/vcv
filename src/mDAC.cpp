@@ -83,7 +83,7 @@ mDACWidget::mDACWidget(mDAC* module) {
 	{
 		SVGPanel *panel = new SVGPanel();
 		panel->box.size = box.size;
-		panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/mDAC.svg")));
+		panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/mDAC.svg")));
 		addChild(panel);
 	}
 

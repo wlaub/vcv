@@ -109,7 +109,7 @@ DACWidget::DACWidget(DAC* module) {
 	{
 		SVGPanel *panel = new SVGPanel();
 		panel->box.size = box.size;
-		panel->setBackground(SVG::load(assetPlugin(pluginInstance, "res/DAC.svg")));
+		panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/DAC.svg")));
 		addChild(panel);
 	}
 
