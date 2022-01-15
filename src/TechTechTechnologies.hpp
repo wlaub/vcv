@@ -44,16 +44,16 @@
 #define DEPTH_CONFIGURE configParam(DEPTH_PARAM, 1, 16, 8, "Conversion bit depth");
 
 #define DEPTH_WIDGETS(x,y,modname)\
-    addInput(createPort<PJ301MPort>(\
-        Vec(x, y+2.5), PortWidget::INPUT, module, modname::DEPTH_INPUT\
+    addInput(createInput<PJ301MPort>(\
+        Vec(x, y+2.5), module, modname::DEPTH_INPUT\
         ));\
 \
 \
     addParam(createParam<RoundBlackSnapKnob>(\
         Vec(x+27.5, y+1), module, modname::DEPTH_PARAM));\
 \
-    addOutput(createPort<PJ301MPort>(\
-        Vec(x+60.25, y+2.5), PortWidget::OUTPUT, module, modname::DEPTH_OUTPUT\
+    addOutput(createOutput<PJ301MPort>(\
+        Vec(x+60.25, y+2.5), module, modname::DEPTH_OUTPUT\
         ));\
 \
 
@@ -95,8 +95,8 @@ configParam(name ## CV_PARAM + idx, -1,1,0, "CV Gain"); \
 configParam(name ## _PARAM + idx, min, max, def, "Value"); \
 
 #define CV_ATV_PARAM(xoff, yoff, name, min, max, def, idx)\
-    addInput(createPort<PJ301MPort>(\
-        Vec(xoff, yoff), PortWidget::INPUT, module, name ## _INPUT+idx\
+    addInput(createInput<PJ301MPort>(\
+        Vec(xoff, yoff), module, name ## _INPUT+idx\
         ));\
 \
     addParam(createParam<RoundTinyBlackKnob>(\

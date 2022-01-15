@@ -283,12 +283,12 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
 
     float vspace = 14;
 
-    addInput(createPort<PJ301MPort>(
-        Vec(xoff, yoff-vspace), PortWidget::INPUT, module, Polyphemus::SIGNAL_INPUT
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff, yoff-vspace), module, Polyphemus::SIGNAL_INPUT
         ));
 
-    addInput(createPort<PJ301MPort>(
-        Vec(xoff, yoff+vspace), PortWidget::INPUT, module, Polyphemus::SIGNAL_INPUT+1
+    addInput(createInput<PJ301MPort>(
+        Vec(xoff, yoff+vspace), module, Polyphemus::SIGNAL_INPUT+1
         ));
 
 
@@ -302,23 +302,23 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
 
     for(int i = 0; i < NFILT; i+=2)
     {
-        addOutput(createPort<PJ301MPort>(
-            Vec(xoff, yoff-vspace), PortWidget::OUTPUT, module, Polyphemus::SIGNAL_OUTPUT+i
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff, yoff-vspace), module, Polyphemus::SIGNAL_OUTPUT+i
             ));
 
-        addOutput(createPort<PJ301MPort>(
-            Vec(xoff, yoff+vspace), PortWidget::OUTPUT, module, Polyphemus::SIGNAL_OUTPUT+i+1
+        addOutput(createOutput<PJ301MPort>(
+            Vec(xoff, yoff+vspace), module, Polyphemus::SIGNAL_OUTPUT+i+1
             ));
         xoff += 35;
     }
 
     xoff += 30;
-    addOutput(createPort<PJ301MPort>(
-        Vec(xoff, yoff-vspace), PortWidget::OUTPUT, module, Polyphemus::X_OUTPUT
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff, yoff-vspace), module, Polyphemus::X_OUTPUT
         ));
 
-    addOutput(createPort<PJ301MPort>(
-        Vec(xoff, yoff+vspace), PortWidget::OUTPUT, module, Polyphemus::Y_OUTPUT
+    addOutput(createOutput<PJ301MPort>(
+        Vec(xoff, yoff+vspace), module, Polyphemus::Y_OUTPUT
         ));
 
 
@@ -329,8 +329,8 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
         xoff = 17.5;
         yoff = 380-232-25+j*85;
 
-        addInput(createPort<PJ301MPort>(
-            Vec(xoff, yoff), PortWidget::INPUT, module, Polyphemus::RADIUS_INPUT+j
+        addInput(createInput<PJ301MPort>(
+            Vec(xoff, yoff), module, Polyphemus::RADIUS_INPUT+j
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
@@ -342,8 +342,8 @@ PolyphemusWidget::PolyphemusWidget(Polyphemus* module) {
             ));
 
 
-        addInput(createPort<PJ301MPort>(
-            Vec(xoff, yoff+28), PortWidget::INPUT, module, Polyphemus::ANGLE_INPUT+j
+        addInput(createInput<PJ301MPort>(
+            Vec(xoff, yoff+28), module, Polyphemus::ANGLE_INPUT+j
             ));
 
         addParam(createParam<RoundTinyBlackKnob>(
