@@ -139,13 +139,13 @@ struct NumField : TextField {
 
 struct RoundTinyBlackKnob : RoundBlackKnob {
     RoundTinyBlackKnob() {
-        setSVG(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
+        setSvg(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
 
 struct RoundTinyBlackSnapKnob : RoundBlackSnapKnob {
     RoundTinyBlackSnapKnob() {
-        setSVG(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
+        setSvg(SVG::load(asset::plugin(pluginInstance, "res/Components/RoundTinyBlackKnob.svg")));
     }
 };
  

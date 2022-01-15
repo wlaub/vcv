@@ -125,7 +125,7 @@ struct QModWidget : ModuleWidget {
         box.size = Vec(18.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {
-            SVGPanel *panel = new SVGPanel();
+            SvgPanel *panel = new SvgPanel();
             panel->box.size = box.size;
             panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/QMod.svg")));
             addChild(panel);

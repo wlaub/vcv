@@ -121,7 +121,7 @@ PrometheusWidget::PrometheusWidget(Prometheus* module) {
 	box.size = Vec(6 *NLFSR* RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
 	{
-		SVGPanel *panel = new SVGPanel();
+		SvgPanel *panel = new SvgPanel();
 		panel->box.size = box.size;
 		panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/Prometheus.svg")));
 		addChild(panel);

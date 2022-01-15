@@ -122,7 +122,7 @@ struct ConvoWidget : ModuleWidget {
         box.size = Vec(10.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         {
-            SVGPanel *panel = new SVGPanel();
+            SvgPanel *panel = new SvgPanel();
             panel->box.size = box.size;
             panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/Convo.svg")));
             addChild(panel);
