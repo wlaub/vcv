@@ -148,8 +148,9 @@ struct MetadataMain : Module {
     json_t* widget_data;
 
     void dataFromJson(json_t* rootJ) override {
+        widget_data = json_copy(rootJ);
         json_dirty = true;
-        widget_data = rootJ;
+
     }
 
 };
@@ -225,6 +226,7 @@ struct MetadataMainWidget : ModuleWidget {
         {
             loadJson(mod->widget_data);
             mod->json_dirty = false;
+            free(mod->widget_data);
         }
        
         if(!mod->fields_ready)

@@ -151,9 +151,9 @@ struct DecayTimer : Module {
         PULSE_SPACING
     };
 
-    Label* meas_label;
-    Label* config_label;
-    TextField* data_field;
+    Label* meas_label = 0;
+    Label* config_label = 0;
+    TextField* data_field = 0;
 
     dsp::PulseGenerator done_pulse;
     dsp::PulseGenerator done_pulse_holdoff;
@@ -523,7 +523,7 @@ struct DecayTimer : Module {
 //    TextField* data_field;
     TextField* filename_field;
 
-    json_t* toJson() override {
+    json_t* dataToJson() override {
         json_t* rootJ = json_object();
         if(!fields_ready) return rootJ;
         json_object_set_new(rootJ, "custom_data", json_string(data_field->text.c_str()));
@@ -537,7 +537,7 @@ struct DecayTimer : Module {
     json_t* widget_json;
     void dataFromJson(json_t* rootJ) override
     {
-        widget_json = rootJ;
+        widget_json = json_copy(rootJ);
         load_json = true;
     }
 
@@ -553,7 +553,6 @@ struct DecayTimerWidget : ModuleWidget {
     TextField* filename_field;
 
     void loadJson(json_t* rootJ){
-        printf("Attempting load\n");
         json_t* textJ;
 
         textJ = json_object_get(rootJ, "custom_data");
@@ -580,6 +579,7 @@ struct DecayTimerWidget : ModuleWidget {
         {
             loadJson(mod->widget_json);
             mod->load_json = false;
+            free(mod->widget_json);
         }
         
         if(mod->save_request == 1)

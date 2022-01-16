@@ -180,7 +180,7 @@ struct MetadataFiles : Module {
     json_t* widget_json;
     void dataFromJson(json_t* rootJ) override
     {
-        widget_json = rootJ;
+        widget_json = json_copy(rootJ);
         load_json = true;
     }
 
@@ -268,6 +268,7 @@ struct MetadataFilesWidget : ModuleWidget {
         {
             loadJson(mod->widget_json);
             mod->load_json = false;
+            free(mod->widget_json);
         }
  
  
