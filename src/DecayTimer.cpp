@@ -191,7 +191,7 @@ struct DecayTimer : Module {
     int prev_save = 0;
     int save_request = 0;
 
-    struct DecayMeasurement* current_meas;
+    struct DecayMeasurement* current_meas = 0;
     std::list<struct DecayMeasurement>* data_list;
 
     DecayTimer() {
@@ -553,7 +553,7 @@ struct DecayTimerWidget : ModuleWidget {
     TextField* filename_field;
 
     void loadJson(json_t* rootJ){
-        
+        printf("Attempting load\n");
         json_t* textJ;
 
         textJ = json_object_get(rootJ, "custom_data");
