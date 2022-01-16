@@ -340,6 +340,7 @@ struct MetadataFilesWidget : ModuleWidget {
                     nvgSave(args.vg);
                     nvgTranslate(args.vg, xpos, ypos);
                     w->draw(args);
+                    w->drawLayer(args, 1);
                     nvgRestore(args.vg);
                     nvgluBindFramebuffer(fb); //The module might bind its own framebuffer in its draw function
 
@@ -366,6 +367,9 @@ struct MetadataFilesWidget : ModuleWidget {
                     }
 
                     cw->draw(args);
+                    cw->drawLayer(args, 1);
+                    cw->drawLayer(args, 2);
+                    cw->drawLayer(args, 3);
 //                    cw->drawPlugs(args);
     //                printf("Cable at %f, %f \n", cw->getOutputPos().x, cw->getOutputPos().y);
                 }

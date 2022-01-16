@@ -3,7 +3,6 @@
 
 * afum needs updating to deal with new compressed patch files
   * patch repo sure is gonna get ugly
-* screenshot not getting cables
 
 # TechTech Technologies VCV Plugins
 
