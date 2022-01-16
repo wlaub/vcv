@@ -1,7 +1,7 @@
 
 # VCV 2.0 Port
 
-* afum needs updating to deal with new compressed patch files
+* vcvmon needs updating to deal with new compressed patch files
   * patch repo sure is gonna get ugly
 
 # TechTech Technologies VCV Plugins
@@ -157,7 +157,9 @@ Karplus Strong Toolkit (noise -> env -> delay -> filter)
 
 ### Pleiades
 
-Tree Sequencer
+Unfinished Tree Sequencer
+
+Deleted because the ui was a disaster, and it was not worth the effort to port to v2
 
 ### Mneme
 
