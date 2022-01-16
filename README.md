@@ -1,8 +1,6 @@
 
 # VCV 2.0 Port
 
-* Knobs graphically broken
-* MetadataFiles selector graphics issue
 * afum needs updating to deal with new compressed patch files
   * patch repo sure is gonna get ugly
 * screenshot not getting cables

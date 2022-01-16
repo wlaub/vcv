@@ -83,6 +83,8 @@ struct FileTypeChoice : LedDisplayChoice {
         bndLabel(args.vg, 0, -1, box.size.x, box.size.y, -1, text.c_str());
 
     }
+    void drawLayer(const DrawArgs& args, int layer) override {
+    }
 
 };
 
