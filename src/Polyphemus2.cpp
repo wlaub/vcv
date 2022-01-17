@@ -95,6 +95,9 @@ struct Polyphemus2 : Module {
 
     struct PoleFilter filters[4][3][MAX_CHANNELS][Nmax];
 
+    float rvals[MAX_CHANNELS] = {0};
+    float kvals[MAX_CHANNELS] = {0};
+
 	Polyphemus2() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
         for(int i = 0; i < 4; ++i)
@@ -153,41 +156,54 @@ struct Polyphemus2 : Module {
         {
 
             bool pane_active = false;
+            int pane_in_channels = 0;
             for(int j = 0; j < 3; ++j)
             {
                 pane_active |= inputs[IN00_INPUT+i+4*j].active;
+                pane_in_channels = std::max(pane_in_channels, inputs[IN00_INPUT+i+4*j].getChannels());
             }
     
             if(pane_active)
             {
                 float t = 1.f;
                 float knee = params[KNEE0_PARAM+i].getValue();
-                
-                if(inputs[ENV0_INPUT+i].active)
-                {
-                    t = inputs[ENV0_INPUT+i].getVoltage()/10.f;
-                }
-                t *= params[ENVP0_PARAM+i].getValue();
-                t += params[BIAS0_PARAM+i].getValue();
-                if(t <= knee) 
-                {
-                    t /= knee;
-                }
-                else
-                {
-                    t = 1+(t-knee)/(1-knee)*params[GAIN0_PARAM+i].getValue();
-                }
 
-                float pitch = params[VOCTP0_PARAM+i].getValue();
-                pitch += inputs[VOCT0_INPUT+i].getVoltage();
-                float freq =  dsp::FREQ_C4 * std::pow(2.f, pitch) * t;
-                float wc = 6.28*freq*args.sampleTime;
-                wc = clamp(wc, 0.f, 3.14f);
+                int voct_channels = std::min(inputs[VOCT0_INPUT+i].getChannels(), MAX_CHANNELS);
+                int env_channels = std::min(inputs[ENV0_INPUT+i].getChannels(), MAX_CHANNELS);
+                int pane_channels = std::max(voct_channels, env_channels);
+                pane_channels = std::max(pane_channels, 1);
 
+                //Don't need to evaluate channels that don't have a corresponding input signal
+                int clamp_channels = std::min(pane_in_channels, pane_channels); 
                 float N = params[ORDER_PARAM+i].getValue();
+                for(int c = 0; c < clamp_channels; ++c)
+                {
+                    int ec = std::min(c,env_channels-1);
+                    int vc = std::min(c,voct_channels-1);
+                    if(inputs[ENV0_INPUT+i].active)
+                    {
+                        t = inputs[ENV0_INPUT+i].getVoltage(ec)/10.f;
+                    }
+                    t *= params[ENVP0_PARAM+i].getValue();
+                    t += params[BIAS0_PARAM+i].getValue();
+                    if(t <= knee) 
+                    {
+                        t /= knee;
+                    }
+                    else
+                    {
+                        t = 1+(t-knee)/(1-knee)*params[GAIN0_PARAM+i].getValue();
+                    }
 
-                double r = get_r(wc, N);
-                double k = get_k(r, N);
+                    float pitch = params[VOCTP0_PARAM+i].getValue();
+                    pitch += inputs[VOCT0_INPUT+i].getVoltage(vc);
+                    float freq =  dsp::FREQ_C4 * std::pow(2.f, pitch) * t;
+                    float wc = 6.28*freq*args.sampleTime;
+                    wc = clamp(wc, 0.f, 3.14f);
+
+                    rvals[c] = get_r(wc, N);
+                    kvals[c] = get_k(rvals[c], N);
+                }
 
     //            printf("%f: %f, %f\n", wc, r, k);
                 for(int j = 0; j < 3; ++j)
@@ -198,17 +214,21 @@ struct Polyphemus2 : Module {
                     {
                         channels = MAX_CHANNELS;
                     }
-             
+//printf("A\n");
                     for(int c = 0; c < channels; ++c)
                     {
                         float y = 0;
                         if(inputs[IN00_INPUT+idx].active)
                         {
                             float x = inputs[IN00_INPUT+idx].getVoltage(c);
-
+                            int pc = std::min(c,clamp_channels-1);
+                            double r = rvals[pc];
+                            double k = kvals[pc];
+//printf("B\n");            
                             for(int n = 0; n < Nmax; ++n)
                             {
                                 x = filters[i][j][c][n].get_y(x,r,k);
+//printf("C\n");              
                                 if(n == (floor(N) -1))
                                 {
                                     y = x;
