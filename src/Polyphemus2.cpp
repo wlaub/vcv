@@ -189,7 +189,7 @@ struct Polyphemus2 : Module {
                     float y = 0;
                     if(inputs[IN00_INPUT+i+4*j].active)
                     {
-                        float x = inputs[IN00_INPUT+i+4*j].getVoltage();
+                        float x = inputs[IN00_INPUT+i+4*j].getVoltageSum();
 
                         for(int n = 0; n < Nmax; ++n)
                         {
