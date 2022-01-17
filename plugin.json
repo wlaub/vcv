@@ -131,11 +131,12 @@
     {
       "slug": "Polyphemus2",
       "name": "Polyphemus II (WIP)",
-      "description": "Single-pole VCF x4",
+      "description": "Single 1-10'th order real pole VCF with v/oct and envelope inputs",
       "tags": [
         "low pass gate",
         "quad",
-        "vcf"
+        "vcf",
+        "polyphonic"
       ]
     },
     {

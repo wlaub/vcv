@@ -165,7 +165,6 @@ struct Polyphemus2 : Module {
     
             if(pane_active)
             {
-                float t = 1.f;
                 float knee = params[KNEE0_PARAM+i].getValue();
 
                 int voct_channels = std::min(inputs[VOCT0_INPUT+i].getChannels(), MAX_CHANNELS);
@@ -180,6 +179,7 @@ struct Polyphemus2 : Module {
                 {
                     int ec = std::min(c,env_channels-1);
                     int vc = std::min(c,voct_channels-1);
+                    float t = 1.f;
                     if(inputs[ENV0_INPUT+i].active)
                     {
                         t = inputs[ENV0_INPUT+i].getVoltage(ec)/10.f;

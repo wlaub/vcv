@@ -24,6 +24,56 @@ Ramp/random walk generator. This module is still in development. Current impleme
   * radius input from -1 to 1 with CV input. Clips to (-1,1).
   * angle input from 0 to 3.14 with CV input. Clips to (0,6.28).
 
+### II (WIP)
+
+IIR filter with v/oct and envelope inputs
+
+The filter consists of a single 1-10'th order real pole with radius computed from cutoff frequency. The pole order can be selected using a knob.
+
+The envelope scales the cutoff frequency by a piecewise linear curve with a configurable knee. 
+
+k is the knee value from 0 to 1
+
+wc is the base cutoff frequency from the v/oct and pitch knobs
+
+p is the frequency gain above knee from 0 to 19
+
+The mapping from envelope voltage to cutoff frequency is
+
+| Envelope Voltage | Cutoff Frequency |
+|----|---|
+| 0 - 10\*k V   | 0 - wc |
+| 10\*kV - 10 V | wc - wc\*(1+p) |
+
+#### Controls
+
+The envelope level knob attenuates the envelope voltage or sets the normal voltage of the envelope input.
+
+The envelope bias knob applies a fixed bias offset to the envelope.
+
+#### Polyphony
+
+Each filter input/output supports polyphony up to 16 channels.
+
+When on of the v/oct or envelope inputs is patched with a polyphonic input, the resulting cutoff frequencies are applied sequentially to the filter channels:
+| v/oct/env input | filter cutoff source |
+|-|-|
+|0|0|
+|1|1|
+|2|2|
+|X|2|
+|X|2|
+
+#### TODO
+
+* Make knobs have nice units
+ * Frequency for base pitch
+ * Volts for bias offset and cutoff knee
+* Make a version with just one pane and deprecate this one
+
+
+
+
 ### Prometheus 
 
 #### I
@@ -174,10 +224,6 @@ Delays?
 ### Odysseus II
 
 More channels, more outputs
-
-### Polyphemus II
-
-More modular, better curves, (v/oct lpf)
 
 ### Output Delay Module
 
