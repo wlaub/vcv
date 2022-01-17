@@ -5,6 +5,7 @@
 //The maximum pole order
 #define Nmax 10
 
+#define MAX_CHANNELS 16
 
 
 struct PoleFilter {
@@ -92,7 +93,7 @@ struct Polyphemus2 : Module {
 
     float buffer[4][3];
 
-    struct PoleFilter filters[4][3][Nmax];
+    struct PoleFilter filters[4][3][MAX_CHANNELS][Nmax];
 
 	Polyphemus2() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -188,27 +189,35 @@ struct Polyphemus2 : Module {
                 double r = get_r(wc, N);
                 double k = get_k(r, N);
 
-    //TODO: Check for presence of cables
     //            printf("%f: %f, %f\n", wc, r, k);
                 for(int j = 0; j < 3; ++j)
                 {
-                    float y = 0;
-                    if(inputs[IN00_INPUT+i+4*j].active)
+                    int idx = i+4*j;
+                    int channels = inputs[IN00_INPUT+idx].getChannels();
+                    if(channels > MAX_CHANNELS)
                     {
-                        float x = inputs[IN00_INPUT+i+4*j].getVoltageSum();
-
-                        for(int n = 0; n < Nmax; ++n)
+                        channels = MAX_CHANNELS;
+                    }
+             
+                    for(int c = 0; c < channels; ++c)
+                    {
+                        float y = 0;
+                        if(inputs[IN00_INPUT+idx].active)
                         {
-                            x = filters[i][j][n].get_y(x,r,k);
-                            if(n == (floor(N) -1))
+                            float x = inputs[IN00_INPUT+idx].getVoltage(c);
+
+                            for(int n = 0; n < Nmax; ++n)
                             {
-                                y = x;
+                                x = filters[i][j][c][n].get_y(x,r,k);
+                                if(n == (floor(N) -1))
+                                {
+                                    y = x;
+                                }
                             }
                         }
+                        outputs[OUT00_OUTPUT+idx].setVoltage(y, c);
                     }
-    //                float y = x/k+r*buffer[i][j];
-    //                buffer[i][j] = y;
-                    outputs[OUT00_OUTPUT+i+4*j].setVoltage(y);
+                    outputs[OUT00_OUTPUT+idx].setChannels(channels);
                 }
             }
         }
