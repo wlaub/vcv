@@ -70,9 +70,8 @@ When on of the v/oct or envelope inputs is patched with a polyphonic input, the 
  * Frequency for base pitch
  * Volts for bias offset and cutoff knee
 * Make a version with just one pane and deprecate this one
-
-
-
+ * An octave control and hp/lp switch might be nice (instead of some of the redundant filter ports)
+ * Make a panel
 
 ### Prometheus 
 
