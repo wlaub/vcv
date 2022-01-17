@@ -104,8 +104,14 @@ struct Polyphemus2 : Module {
             configParam(GAIN0_PARAM+i, 0.f, 19.f, 1.f, "Frequency gain above knee");
             configParam(KNEE0_PARAM+i, 0.f, 1.f, 0.5f, "Cutoff frequency knee level");
             configParam(VOCTP0_PARAM+i, -3.f, 3.f, 0.f, "Base cutoff Frequency");
+
+            configInput(VOCT0_INPUT+i, "Cutoff Frequency (v/oct)");
+            configInput(ENV0_INPUT+i, "Envelope");
             for(int j = 0; j < 3; ++ j)
             {
+                configBypass(IN00_INPUT+i*3+j, OUT00_OUTPUT+i*3+j);
+                configInput(IN00_INPUT+i*3+j, "Filter");
+                configOutput(OUT00_OUTPUT+i*3+j, "Filter");
                 buffer[i][j] = 0;
             }
         }
