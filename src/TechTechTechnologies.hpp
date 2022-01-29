@@ -7,6 +7,7 @@
 #include <libgen.h>
 #include <GLFW/glfw3.h>
 
+
 //
 // What follows is misguided legacy macros. I am sorry.
 //
@@ -116,6 +117,16 @@ params[name ## _PARAM+idx].value\
 
 using namespace rack;
 
+template <typename TBase = GrayModuleLightWidget>
+struct TOrangeLight : TBase {
+    TOrangeLight() {
+        this->addBaseColor(nvgRGBAf(1, .5, 0, 1));
+    }
+};
+using OrangeLight = TOrangeLight<>;
+
+
+
 
 extern Plugin *pluginInstance;
 
@@ -218,4 +229,5 @@ extern Model* modelDecayTimer;
 
 extern Model* modelTiaI;
 
+extern Model* modelMatI;
 

@@ -189,6 +189,15 @@
         "Utility",
         "Controller"
       ]
+    },
+    {
+      "slug": "MatI",
+      "name": "Mat I",
+      "description": "Multichannel Fixed Biquad Filter Bank",
+      "tags": [
+        "Filter"
+      ]
     }
+ 
   ]
 }
