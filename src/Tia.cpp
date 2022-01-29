@@ -53,6 +53,7 @@ struct TiaI : Module {
         XFADE4_INPUT,
         XFADE5_INPUT,
         XFADE6_INPUT,
+        POLY_XFADE_INPUT,
         INPUTS_LEN
     };
     enum OutputId {
@@ -87,7 +88,7 @@ struct TiaI : Module {
             configParam(SET_TOP0_PARAM+i, 0.f, 1.f, 0.f, "Assign xfade top");
             configParam(SET_BOT0_PARAM+i, 0.f, 1.f, 0.f, "Assign xfade bottom");
             configParam(SELECT0_PARAM+i, 0.f, 1.f, 0.f, "Select assignment source");
-            configInput(SIGNAL0_INPUT+i, "Source Input");
+            configInput(SIGNAL0_INPUT+i, "Source");
             configInput(XFADE0_INPUT+i, "Crossfade CV");
             configParam(GAIN0_PARAM+i, 0.f, 1.f, 1.f, "Source Gain");
         }
@@ -97,9 +98,11 @@ struct TiaI : Module {
 
 
         configParam(SELECT_NONE_PARAM, 0.f, 1.f, 0.f, "Select 0 V");
-        configParam(FADE_RANGE_PARAM, 0.f, 1.f, 0.f, "Crossfade CV Range");
+        configSwitch(FADE_RANGE_PARAM, 0.f, 1.f, 0.f, "Crossfade CV Range", {"0 - 5 V", "+/- 5 V"});
 
         configParam(GLOBAL_GAIN_PARAM, 0.f, 1.f, 1.f, "Global Source Gain");
+
+        configInput(POLY_XFADE_INPUT, "Crossfade CV (Polyphonic)");
 
         configOutput(POLY_OUTPUT, "Crossfader Outputs (Polyphonic)");
     }
@@ -136,13 +139,15 @@ struct TiaI : Module {
         int fade_range = params[FADE_RANGE_PARAM].getValue();
         for(int i = 0; i < 7; ++i)
         {
-            double fade = inputs[XFADE0_INPUT+i].getVoltage()/5;
-            if(fade_range == 0) //bipolar 5 V
+            double fade = inputs[XFADE0_INPUT+i].getVoltage();
+            fade += inputs[POLY_XFADE_INPUT].getPolyVoltage(i);
+            fade /= 5;
+            if(fade_range == 1) //bipolar 5 V
             {
                 fade = clamp(fade, -1.f, 1.f);
                 fade = (fade+1)/2;
             }
-            else if(fade_range == 1) //0-5 V
+            else if(fade_range == 0) //0-5 V
             {
                 fade = clamp(fade, 0.f, 1.f);
             }
@@ -331,71 +336,73 @@ struct TiaIWidget : ModuleWidget {
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
-
-        float grid = 15.875;
-
-        addParam(createParamCentered<CKSS>(
-                mm2px(Vec(127.0, 80.125)), module, TiaI::FADE_RANGE_PARAM));
-
+        #define GRID(x,y) 15.24*(x-0.5), 15.24*(y)+3.28
 
         for(int i = 0; i < 7; ++i)
         {
-            float xpos = (i+1)*grid;
             addParam(createParamCentered<RoundBlackKnob>(
-                    mm2px(Vec(xpos, 6*grid+.75)), module, TiaI::GAIN0_PARAM+i));
+                    mm2px(Vec(GRID(1, 6))), module, TiaI::GAIN0_PARAM+i));
 
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(xpos, grid+.75)), module, TiaI::SET_TOP0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, 1))), module, TiaI::SET_TOP0_PARAM+i));
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(xpos, 2*grid+.75)), module, TiaI::SET_BOT0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, 2))), module, TiaI::SET_BOT0_PARAM+i));
 
             addChild(createLightCentered<MediumLight<RedLight>>(
-                    mm2px(Vec(xpos, 1.375*grid+.75)), module, TiaI::FADE_TOP0_LIGHT+i));
+                    mm2px(Vec(GRID(i+1, 1.375))), module, TiaI::FADE_TOP0_LIGHT+i));
             addChild(createLightCentered<MediumLight<RedLight>>(
-                    mm2px(Vec(xpos, 1.625*grid+.75)), module, TiaI::FADE_BOT0_LIGHT+i));
+                    mm2px(Vec(GRID(i+1, 1.625))), module, TiaI::FADE_BOT0_LIGHT+i));
      
 
             addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
-                    mm2px(Vec(xpos, grid+.75)), module, TiaI::SELECT_TOP0_LIGHT+3*i));
+                    mm2px(Vec(GRID(i+1, 1))), module, TiaI::SELECT_TOP0_LIGHT+3*i));
             addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
-                    mm2px(Vec(xpos, 2*grid+.75)), module, TiaI::SELECT_BOT0_LIGHT+3*i));
+                    mm2px(Vec(GRID(i+1, 2))), module, TiaI::SELECT_BOT0_LIGHT+3*i));
 
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(xpos, 4*grid+.75)), module, TiaI::SELECT0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, 4))), module, TiaI::SELECT0_PARAM+i));
             addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                    mm2px(Vec(xpos, 4*grid+.75)), module, TiaI::SELECT0_LIGHT+i));
+                    mm2px(Vec(GRID(i+1, 4))), module, TiaI::SELECT0_LIGHT+i));
      
 
             addInput(createInputCentered<PJ301MPort>(
-                    mm2px(Vec(xpos, 5*grid+.75)), module, TiaI::XFADE0_INPUT+i));
+                    mm2px(Vec(GRID(i+1, 5))), module, TiaI::XFADE0_INPUT+i));
 
             addParam(createParamCentered<RoundBlackKnob>(
-                    mm2px(Vec(xpos, 6*grid+.75)), module, TiaI::GAIN0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, 6))), module, TiaI::GAIN0_PARAM+i));
 
 
             addInput(createInputCentered<PJ301MPort>(
-                    mm2px(Vec(xpos, 7*grid+.75)), module, TiaI::SIGNAL0_INPUT+i));
+                    mm2px(Vec(GRID(i+1, 7))), module, TiaI::SIGNAL0_INPUT+i));
      
         }
 
-        addParam(createParamCentered<RoundBlackKnob>(
-                mm2px(Vec(8*grid, 6*grid+.75)), module, TiaI::GLOBAL_GAIN_PARAM));
-
 
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(8*grid, grid+.75)), module, TiaI::SET_TOP_ALL_PARAM));
+                mm2px(Vec(GRID(8,1))), module, TiaI::SET_TOP_ALL_PARAM));
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(8*grid, 2*grid+.75)), module, TiaI::SET_BOT_ALL_PARAM));
+                mm2px(Vec(GRID(8,2))), module, TiaI::SET_BOT_ALL_PARAM));
+
+        addParam(createParamCentered<CKSS>(
+                mm2px(Vec(GRID(8,3))), module, TiaI::FADE_RANGE_PARAM));
 
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(8*grid, 4*grid+.75)), module, TiaI::SELECT_NONE_PARAM));
+                mm2px(Vec(GRID(8,4))), module, TiaI::SELECT_NONE_PARAM));
 
         addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                mm2px(Vec(8*grid, 4*grid+.75)), module, TiaI::SELECT_NONE_LIGHT));
+                mm2px(Vec(GRID(8,4))), module, TiaI::SELECT_NONE_LIGHT));
  
 
+        addInput(createInputCentered<PJ301MPort>(
+                mm2px(Vec(GRID(8,5))), module, TiaI::POLY_XFADE_INPUT));
+ 
+
+        addParam(createParamCentered<RoundBlackKnob>(
+                mm2px(Vec(GRID(8,6))), module, TiaI::GLOBAL_GAIN_PARAM));
+
+
         addOutput(createOutputCentered<PJ301MPort>(
-                mm2px(Vec(8*grid, 111.875)), module, TiaI::POLY_OUTPUT));
+                mm2px(Vec(GRID(8,7))), module, TiaI::POLY_OUTPUT));
  
     }
 };
