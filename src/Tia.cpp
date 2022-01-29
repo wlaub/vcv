@@ -61,41 +61,11 @@ struct TiaI : Module {
     };
     enum LightId {
         SELECT_TOP0_LIGHT,
-        SELECT_TOP1_LIGHT,
-        SELECT_TOP2_LIGHT,
-        SELECT_TOP3_LIGHT,
-        SELECT_TOP4_LIGHT,
-        SELECT_TOP5_LIGHT,
-        SELECT_TOP6_LIGHT,
-        FADE_TOP0_LIGHT,
-        FADE_TOP1_LIGHT,
-        FADE_TOP2_LIGHT,
-        FADE_TOP3_LIGHT,
-        FADE_TOP4_LIGHT,
-        FADE_TOP5_LIGHT,
-        FADE_TOP6_LIGHT,
-        FADE_BOT0_LIGHT,
-        FADE_BOT1_LIGHT,
-        FADE_BOT2_LIGHT,
-        FADE_BOT3_LIGHT,
-        FADE_BOT4_LIGHT,
-        FADE_BOT5_LIGHT,
-        FADE_BOT6_LIGHT,
-        SELECT_BOT0_LIGHT,
-        SELECT_BOT1_LIGHT,
-        SELECT_BOT2_LIGHT,
-        SELECT_BOT3_LIGHT,
-        SELECT_BOT4_LIGHT,
-        SELECT_BOT5_LIGHT,
-        SELECT_BOT6_LIGHT,
-        SELECT0_LIGHT,
-        SELECT1_LIGHT,
-        SELECT2_LIGHT,
-        SELECT3_LIGHT,
-        SELECT4_LIGHT,
-        SELECT5_LIGHT,
-        SELECT6_LIGHT,
-        SELECT_NONE_LIGHT,
+        SELECT_BOT0_LIGHT = SELECT_TOP0_LIGHT+21,
+        FADE_TOP0_LIGHT = SELECT_BOT0_LIGHT+21,
+        FADE_BOT0_LIGHT = FADE_TOP0_LIGHT+7,
+        SELECT0_LIGHT = FADE_BOT0_LIGHT+7,
+        SELECT_NONE_LIGHT = SELECT0_LIGHT+7,
         LIGHTS_LEN
     };
 
@@ -109,7 +79,6 @@ struct TiaI : Module {
     float blink_counter = 0;
     int blink = 0;
 
-    //TODO: Save the routing configuration
     TiaI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 
@@ -224,8 +193,6 @@ struct TiaI : Module {
         }
 
         /*Process selection lights*/
-        //TODO: It would be nice to be able to tell if the selection is pending
-
         blink_counter += args.sampleTime;
         if(blink_counter > 0.5)
         {
@@ -248,6 +215,8 @@ struct TiaI : Module {
         for(int i = 0; i < 7; ++i)
         {
             float value = 0;
+            float tvalue = 0;
+            int color = 1;
             if(bot_select[i] == select)
             {
                 value = 1;
@@ -255,10 +224,20 @@ struct TiaI : Module {
             if(bot_select[i] != bot_select_pending[i])
             {
                 value = blink;
+                if(bot_select_pending[i] != select)
+                {
+                    color = 2;
+                }
             }
 
-            lights[SELECT_BOT0_LIGHT+i].setBrightness(value);
+            for(int j = 0; j < 3; ++j)
+            {
+                tvalue = 0;
+                if(j == color) tvalue = value;
+                lights[SELECT_BOT0_LIGHT+3*i+j].setBrightness(tvalue);
+            }
 
+            color = 1;
             value = 0;
             if(top_select[i] == select)
             {
@@ -267,9 +246,19 @@ struct TiaI : Module {
             if(top_select[i] != top_select_pending[i])
             {
                 value = blink;
+                if(top_select_pending[i] != select)
+                {
+                    color = 2;
+                }
+ 
             }
-            lights[SELECT_TOP0_LIGHT+i].setBrightness(value);
 
+            for(int j = 0; j < 3; ++j)
+            {
+                tvalue = 0;
+                if(j == color) tvalue = value;
+                lights[SELECT_TOP0_LIGHT+3*i+j].setBrightness(tvalue);
+            }
 
         }
 
@@ -366,10 +355,10 @@ struct TiaIWidget : ModuleWidget {
                     mm2px(Vec(xpos, 1.625*grid+.75)), module, TiaI::FADE_BOT0_LIGHT+i));
      
 
-            addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                    mm2px(Vec(xpos, grid+.75)), module, TiaI::SELECT_TOP0_LIGHT+i));
-            addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                    mm2px(Vec(xpos, 2*grid+.75)), module, TiaI::SELECT_BOT0_LIGHT+i));
+            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
+                    mm2px(Vec(xpos, grid+.75)), module, TiaI::SELECT_TOP0_LIGHT+3*i));
+            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
+                    mm2px(Vec(xpos, 2*grid+.75)), module, TiaI::SELECT_BOT0_LIGHT+3*i));
 
             addParam(createParamCentered<LEDBezel>(
                     mm2px(Vec(xpos, 4*grid+.75)), module, TiaI::SELECT0_PARAM+i));
