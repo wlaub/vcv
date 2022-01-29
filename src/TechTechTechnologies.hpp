@@ -216,4 +216,6 @@ extern Model* modelMetadataFiles;
 
 extern Model* modelDecayTimer;
 
+extern Model* modelTiaI;
+
 

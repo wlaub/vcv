@@ -200,6 +200,16 @@ The files metadata module, when configured for image files, can also take a scre
 
 ## WIP Modules
 
+### Tia I
+
+Multiplexing Crossfader
+
+7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module. Changes the to a crossfader's inputs only occur when the input is not contributing to the output.
+
+The top inputs to each crossfader are selected when the crossfader CV is at its maximum (5 V).
+
+The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum (0 or -5 V).
+
 ### Achilles
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)

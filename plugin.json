@@ -179,6 +179,16 @@
         "Digital",
         "Utility"
       ]
+    },
+    {
+      "slug": "TiaI",
+      "name": "Tia I",
+      "description": "7-channel crossfading multiplexer",
+      "tags": [
+        "Switch",
+        "Utility",
+        "Controller"
+      ]
     }
   ]
 }
