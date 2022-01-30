@@ -220,7 +220,7 @@ The default filter configuration includes a low-pass filter on channel 1, band-p
 
 The filter specification has the form
 
-```json
+```
 {
     "filters": [
             //Channel 0 filter stages
