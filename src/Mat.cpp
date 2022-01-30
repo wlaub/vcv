@@ -443,9 +443,8 @@ struct MatIWidget : ModuleWidget {
                     mm2px(Vec(GRID(1+DY/2, ydx))), module, MatI::FILTER_LIGHT+i));
             
         }
-        float ydx = 1.75+DY*(MAX_CHANNELS+1);
         addChild(createLightCentered<MediumLight<RedLight>>(
-                mm2px(Vec(GRID(1, ydx))), module, MatI::ERROR_LIGHT));
+                mm2px(Vec(GRID(1, 5.33))), module, MatI::ERROR_LIGHT));
  
 
         addInput(createInputCentered<PJ301MPort>(
