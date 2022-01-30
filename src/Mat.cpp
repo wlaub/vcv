@@ -20,8 +20,8 @@ struct MatI : Module {
         LIGHTS_LEN = FILTER_LIGHT+MAX_CHANNELS
     };
 
-    struct ttt::Biquad** filters;
-    int* filter_order;
+    struct ttt::Biquad** filters[MAX_CHANNELS];
+    int filter_order[MAX_CHANNELS];
     int filter_count = 0;
 
     MatI() {
@@ -30,6 +30,8 @@ struct MatI : Module {
         configInput(POLY_INPUT, "Filter");
 
         configOutput(POLY_OUTPUT, "Filter");
+
+        load_default_filter();
     }
 
     void process(const ProcessArgs& args) override {
@@ -63,34 +65,127 @@ struct MatI : Module {
 
         /* Do Filters */
 
-        for(int i = 0; i < input_count; ++i)
+        int max_count = std::max(input_count, filter_count);
+
+        for(int i = 0; i < max_count; ++i)
         {
-            double x = inputs[POLY_INPUT].getVoltage(i);
+            double x = inputs[POLY_INPUT].getPolyVoltage(i);
             if(i < filter_count)
             {
                 for(int j = 0; j < filter_order[i]; ++j)
                 {
-                    x = filters[i][j].step(x, 0);
+                    x = filters[i][j]->step(x, 0);
                 }
             }
 
             outputs[POLY_OUTPUT].setVoltage(x, i);
         }
-        outputs[POLY_OUTPUT].setChannels(input_count);
+        outputs[POLY_OUTPUT].setChannels(max_count);
 
     }
 
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        if(filter_count > 0)
+        {
+            json_object_set_new(rootJ, "filters", dump_filters());
+        }
 
         return rootJ;
 
     } 
 
     void dataFromJson(json_t* rootJ) override {
+        json_t* filter_array = json_object_get(rootJ, "filters");
+        if(filter_array == 0)
+        {
+            load_default_filter();
+        }
+        else
+        {
+            load_filters(filter_array);
+        }
 
     } 
+
+    void load_default_filter() {
+        json_t* rootJ = 0;
+        json_t* filter_array = 0;
+
+        json_error_t error;
+
+        std::string filename = asset::plugin(pluginInstance, "res/mati_default.json");
+
+        rootJ = json_load_file(filename.c_str(), 0, &error);
+        filter_array = json_object_get(rootJ, "filters");
+
+        if(!filter_array)
+        {
+            printf("Unable to load filter spec %s\n", filename);
+        }
+        else
+        {
+            load_filters(filter_array);
+        }
+    }
+
+    json_t* dump_filters() {
+        json_t* filter_array = json_array();
+
+        for(int i = 0; i < filter_count; ++i)
+        {
+            json_t* slices = json_array();
+            for(int j = 0; j < filter_order[i]; ++j)
+            {
+                json_t* sos = json_array();
+                for(int k = 0; k < 3; ++k)
+                {
+                    json_array_append(sos, json_real(filters[i][j]->b[k]));
+                }
+                for(int k = 0; k < 3; ++k)
+                {
+                    json_array_append(sos, json_real(filters[i][j]->a[k]));
+                }
+                json_array_append(slices, sos);
+            }
+            json_array_append(filter_array, slices);
+        }
+
+        return filter_array;
+    }
+
+    void load_filters(json_t* filter_array) {
+
+        filter_count = json_array_size(filter_array);
+ 
+        for(int i = 0; i < filter_count; ++i)
+        {
+            json_t* slices = json_array_get(filter_array, i);
+            int order = json_array_size(slices);
+            filter_order[i] = order;
+            filters[i] = new ttt::Biquad*[order];
+            for(int j = 0; j < order; ++j)
+            {
+                json_t* sos_array = json_array_get(slices, j);
+                if(json_array_size(sos_array) != 6)
+                {
+                    printf("Warning: filter specification is malformed at filter %i slice %i\n", i, j);
+                }
+
+                double sos[6];
+                for(int k = 0; k < 6; ++k)
+                {
+                    sos[k] = json_number_value(json_array_get(sos_array, k));
+                }
+
+                filters[i][j] = new struct ttt::Biquad(1, sos);
+            }
+
+        }
+
+
+    }
 
 };
 

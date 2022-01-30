@@ -145,7 +145,7 @@ struct MetadataMain : Module {
 
 
     bool json_dirty = false;
-    json_t* widget_data;
+    json_t* widget_data = 0;
 
     void dataFromJson(json_t* rootJ) override {
         widget_data = json_copy(rootJ);
