@@ -1,5 +1,7 @@
 #include "TechTechTechnologies.hpp"
 
+#include <osdialog.h>
+
 #define MAX_CHANNELS 16
 
 struct MatI : Module {
@@ -110,19 +112,24 @@ struct MatI : Module {
     } 
 
     void load_default_filter() {
+        std::string filename = asset::plugin(pluginInstance, "res/mati_default.json");
+        load_filter_from_file(filename);
+    }
+
+    void load_filter_from_file(std::string filename) {
         json_t* rootJ = 0;
         json_t* filter_array = 0;
 
         json_error_t error;
 
-        std::string filename = asset::plugin(pluginInstance, "res/mati_default.json");
-
         rootJ = json_load_file(filename.c_str(), 0, &error);
         filter_array = json_object_get(rootJ, "filters");
 
-        if(!filter_array)
+        if(!validate_filter(filter_array))
         {
-            printf("Unable to load filter spec %s\n", filename);
+            char message[2048];
+            sprintf(message, "%s is not a valid filter specification", filename.c_str());
+            osdialog_message(OSDIALOG_ERROR, OSDIALOG_OK, message);
         }
         else
         {
@@ -153,6 +160,48 @@ struct MatI : Module {
         }
 
         return filter_array;
+    }
+
+    bool validate_filter(json_t* filter_array) {
+
+        if(!filter_array || !json_is_array(filter_array)) 
+        {
+            return false;
+        }
+
+
+        filter_count = json_array_size(filter_array);
+ 
+        for(int i = 0; i < filter_count; ++i)
+        {
+            json_t* slices = json_array_get(filter_array, i);
+            if(!json_is_array(slices))
+            {
+                return false;
+            }
+
+            int order = json_array_size(slices);
+            for(int j = 0; j < order; ++j)
+            {
+                json_t* sos_array = json_array_get(slices, j);
+                if(json_array_size(sos_array) != 6)
+                {
+                    return false;
+                }
+
+                for(int k = 0; k < 6; ++k)
+                {
+                    if(!json_is_number(json_array_get(sos_array, k)))
+                    {
+                        return false;
+                    }
+                }
+
+            }
+
+        }
+        return true;
+       
     }
 
     void load_filters(json_t* filter_array) {
@@ -191,6 +240,29 @@ struct MatI : Module {
 
 
 struct MatIWidget : ModuleWidget {
+
+
+    void appendContextMenu(Menu* menu) override {
+            MatI* module = dynamic_cast<MatI*>(this->module);
+
+            menu->addChild(new MenuEntry);
+
+            struct LoadItem : MenuItem {
+                MatI* module;
+                std::string dir = asset::user("patches");
+                void onAction(const event::Action& e) override {
+                    char* path = osdialog_file(OSDIALOG_OPEN, 
+                        dir.c_str(), NULL, osdialog_filters_parse("Filter Spec:json"));
+                    module->load_filter_from_file(path);
+                }
+            };
+
+            LoadItem* tItem = createMenuItem<LoadItem>("Load Filter Spec");
+            tItem->module = module;
+            menu->addChild(tItem); 
+
+        }
+
     MatIWidget(MatI* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/MatI.svg")));
@@ -219,6 +291,7 @@ struct MatIWidget : ModuleWidget {
 
         addOutput(createOutputCentered<PJ301MPort>(
                 mm2px(Vec(GRID(1,7))), module, MatI::POLY_OUTPUT));
+
  
     }
 };
