@@ -149,7 +149,7 @@ struct MatI : Module {
         filters = all_filters[best_idx];
         if(sample_rate_error > 2)
         {
-            printf("Warning: couldn't find a perfect filter match for sample rate %f. Closest match: %f. \n", sample_rate, sample_rates[best_idx]);
+            printf("Warning: Mat I couldn't find a perfect filter match for sample rate %f. Closest match: %f. \n", sample_rate, sample_rates[best_idx]);
         }
     }
 
