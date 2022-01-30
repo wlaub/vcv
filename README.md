@@ -216,6 +216,8 @@ Multichannel Fixed Biquad Filter Bank
 
 Each channel of a polyphonic input is processed through a different cascaded biquad filter. The filters coefficients are loaded from a json file. Inputs that don't have a corresponding filter loaded will be passed unfiltered. Filters that don't have a corresponding input will process the last input channel.
 
+The left column of LEDs indicates the active input channels, and the right column of LEDs indicates the loaded filter channels.
+
 The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7.
 
 The filter specification has the form
