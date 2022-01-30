@@ -242,6 +242,7 @@ The filter specification has the form
 }
 ```
 
+See `res/mati_default.json` for the default filter specification.
 
 ### Achilles
 
