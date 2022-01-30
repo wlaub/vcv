@@ -216,7 +216,11 @@ Multichannel Fixed Biquad Filter Bank
 
 Each channel of a polyphonic input is processed through a different cascaded biquad filter. The filters coefficients are loaded from a json file. Inputs that don't have a corresponding filter loaded will be passed unfiltered. Filters that don't have a corresponding input will process the last input channel.
 
+A polyphonic output provides the outputs of each individual filter, while a monophonic output provides a mix of all of the filter outputs without scaling.
+
 The left column of LEDs indicates the active input channels, and the right column of LEDs indicates the loaded filter channels.
+
+The red LED at the bottom of the module lights when it cannot find a set of filters matching the current sample rate or when the filters are otherwise not valid.
 
 The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7.
 
@@ -225,24 +229,31 @@ The filter specification has the form
 ```
 {
     "filters": [
+        {
+            "fs" : <sample_rate (sps)>,
+            "channels": [
             //Channel 0 filter stages
-            [
-                //Filter stage 0 coefficients
                 [
-                    b0, b1, b2,
-                    a0, a1, a2
-                ],
-                //Filter stage 1 coefficients
-                [
-                    b0, b1, b2,
-                    a0, a1, a2
-                ],
+                    //Filter stage 0 coefficients
+                    [
+                        b0, b1, b2,
+                        a0, a1, a2
+                    ],
+                    //Filter stage 1 coefficients
+                    [
+                        b0, b1, b2,
+                        a0, a1, a2
+                    ],
                 ...
-            ],
+                ],
             ...
-        ]
+            ]
+        }
+    ]
 }
 ```
+
+Each individual filter specification must include a valid non-zero sample rate and an identical number of channels. The module will automatically select the set of filters with the best sample rate match to the current engine sample rate.
 
 See `res/mati_default.json` for the default filter specification.
 

@@ -14,27 +14,49 @@ struct MatI : Module {
     };
     enum OutputId {
         POLY_OUTPUT,
+        MIX_OUTPUT,
         OUTPUTS_LEN
     };
     enum LightId {
+        ERROR_LIGHT,
         INPUT_LIGHT,
         FILTER_LIGHT = INPUT_LIGHT+MAX_CHANNELS,
         LIGHTS_LEN = FILTER_LIGHT+MAX_CHANNELS
     };
 
-    struct ttt::Biquad** filters[MAX_CHANNELS];
+    //Index order is channel, stage
+    struct ttt::Biquad*** filters;
+    //Order is sample_rate_index, channel_stage
+    struct ttt::Biquad**** all_filters;
+    double* sample_rates;
+    int sample_rate_index = 0;
+    int sample_rate_count = 0;
+
     int filter_order[MAX_CHANNELS];
     int filter_count = 0;
+
+    float sample_rate = 0;
+
+    float sample_rate_error = 0;
+    bool filters_valid = false;
+    
 
     MatI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 
         configInput(POLY_INPUT, "Filter");
 
-        configOutput(POLY_OUTPUT, "Filter");
+        configOutput(POLY_OUTPUT, "Polyphonic Filter");
+
+        configOutput(POLY_OUTPUT, "Filter Mix");
 
         load_default_filter();
     }
+
+    void onSampleRateChange(const SampleRateChangeEvent& e) override {
+        sample_rate = e.sampleRate;
+        pick_filter();
+	}
 
     void process(const ProcessArgs& args) override {
 
@@ -65,25 +87,70 @@ struct MatI : Module {
 
         }
 
+        if(!filters_valid || sample_rate_error > 1)
+        {
+            lights[ERROR_LIGHT].setBrightness(1);
+        }
+        else
+        {
+            lights[ERROR_LIGHT].setBrightness(0);
+        }
+
         /* Do Filters */
 
         int max_count = std::max(input_count, filter_count);
 
-        for(int i = 0; i < max_count; ++i)
+        if(filters_valid)
         {
-            double x = inputs[POLY_INPUT].getPolyVoltage(i);
-            if(i < filter_count)
+            double mix = 0;
+            for(int i = 0; i < max_count; ++i)
             {
-                for(int j = 0; j < filter_order[i]; ++j)
+                double x = inputs[POLY_INPUT].getPolyVoltage(i);
+                if(i < filter_count)
                 {
-                    x = filters[i][j]->step(x, 0);
+                    for(int j = 0; j < filter_order[i]; ++j)
+                    {
+                        x = filters[i][j]->step(x, 0);
+                    }
                 }
+
+                outputs[POLY_OUTPUT].setVoltage(x, i);
+                mix += x;
             }
-
-            outputs[POLY_OUTPUT].setVoltage(x, i);
+            outputs[POLY_OUTPUT].setChannels(max_count);
+            outputs[MIX_OUTPUT].setVoltage(mix);
         }
-        outputs[POLY_OUTPUT].setChannels(max_count);
 
+    }
+
+    void pick_filter()
+    {
+        /*
+        Find the filter that best matches the current sample rate
+        */
+        if(!filters_valid || filter_count == 0)
+        {
+            return;
+        }
+
+        int best_idx = 0;
+        float best_delta = -1;
+        for(int i = 0; i < sample_rate_count; ++i)
+        {
+            float delta = abs(sample_rates[i] - sample_rate);
+            if(best_delta < 0 || delta < best_delta)
+            {
+                best_delta = delta;
+                best_idx = i;
+            }
+        }
+
+        sample_rate_error = best_delta;
+        filters = all_filters[best_idx];
+        if(sample_rate_error > 2)
+        {
+            printf("Warning: couldn't find a perfect filter match for sample rate %f. Closest match: %f. \n", sample_rate, sample_rates[best_idx]);
+        }
     }
 
     json_t* dataToJson() override {
@@ -91,24 +158,60 @@ struct MatI : Module {
 
         if(filter_count > 0)
         {
-            json_object_set_new(rootJ, "filters", dump_filters());
+            json_object_set_new(rootJ, "filters", dump_filter_specs());
         }
 
         return rootJ;
 
     } 
 
+    json_t* dump_filter_specs()
+    {
+        json_t* spec_array = json_array();
+        
+        for(int i = 0; i < sample_rate_count; ++i)
+        {
+            json_t* spec = json_object();
+            json_object_set_new(spec, "fs", json_real(sample_rates[i]));
+            json_object_set_new(spec, "channels", dump_filters(all_filters[i]));
+            json_array_append(spec_array, spec);
+        }
+
+        return spec_array;
+    }
+
+    json_t* dump_filters(struct ttt::Biquad*** tfilters) {
+        json_t* filter_array = json_array();
+
+        for(int i = 0; i < filter_count; ++i)
+        {
+            json_t* slices = json_array();
+            for(int j = 0; j < filter_order[i]; ++j)
+            {
+                json_t* sos = json_array();
+                for(int k = 0; k < 3; ++k)
+                {
+                    json_array_append(sos, json_real(tfilters[i][j]->b[k]));
+                }
+                for(int k = 0; k < 3; ++k)
+                {
+                    json_array_append(sos, json_real(tfilters[i][j]->a[k]));
+                }
+                json_array_append(slices, sos);
+            }
+            json_array_append(filter_array, slices);
+        }
+
+        return filter_array;
+    }
+
     void dataFromJson(json_t* rootJ) override {
-        json_t* filter_array = json_object_get(rootJ, "filters");
-        if(filter_array == 0)
+        json_t* spec_array = json_object_get(rootJ, "filters");
+        if(!load_filter_specs(spec_array))
         {
             load_default_filter();
         }
-        else
-        {
-            load_filters(filter_array);
-        }
-
+            
     } 
 
     void load_default_filter() {
@@ -123,46 +226,102 @@ struct MatI : Module {
         json_error_t error;
 
         rootJ = json_load_file(filename.c_str(), 0, &error);
-        filter_array = json_object_get(rootJ, "filters");
+        json_t* spec_array = json_object_get(rootJ, "filters");
 
-        if(!validate_filter(filter_array))
+        load_filter_specs(spec_array);
+
+    }
+
+
+
+    bool load_filter_specs(json_t* spec_array)
+    {
+        int spec_count = json_array_size(spec_array);
+        int filter_count = -1;
+
+        if(!json_is_array(spec_array) || spec_count == 0)
         {
+            osdialog_message(OSDIALOG_ERROR, OSDIALOG_OK, "Not a valid filter specification: must contain a non-empty 'filters' array");
+            return false;  
+        }
+
+        //Validate each filter specification first
+        for(int i = 0; i < spec_count; ++i)
+        {
+            json_t* spec = json_array_get(spec_array, i);
+            json_t* filter_array = json_object_get(spec, "channels");
+
             char message[2048];
-            sprintf(message, "%s is not a valid filter specification", filename.c_str());
-            osdialog_message(OSDIALOG_ERROR, OSDIALOG_OK, message);
-        }
-        else
-        {
-            load_filters(filter_array);
-        }
-    }
+            bool passed = true;
 
-    json_t* dump_filters() {
-        json_t* filter_array = json_array();
-
-        for(int i = 0; i < filter_count; ++i)
-        {
-            json_t* slices = json_array();
-            for(int j = 0; j < filter_order[i]; ++j)
+            //validate sample rate
+            double fs = json_number_value(json_object_get(spec, "fs"));
+            if(fs == 0)
             {
-                json_t* sos = json_array();
-                for(int k = 0; k < 3; ++k)
-                {
-                    json_array_append(sos, json_real(filters[i][j]->b[k]));
-                }
-                for(int k = 0; k < 3; ++k)
-                {
-                    json_array_append(sos, json_real(filters[i][j]->a[k]));
-                }
-                json_array_append(slices, sos);
+                sprintf(message, "A filter spec has invalid sample rate. fs must be specified and non-zero.");
+                passed = false;
             }
-            json_array_append(filter_array, slices);
+
+            //validate channel count
+            int tcount = json_array_size(filter_array);
+            if(filter_count == -1)
+            {
+                filter_count = tcount;
+            }
+            if(tcount != filter_count)
+            {
+                sprintf(message, "All filter specs must include the same number of channels: %i != %i", filter_count, tcount);
+                passed = false;
+            }
+
+            //validate structure
+            bool valid_structure = validate_filters(filter_array);
+            if(!valid_structure)
+            {
+                sprintf(message, "Invalid filter specification for fs = %d", fs);
+                passed = false;
+            }
+
+            if(!passed)
+            {
+                osdialog_message(OSDIALOG_ERROR, OSDIALOG_OK, message);
+                return false; 
+            }
+
         }
 
-        return filter_array;
+        //If that passed, then load all the new filter specs
+        filters_valid = false;
+
+        sample_rate_count = spec_count;
+        sample_rates = new double[spec_count];
+        all_filters = new struct ttt::Biquad***[spec_count];
+
+        for(int i = 0; i < spec_count; ++i)
+        {
+            json_t* spec = json_array_get(spec_array, i);
+            json_t* filter_array = json_object_get(spec, "channels");
+            double fs = json_number_value(json_object_get(spec, "fs"));
+            sample_rates[i] = fs;
+            all_filters[i] = new struct ttt::Biquad**[MAX_CHANNELS];
+
+            load_filters(filter_array, all_filters[i]);
+        }
+
+        pick_filter();
+
+        filters_valid = true;
+
+        return true;
+
     }
 
-    bool validate_filter(json_t* filter_array) {
+    bool validate_filters(json_t* filter_array) 
+    {
+        /*
+        Confirm that the given array channels array from a filter spec contains
+        only valid sos.
+        */
 
         if(!filter_array || !json_is_array(filter_array)) 
         {
@@ -204,7 +363,7 @@ struct MatI : Module {
        
     }
 
-    void load_filters(json_t* filter_array) {
+    void load_filters(json_t* filter_array, struct ttt::Biquad*** tfilters) {
 
         filter_count = json_array_size(filter_array);
  
@@ -213,7 +372,7 @@ struct MatI : Module {
             json_t* slices = json_array_get(filter_array, i);
             int order = json_array_size(slices);
             filter_order[i] = order;
-            filters[i] = new ttt::Biquad*[order];
+            tfilters[i] = new ttt::Biquad*[order];
             for(int j = 0; j < order; ++j)
             {
                 json_t* sos_array = json_array_get(slices, j);
@@ -228,12 +387,10 @@ struct MatI : Module {
                     sos[k] = json_number_value(json_array_get(sos_array, k));
                 }
 
-                filters[i][j] = new struct ttt::Biquad(1, sos);
+                tfilters[i][j] = new struct ttt::Biquad(1, sos);
             }
 
         }
-
-
     }
 
 };
@@ -277,20 +434,28 @@ struct MatIWidget : ModuleWidget {
 
         for(int i = 0; i < MAX_CHANNELS; ++i)
         {
-            float ydx = 1.75+i*4.5f/(MAX_CHANNELS-1);
+            float ydx = 1.75+i*3.5f/(MAX_CHANNELS-1+2);
             addChild(createLightCentered<MediumLight<OrangeLight>>(
                     mm2px(Vec(GRID(0.875, ydx))), module, MatI::INPUT_LIGHT+i));
             addChild(createLightCentered<MediumLight<OrangeLight>>(
                     mm2px(Vec(GRID(1.125, ydx))), module, MatI::FILTER_LIGHT+i));
             
         }
+        float ydx = 1.75+3.5f;
+        addChild(createLightCentered<MediumLight<RedLight>>(
+                mm2px(Vec(GRID(1, ydx))), module, MatI::ERROR_LIGHT));
+ 
 
         addInput(createInputCentered<PJ301MPort>(
                 mm2px(Vec(GRID(1,1))), module, MatI::POLY_INPUT));
 
 
         addOutput(createOutputCentered<PJ301MPort>(
-                mm2px(Vec(GRID(1,7))), module, MatI::POLY_OUTPUT));
+                mm2px(Vec(GRID(1,6))), module, MatI::POLY_OUTPUT));
+
+        addOutput(createOutputCentered<PJ301MPort>(
+                mm2px(Vec(GRID(1,7))), module, MatI::MIX_OUTPUT));
+
 
  
     }
