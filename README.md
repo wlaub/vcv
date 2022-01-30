@@ -218,6 +218,31 @@ Each channel of a polyphonic input is processed through a different cascaded biq
 
 The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7.
 
+The filter specification has the form
+
+```json
+{
+    "filters": [
+            //Channel 0 filter stages
+            [
+                //Filter stage 0 coefficients
+                [
+                    b0, b1, b2,
+                    a0, a1, a2
+                ],
+                //Filter stage 1 coefficients
+                [
+                    b0, b1, b2,
+                    a0, a1, a2
+                ],
+                ...
+            ],
+            ...
+        ]
+}
+```
+
+
 ### Achilles
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)
