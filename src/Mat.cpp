@@ -39,7 +39,6 @@ struct MatI : Module {
 
     float sample_rate_error = 0;
     bool filters_valid = false;
-    
 
     MatI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -57,6 +56,12 @@ struct MatI : Module {
         sample_rate = e.sampleRate;
         pick_filter();
 	}
+
+    void onReset(const ResetEvent& e) override
+    {
+        Module::onReset(e);
+        load_default_filter();
+    }
 
     void process(const ProcessArgs& args) override {
 
@@ -128,10 +133,12 @@ struct MatI : Module {
         /*
         Find the filter that best matches the current sample rate
         */
-        if(!filters_valid || filter_count == 0)
+        if(filter_count == 0)
         {
             return;
         }
+
+        sample_rate = APP->engine->getSampleRate();
 
         int best_idx = 0;
         float best_delta = -1;
@@ -410,7 +417,10 @@ struct MatIWidget : ModuleWidget {
                 void onAction(const event::Action& e) override {
                     char* path = osdialog_file(OSDIALOG_OPEN, 
                         dir.c_str(), NULL, osdialog_filters_parse("Filter Spec:json"));
-                    module->load_filter_from_file(path);
+                    if(path)
+                    {
+                        module->load_filter_from_file(path);
+                    }
                 }
             };
 
