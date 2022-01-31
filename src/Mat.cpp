@@ -51,7 +51,9 @@ struct MatI : Module {
 
         configOutput(POLY_OUTPUT, "Polyphonic Filter");
 
-        configOutput(POLY_OUTPUT, "Filter Mix");
+        configOutput(MIX_OUTPUT, "Filter Mix");
+
+        configBypass(POLY_INPUT, POLY_OUTPUT);
 
         load_default_filter();
     }
