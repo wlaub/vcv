@@ -202,17 +202,21 @@ The files metadata module, when configured for image files, can also take a scre
 
 ### Tiamat I
 
+7-Channel Chromatic Mixer
+
+Consists of two modules that can be used independently. In combination, a single complete audio spectrum is constructed out of different bands selected from multiple input signals.
+
 #### Tia I
 
 Multiplexing Crossfader
+
+Tia configures routing from its 7 signal inputs to the 7 channels of Mat's default filter configuration.
 
 7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module. Changes the to a crossfader's inputs only occur when the input is not contributing to the output.
 
 The top inputs to each crossfader are selected when the crossfader CV is at its maximum (5 V).
 
 The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum (0 or -5 V).
-
-Intended for use with Mat I.
 
 TODO: Menu options to configure 
     crossfade range 
@@ -238,7 +242,7 @@ The left column of LEDs indicates the active input channels, and the right colum
 
 The red LED at the bottom of the module lights when it cannot find a set of filters matching the current sample rate or when the filters are otherwise not valid.
 
-The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7. Intended for use with Tia I.
+The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7. 
 
 The filter specification has the form
 
@@ -271,7 +275,7 @@ The filter specification has the form
 
 Each individual filter specification must include a valid non-zero sample rate and an identical number of channels. The module will automatically select the set of filters with the best sample rate match to the current engine sample rate.
 
-See `res/mati_default.json` for the default filter specification.
+See [`res/mati_default.json`](res/mati_default.json) for the default filter specification.
 
 ### Achilles
 
