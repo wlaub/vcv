@@ -429,6 +429,10 @@ struct MatIWidget : ModuleWidget {
                     {
                         module->load_filter_from_file(path.c_str());
                     }
+                    else
+                    {
+                        module->load_default_filter();
+                    }
                 }
             };
 

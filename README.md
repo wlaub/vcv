@@ -221,6 +221,8 @@ TODO: Menu options to configure
         Immediate
         what do you call it for the default mode?
 
+TODO: It would be nice to be able to CV control the routing, but idk how
+
 #### Mat I
 
 TODO: Menu spec file location
