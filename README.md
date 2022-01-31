@@ -200,7 +200,9 @@ The files metadata module, when configured for image files, can also take a scre
 
 ## WIP Modules
 
-### Tia I
+### Tiamat I
+
+#### Tia I
 
 Multiplexing Crossfader
 
@@ -210,7 +212,19 @@ The top inputs to each crossfader are selected when the crossfader CV is at its 
 
 The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum (0 or -5 V).
 
-### Mat I
+Intended for use with Mat I.
+
+TODO: Menu options to configure 
+    crossfade range 
+        0-5 V, +/-5 V, 0-10 V? +/-10 V?
+    source selection transition mode
+        Immediate
+        what do you call it for the default mode?
+
+#### Mat I
+
+TODO: Menu spec file location
+TODO: Clean up helper functions to generate from scipy sos
 
 Multichannel Fixed Biquad Filter Bank
 
@@ -222,7 +236,7 @@ The left column of LEDs indicates the active input channels, and the right colum
 
 The red LED at the bottom of the module lights when it cannot find a set of filters matching the current sample rate or when the filters are otherwise not valid.
 
-The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7.
+The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7. Intended for use with Tia I.
 
 The filter specification has the form
 

@@ -40,6 +40,10 @@ struct MatI : Module {
     float sample_rate_error = 0;
     bool filters_valid = false;
 
+    PathMemory pathmem;
+
+    std::string default_filter_path = asset::plugin(pluginInstance, "res/mati_default.json");
+
     MatI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 
@@ -167,10 +171,23 @@ struct MatI : Module {
         {
             json_object_set_new(rootJ, "filters", dump_filter_specs());
         }
+        json_object_set_new(rootJ, "filter_file", pathmem.to_json());
 
         return rootJ;
 
     } 
+
+    void dataFromJson(json_t* rootJ) override {
+        json_t* spec_array = json_object_get(rootJ, "filters");
+        if(!load_filter_specs(spec_array))
+        {
+            load_default_filter();
+        }
+        pathmem.from_json(json_object_get(rootJ, "filter_file"));
+            
+    } 
+
+
 
     json_t* dump_filter_specs()
     {
@@ -212,18 +229,8 @@ struct MatI : Module {
         return filter_array;
     }
 
-    void dataFromJson(json_t* rootJ) override {
-        json_t* spec_array = json_object_get(rootJ, "filters");
-        if(!load_filter_specs(spec_array))
-        {
-            load_default_filter();
-        }
-            
-    } 
-
     void load_default_filter() {
-        std::string filename = asset::plugin(pluginInstance, "res/mati_default.json");
-        load_filter_from_file(filename);
+        load_filter_from_file(default_filter_path);
     }
 
     void load_filter_from_file(std::string filename) {
@@ -411,15 +418,34 @@ struct MatIWidget : ModuleWidget {
 
             menu->addChild(new MenuEntry);
 
+            struct ReloadItem : MenuItem {
+                MatI* module;
+                void onAction(const event::Action& e) override {
+                    std::string path = module->pathmem.get_path();
+
+                    if(!path.empty())
+                    {
+                        module->load_filter_from_file(path.c_str());
+                    }
+                }
+            };
+
+            ReloadItem* reload_item = createMenuItem<ReloadItem>("Reload Filter");
+            reload_item->module = module;
+            menu->addChild(reload_item);
+
             struct LoadItem : MenuItem {
                 MatI* module;
-                std::string dir = asset::user("patches");
                 void onAction(const event::Action& e) override {
-                    char* path = osdialog_file(OSDIALOG_OPEN, 
-                        dir.c_str(), NULL, osdialog_filters_parse("Filter Spec:json"));
+                    char* path = module->pathmem.file_dialog(
+                        OSDIALOG_OPEN, 
+                        asset::user("patches").c_str(), NULL, 
+                        "Filter Spec:json;All Files:py");
+
                     if(path)
                     {
                         module->load_filter_from_file(path);
+                        free(path);
                     }
                 }
             };

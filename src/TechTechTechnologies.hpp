@@ -6,7 +6,7 @@
 
 #include <libgen.h>
 #include <GLFW/glfw3.h>
-
+#include <osdialog.h>
 
 //
 // What follows is misguided legacy macros. I am sorry.
@@ -126,6 +126,19 @@ struct TOrangeLight : TBase {
 using OrangeLight = TOrangeLight<>;
 
 
+//For handling dialog paths
+struct PathMemory {
+    std::string dir;
+    std::string file;
+
+    void update(const char* path);
+    json_t* to_json();
+    void from_json(json_t* rootJ);
+    std::string get_path();
+
+    char* file_dialog(osdialog_file_action action, osdialog_filters* filters);
+    char* file_dialog(osdialog_file_action action, const char* defdir, const char* deffile, const char* dialog_filter_spec);
+};
 
 
 extern Plugin *pluginInstance;
