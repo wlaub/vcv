@@ -216,7 +216,11 @@ class PlotHandler():
         if len(sys.argv) > 1:
             filename = sys.argv[1]
 
-        data = dump_spec([44100, 48000], self.params)
+        fses = []
+        for x in [1,2,4]:
+            fses.extend([44.1e3*x, 48e3*x])
+
+        data = dump_spec(fses, self.params)
         with open(filename, 'w') as fp:
             json.dump(data, fp)
 
