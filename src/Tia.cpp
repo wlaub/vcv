@@ -80,6 +80,24 @@ struct TiaI : Module {
     float blink_counter = 0;
     int blink = 0;
 
+    enum rangeMode {
+        UNI5,
+        BIP5,
+        UNI10,
+        BIP10,
+        RMODE_LEN        
+    };
+
+    int range_mode = UNI5;
+
+    enum switchMode {
+        SMOOTH,
+        IMMEDIATE,
+        SMODE_LEN
+    };
+
+    int switch_mode = SMOOTH;
+
     TiaI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 
@@ -136,36 +154,59 @@ struct TiaI : Module {
         /*Compute crossfade ratios*/
         double faders[7];
 
-        int fade_range = params[FADE_RANGE_PARAM].getValue();
         for(int i = 0; i < 7; ++i)
         {
             double fade = inputs[XFADE0_INPUT+i].getVoltage();
             fade += inputs[POLY_XFADE_INPUT].getPolyVoltage(i);
-            fade /= 5;
-            if(fade_range == 1) //bipolar 5 V
+            if(range_mode == UNI5) //0-5 V
             {
+                fade /= 5;
+                fade = clamp(fade, 0.f, 1.f);
+            }
+            else if(range_mode == BIP5) //bipolar 5 V
+            {
+                fade /= 5;
                 fade = clamp(fade, -1.f, 1.f);
                 fade = (fade+1)/2;
             }
-            else if(fade_range == 0) //0-5 V
+            else if(range_mode == UNI10) //0-10 V
             {
+                fade /= 10;
                 fade = clamp(fade, 0.f, 1.f);
             }
+            else if(range_mode == BIP10) //bipolar 10 V
+            {
+                fade /= 10;
+                fade = clamp(fade, -1.f, 1.f);
+                fade = (fade+1)/2;
+            }
+ 
             faders[i] = fade; 
         }
 
         /*Handle pending selections*/
-        //TODO: It would be nice to have it optionally apply instantly
-        for(int i = 0; i < 7; ++i)
+        if(switch_mode == SMOOTH)
         {
-            if(faders[i] < 0.0001)
+            for(int i = 0; i < 7; ++i)
+            {
+                if(faders[i] < 0.0001)
+                {
+                    top_select[i] = top_select_pending[i];
+                }
+                if(faders[i] > 0.9999)
+                {
+                    bot_select[i] = bot_select_pending[i];
+                }
+            }
+        }
+        else if(switch_mode == IMMEDIATE)
+        {
+            for(int i = 0; i < 7; ++i)
             {
                 top_select[i] = top_select_pending[i];
-            }
-            if(faders[i] > 0.9999)
-            {
                 bot_select[i] = bot_select_pending[i];
             }
+            
         }
 
         /*Do crossfading*/
@@ -286,6 +327,7 @@ struct TiaI : Module {
         json_object_set_new(rootJ, "top_select", ts);
         json_object_set_new(rootJ, "bot_select", bs);
 
+        json_object_set_new(rootJ, "range_mode", json_integer(range_mode));
 
         return rootJ;
 
@@ -320,12 +362,81 @@ struct TiaI : Module {
             }
         }
 
+        temp = json_object_get(rootJ, "range_mode");
+        if(temp) range_mode = json_integer_value(temp);
+
     } 
 
 };
 
 
 struct TiaIWidget : ModuleWidget {
+
+
+    void appendContextMenu(Menu* menu) override {
+            TiaI* module = dynamic_cast<TiaI*>(this->module);
+
+            menu->addChild(new MenuEntry);
+
+            menu->addChild(createMenuLabel("Crossfade CV Range"));
+            
+            struct RangeItem : MenuItem {
+                TiaI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->range_mode = mode;
+                }
+            };
+
+            std::string rmode_names[TiaI::RMODE_LEN];
+            rmode_names[TiaI::UNI5] = "0-5 V";
+            rmode_names[TiaI::UNI10] = "0-10 V";
+            rmode_names[TiaI::BIP5] =  "±5 V";
+            rmode_names[TiaI::BIP10] =  "±10 V";
+
+            int rmode_sequence[TiaI::RMODE_LEN] = {TiaI::UNI5, TiaI::UNI10, TiaI::BIP5, TiaI::BIP10};
+ 
+            for(int i = 0; i < TiaI::RMODE_LEN; ++i)
+            {
+                int idx = rmode_sequence[i];
+                RangeItem* range_item = createMenuItem<RangeItem>(rmode_names[idx]);
+                range_item->module = module;
+                range_item->mode = idx;
+                range_item->rightText = CHECKMARK(module->range_mode == idx);
+                menu->addChild(range_item);
+            }
+
+            menu->addChild(createMenuLabel("Signal Routing Change Mode"));
+
+            struct SwitchItem : MenuItem {
+                TiaI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->switch_mode = mode;
+                }
+            };
+
+            std::string smode_names[TiaI::SMODE_LEN];
+            smode_names[TiaI::IMMEDIATE] = "Immediate";
+            smode_names[TiaI::SMOOTH] = "Smooth";
+
+            int smode_sequence[TiaI::SMODE_LEN] = {TiaI::SMOOTH, TiaI::IMMEDIATE};
+
+            for(int i = 0; i < TiaI::SMODE_LEN; ++i)
+            {
+                int idx = smode_sequence[i];
+                SwitchItem* switch_item = createMenuItem<SwitchItem>(smode_names[idx]);
+                switch_item->module = module;
+                switch_item->mode = idx;
+                switch_item->rightText = CHECKMARK(module->switch_mode == idx);
+                menu->addChild(switch_item);
+            }
+
+
+
+        }
+
+
     TiaIWidget(TiaI* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Tia.svg")));
@@ -383,8 +494,8 @@ struct TiaIWidget : ModuleWidget {
         addParam(createParamCentered<LEDBezel>(
                 mm2px(Vec(GRID(8,2))), module, TiaI::SET_BOT_ALL_PARAM));
 
-        addParam(createParamCentered<CKSS>(
-                mm2px(Vec(GRID(8,3))), module, TiaI::FADE_RANGE_PARAM));
+//        addParam(createParamCentered<CKSS>(
+//                mm2px(Vec(GRID(8,3))), module, TiaI::FADE_RANGE_PARAM));
 
         addParam(createParamCentered<LEDBezel>(
                 mm2px(Vec(GRID(8,4))), module, TiaI::SELECT_NONE_PARAM));

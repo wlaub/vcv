@@ -212,11 +212,14 @@ Multiplexing Crossfader
 
 Tia configures routing from its 7 signal inputs to the 7 channels of Mat's default filter configuration.
 
-7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module. Changes the to a crossfader's inputs only occur when the input is not contributing to the output.
+7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module.
 
-The top inputs to each crossfader are selected when the crossfader CV is at its maximum (5 V).
+The top inputs to each crossfader are selected when the crossfader CV is at its maximum value.
 
-The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum (0 or -5 V).
+The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum value.
+
+The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
+
 
 TODO: Menu options to configure 
     crossfade range 
