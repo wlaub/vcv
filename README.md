@@ -220,19 +220,10 @@ The bottom inputs to each crossfader are selected when the crossfader CV is at i
 
 The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
 
-
-TODO: Menu options to configure 
-    crossfade range 
-        0-5 V, +/-5 V, 0-10 V? +/-10 V?
-    source selection transition mode
-        Immediate
-        what do you call it for the default mode?
-
 TODO: It would be nice to be able to CV control the routing, but idk how
 
 #### Mat I
 
-TODO: Menu spec file location
 TODO: Clean up helper functions to generate from scipy sos
 
 Multichannel Fixed Biquad Filter Bank

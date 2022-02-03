@@ -420,6 +420,18 @@ struct MatIWidget : ModuleWidget {
 
             menu->addChild(new MenuEntry);
 
+            std::string specname = "Current Filters: ";
+            if(!module->pathmem.file.empty())
+            {
+                specname += module->pathmem.file;
+            }
+            else
+            {
+                specname += "Default";
+            }
+
+            menu->addChild(createMenuLabel(specname));
+
             struct ReloadItem : MenuItem {
                 MatI* module;
                 void onAction(const event::Action& e) override {
