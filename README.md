@@ -224,8 +224,6 @@ TODO: It would be nice to be able to CV control the routing, but idk how
 
 #### Mat I
 
-TODO: Clean up helper functions to generate from scipy sos
-
 Multichannel Fixed Biquad Filter Bank
 
 Each channel of a polyphonic input is processed through a different cascaded biquad filter. The filters coefficients are loaded from a json file. Inputs that don't have a corresponding filter loaded will be passed unfiltered. Filters that don't have a corresponding input will process the last input channel.
@@ -269,7 +267,9 @@ The filter specification has the form
 
 Each individual filter specification must include a valid non-zero sample rate and an identical number of channels. The module will automatically select the set of filters with the best sample rate match to the current engine sample rate.
 
-See [`res/mati_default.json`](res/mati_default.json) for the default filter specification.
+See [`res/mati_default.json`](res/mati_default.json) for the default filter specification, which was generated using [`dev-scripts/mat_filters.py`](dev-scripts/mat_filters.py).
+
+[`dev-scripts/tiamat.py`](dev-scripts/tiamat.py) provides some helpers for generating Mat I filter specitications from filters designed using scipy.signal.
 
 ### Achilles
 
