@@ -5,6 +5,7 @@ import math
 import scipy.signal
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import widgets as mplwidgets
 
 class Filter():
     def __init__(self, fs):
@@ -71,11 +72,13 @@ class Filter():
 class LPF(Filter):
     def __init__(self, fs, fc):
         super().__init__(fs)
+        self.N = 4
         self.compute_lpf(fc)
 
 class HPF(Filter):
     def __init__(self, fs, fc):
         super().__init__(fs)
+        self.N = 4
         self.compute_hpf(fc)
 
 class BPF(Filter):
@@ -86,7 +89,7 @@ class BPF(Filter):
 
 
 
-def compute_filters(fs):
+def compute_filters(fs, **kwargs):
     N = 5           #Number of bandpass bands - must be odd
     ref = 261.63*2    #Center band (hehehehe) center frequency (HAHAHAHA)
     bw = 2
@@ -94,27 +97,31 @@ def compute_filters(fs):
 
     filters = []
 
-    filters.append(LPF(fs, base))
+    bulge = kwargs.get('bulge', 0)
+    lb = kwargs.get('low_bulge', 0)
+    hb = kwargs.get('high_bulge', 0)
+
+    filters.append(LPF(fs, base*2**(lb)))
     for i in range(N):
-        fl = base*2**(bw*i)
-        fr = fl*2**(bw)
+        fc = base*2**(bw*(i+.5))
+        scale = 2**((bw+bulge)/2)
+        fl = fc/scale
+        fr = fc*scale
 
         filters.append(BPF(fs, fl, fr))
 
-    filters.append(HPF(fs, fr))
+    filters.append(HPF(fs, fr/2**(hb)))
 
     return filters
 
-def plot_filters(filters):
+def plot_filters(filters, fig, ax):
 
     fs = filters[0].fs
 
     haccum = None
 
-    fig, ax = plt.subplots()
-
     for filt in filters:
-        w,h = filt.freqz(worN=2048)
+        w,h = filt.freqz(worN=4096)
 
         ax.loglog(w, np.abs(h), linewidth = 0.5)
         filt.plot(ax)
@@ -132,8 +139,6 @@ def plot_filters(filters):
     ax.set_xlim(right = fs/2)
     ax.grid(True)
 
-    plt.show()
-
 def dump_filters(filters):
     spec = {}
 
@@ -147,27 +152,80 @@ def dump_filters(filters):
     return spec
 
 
-def dump_spec(fses):
+def dump_spec(fses, ckwargs):
     data = []
     result = {'filters': data}
     for fs in fses:
-        filters = compute_filters(fs)
+        filters = compute_filters(fs, **ckwargs)
         spec = dump_filters(filters)
         data.append(spec)
     return result
 
 
-filename = 'test.json'
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
+class PlotHandler():
 
-data = dump_spec([44100, 48000])
-with open(filename, 'w') as fp:
-    json.dump(data, fp)
+    param_defaults = {
+        'low_bulge': ['Low', -1, 2, .583, True],
+        'bulge': ['Bulge', 0, 2, 0.55, True],
+        'high_bulge': ['High', -1, 2, .693, True],
+        }
 
-fs = 48000
-filters = compute_filters(fs)
-plot_filters(filters)
+    def __init__(self):
+        self.fig, self.ax = plt.subplots()
+
+        self.params = {k:v[3] for k,v in self.param_defaults.items()}
+
+        actives = list(filter(lambda x: x[-1], self.param_defaults.items()))
+
+        count = len(actives)
+        gap = 0.08/count        
+
+        idx = 0
+        self.sliders = []
+        for k, (label, vmin, vmax, vdef, enable) in actives:
+            sliderax = plt.axes([0.92+gap*idx, .05, .01, .9])
+            idx += 1
+
+            slider = mplwidgets.Slider(sliderax, label, 
+                valmin =vmin, valmax = vmax, valinit = vdef,
+                orientation='vertical'
+                )            
+            slider.on_changed(lambda x, k=k: self.update(k, x))
+            self.sliders.append(slider)
+
+        self.buttons = []
+        buttax = plt.axes([0.5-.0125, .95, .05, .025])
+        button = mplwidgets.Button(buttax, 'Export')
+        button.on_clicked(self.export)
+        self.buttons.append(button)
+
+    def update(self, label, x):
+        self.params[label] = x
+        self.plot()
+
+
+    def plot(self):
+
+        fs = 48000
+        filters = compute_filters(fs, **self.params)
+        self.ax.clear()
+        plot_filters(filters, self.fig, self.ax)
+
+    def export(self, x):
+        filename = 'test.json'
+        if len(sys.argv) > 1:
+            filename = sys.argv[1]
+
+        data = dump_spec([44100, 48000], self.params)
+        with open(filename, 'w') as fp:
+            json.dump(data, fp)
+
+        print(f'Exported {filename}')
+
+
+handler = PlotHandler()
+handler.plot()
+plt.show()
 
 
 

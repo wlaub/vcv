@@ -328,6 +328,7 @@ struct TiaI : Module {
         json_object_set_new(rootJ, "bot_select", bs);
 
         json_object_set_new(rootJ, "range_mode", json_integer(range_mode));
+        json_object_set_new(rootJ, "switch_mode", json_integer(switch_mode));
 
         return rootJ;
 
@@ -364,6 +365,11 @@ struct TiaI : Module {
 
         temp = json_object_get(rootJ, "range_mode");
         if(temp) range_mode = json_integer_value(temp);
+
+        temp = json_object_get(rootJ, "switch_mode");
+        if(temp) switch_mode = json_integer_value(temp);
+
+
 
     } 
 
