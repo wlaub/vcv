@@ -6,6 +6,7 @@ import scipy.signal
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import widgets as mplwidgets
+from matplotlib import colors as mplcolors
 
 class Filter():
     def __init__(self, fs):
@@ -55,6 +56,9 @@ class Filter():
         self.b = [x/b for x in self.b]
         self.a = [x/a for x in self.a]
 
+    def gain(self, g):
+        self.b = [x*g for x in self.b]
+
     def freqz(self, **kwargs):
         fs = kwargs.pop('fs', self.fs)
         w,h = scipy.signal.freqz(self.b, self.a, fs=fs, **kwargs)
@@ -66,8 +70,9 @@ class Filter():
         return w,h
 
     def plot(self, ax):
-        for fc in self.fc:
-            ax.axvline(fc, c='k')
+#        for fc in self.fc:
+#            ax.axvline(fc, c='k')
+        pass
 
 class LPF(Filter):
     def __init__(self, fs, fc):
@@ -92,7 +97,7 @@ class BPF(Filter):
 def compute_filters(fs, **kwargs):
     N = 5           #Number of bandpass bands - must be odd
     ref = 261.63*2    #Center band (hehehehe) center frequency (HAHAHAHA)
-    bw = 2
+    bw = kwargs.get('bw', 2)
     base = ref * 2**(-N*bw/2)
 
     filters = []
@@ -100,6 +105,7 @@ def compute_filters(fs, **kwargs):
     bulge = kwargs.get('bulge', 0)
     lb = kwargs.get('low_bulge', 0)
     hb = kwargs.get('high_bulge', 0)
+    gbpf = kwargs.get('boost', 1)
 
     filters.append(LPF(fs, base*2**(lb)))
     for i in range(N):
@@ -108,7 +114,11 @@ def compute_filters(fs, **kwargs):
         fl = fc/scale
         fr = fc*scale
 
-        filters.append(BPF(fs, fl, fr))
+        filt = BPF(fs, fl, fr)
+        if i > 0 and i < N-1:
+            filt.gain(gbpf)
+
+        filters.append(filt)
 
     filters.append(HPF(fs, fr/2**(hb)))
 
@@ -120,10 +130,27 @@ def plot_filters(filters, fig, ax):
 
     haccum = None
 
-    for filt in filters:
-        w,h = filt.freqz(worN=4096)
+    f = []
+    N = 512
+    fmin = 1
+    fmax = fs/2
+    delta = (fmax/fmin)**(1/N)
+    f = [fmin*(fmax/fmin)**(n/N) for n in range(N)]
 
-        ax.loglog(w, np.abs(h), linewidth = 0.5)
+    colors = [
+        [1,0,0],
+        [1,.5,0],
+        [1,1,0],
+        [0,1,0],
+        [0,1,1],
+        [0,0,1],
+        [.5,0,1]
+        ]
+
+    for idx, filt in enumerate(filters):
+        w,h = filt.freqz(worN=f)
+
+        ax.loglog(w, np.abs(h), linewidth = 1, c = colors[idx])
         filt.plot(ax)
 
         if haccum is None:
@@ -135,8 +162,8 @@ def plot_filters(filters, fig, ax):
 
     ax.axhline(math.sqrt(2)/2, c='k')
 
-    ax.set_ylim(bottom = 10e-3)
-    ax.set_xlim(right = fs/2)
+    ax.set_ylim(bottom = 10e-3, top= 2)
+    ax.set_xlim(right = fs/2, left=1)
     ax.grid(True)
 
 def dump_filters(filters):
@@ -168,6 +195,8 @@ class PlotHandler():
         'low_bulge': ['Low', -1, 2, .583, True],
         'bulge': ['Bulge', 0, 2, 0.55, True],
         'high_bulge': ['High', -1, 2, .693, True],
+        'boost': ['Boost', 1, 2, 1, False],
+        'bw': ['BW', 1, 2, 2, True],
         }
 
     def __init__(self):
@@ -183,6 +212,7 @@ class PlotHandler():
         idx = 0
         self.sliders = []
         for k, (label, vmin, vmax, vdef, enable) in actives:
+            if not enable: continue
             sliderax = plt.axes([0.92+gap*idx, .05, .01, .9])
             idx += 1
 
@@ -210,6 +240,32 @@ class PlotHandler():
         filters = compute_filters(fs, **self.params)
         self.ax.clear()
         plot_filters(filters, self.fig, self.ax)
+
+        ticks = []
+        mticks = []
+        tick_labels = []
+        for i in range(-10,10):
+            ticks.append(32.7*2**i)
+            tick_labels.append(f'C{i}')            
+            for j in range(12):
+                mticks.append(32.7*2**(i+j/12))
+        self.ax.set_xticks(ticks, labels=tick_labels)
+        self.ax.set_xticks(mticks, labels = [], minor=True)
+        self.ax.set_xlim(1, fs/2)
+    
+        self.ax.axvline(20, c='k')
+
+        self.ax.text(20, 2.1, '20 Hz', horizontalalignment='center')
+        self.ax.text(.9, .707, '-3 dB', horizontalalignment='right', verticalalignment='center')
+
+        def format_coord(x,y):
+            y = 20*math.log10(y)
+            return f'{x:.2f} Hz, {y:.2f} dB'
+
+        self.ax.format_coord = format_coord
+        
+
+
 
     def export(self, x):
         filename = 'test.json'
