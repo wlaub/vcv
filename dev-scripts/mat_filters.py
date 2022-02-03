@@ -6,6 +6,23 @@ import scipy.signal
 import numpy as np
 from matplotlib import pyplot as plt
 
+import tiamat
+
+filters = []
+for fc in [1000, 2000, 3000, 4000]:
+    f = tiamat.Filter()
+
+    for fs in [44100, 48000, 96000]:
+        sos = scipy.signal.butter(6, fc, fs=fs, output='sos')
+        f.add_filter(fs, sos)
+
+    filters.append(f)
+
+print(tiamat.export_filters(filters))
+tiamat.write_filter_spec(filters, 'filter_export_test.json')
+
+exit(0)
+
 class Filter():
     def __init__(self, fs):
         self.fs = fs

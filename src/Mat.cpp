@@ -235,7 +235,7 @@ struct MatI : Module {
         load_filter_from_file(default_filter_path);
     }
 
-    void load_filter_from_file(std::string filename) {
+    bool load_filter_from_file(std::string filename) {
         json_t* rootJ = 0;
         json_t* filter_array = 0;
 
@@ -244,7 +244,7 @@ struct MatI : Module {
         rootJ = json_load_file(filename.c_str(), 0, &error);
         json_t* spec_array = json_object_get(rootJ, "filters");
 
-        load_filter_specs(spec_array);
+        return load_filter_specs(spec_array);
 
     }
 
@@ -455,14 +455,19 @@ struct MatIWidget : ModuleWidget {
             struct LoadItem : MenuItem {
                 MatI* module;
                 void onAction(const event::Action& e) override {
+                    std::string old_path = module->pathmem.get_path();
                     char* path = module->pathmem.file_dialog(
                         OSDIALOG_OPEN, 
                         asset::user("patches").c_str(), NULL, 
                         "Filter Spec:json;All Files:py");
 
+
                     if(path)
                     {
-                        module->load_filter_from_file(path);
+                        if(!module->load_filter_from_file(path))
+                        {
+                            module->pathmem.update(old_path.c_str());
+                        }
                         free(path);
                     }
                 }
