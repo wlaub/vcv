@@ -1,4 +1,4 @@
-#include "TechTechTechnologies.hpp"
+#include "Tia.hpp"
 
 
 struct TiaI : Module {
@@ -80,6 +80,12 @@ struct TiaI : Module {
     float blink_counter = 0;
     int blink = 0;
 
+    double faders[7] = {0};
+    double gains[7];
+
+    TiaMessage out_message;
+    TiaMessage in_message;
+
     enum rangeMode {
         UNI5,
         BIP5,
@@ -123,6 +129,25 @@ struct TiaI : Module {
         configInput(POLY_XFADE_INPUT, "Crossfade CV (Polyphonic)");
 
         configOutput(POLY_OUTPUT, "Crossfader Outputs (Polyphonic)");
+
+        leftExpander.producerMessage = &out_message;
+        rightExpander.producerMessage = &out_message;
+
+        leftExpander.consumerMessage = &in_message;
+        rightExpander.consumerMessage = &in_message;
+
+
+    }
+
+    void write_message(TiaMessage* target)
+    {
+        for(int i = 0; i < 7; ++i)
+        {
+            target->faders[i] = faders[i];
+            target->top_select[i] = top_select[i];
+            target->bot_select[i] = bot_select[i];
+            target->gains[i] = gains[i];
+        }
     }
 
     void process(const ProcessArgs& args) override {
@@ -152,7 +177,6 @@ struct TiaI : Module {
         }
 
         /*Compute crossfade ratios*/
-        double faders[7];
 
         for(int i = 0; i < 7; ++i)
         {
@@ -184,6 +208,7 @@ struct TiaI : Module {
             faders[i] = fade; 
         }
 
+
         /*Handle pending selections*/
         if(switch_mode == SMOOTH)
         {
@@ -212,6 +237,12 @@ struct TiaI : Module {
         /*Do crossfading*/
 
         double global_gain = params[GLOBAL_GAIN_PARAM].getValue();
+
+        for(int i = 0; i < 7; ++i)
+        {
+            gains[i] = params[GAIN0_PARAM+i].getValue() * global_gain;
+        }
+
         outputs[POLY_OUTPUT].setChannels(7);
 
         for(int i = 0; i < 7; ++i)
@@ -222,13 +253,13 @@ struct TiaI : Module {
             double top = 0;
             if(top_select[i] < 7)
             {
-                double top_gain = params[GAIN0_PARAM+top_select[i]].getValue();
-                top = inputs[SIGNAL0_INPUT+top_select[i]].getVoltage() * top_gain * global_gain;
+                double top_gain = gains[top_select[i]];//params[GAIN0_PARAM+top_select[i]].getValue();
+                top = inputs[SIGNAL0_INPUT+top_select[i]].getVoltage() * top_gain;
             }
             if(bot_select[i] < 7)
             {
-                double bot_gain = params[GAIN0_PARAM+bot_select[i]].getValue();
-                bot = inputs[SIGNAL0_INPUT+bot_select[i]].getVoltage() * bot_gain * global_gain;
+                double bot_gain = gains[bot_select[i]]; //params[GAIN0_PARAM+bot_select[i]].getValue();
+                bot = inputs[SIGNAL0_INPUT+bot_select[i]].getVoltage() * bot_gain;
             }
 
             double mix = top*fade + bot*(1-fade);
@@ -307,6 +338,20 @@ struct TiaI : Module {
             }
 
         }
+    
+        /* Handle Expanders */
+
+        if(leftExpander.module && leftExpander.module->model == modelTiaIExpander)
+        {
+            write_message(reinterpret_cast<TiaMessage*>(leftExpander.producerMessage));
+            leftExpander.requestMessageFlip();
+        }
+        if(rightExpander.module && rightExpander.module->model == modelTiaIExpander)
+        {
+            write_message(reinterpret_cast<TiaMessage*>(rightExpander.producerMessage));
+            rightExpander.requestMessageFlip();
+        }
+
 
     }
 
@@ -457,8 +502,6 @@ struct TiaIWidget : ModuleWidget {
 
         for(int i = 0; i < 7; ++i)
         {
-            addParam(createParamCentered<RoundBlackKnob>(
-                    mm2px(Vec(GRID(1, 6))), module, TiaI::GAIN0_PARAM+i));
 
             addParam(createParamCentered<LEDBezel>(
                     mm2px(Vec(GRID(i+1, 1))), module, TiaI::SET_TOP0_PARAM+i));
