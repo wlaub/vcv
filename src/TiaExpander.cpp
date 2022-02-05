@@ -45,8 +45,6 @@ struct TiaIExpander : Module {
 
         TiaMessage* message = reinterpret_cast<TiaMessage*>(expander->module->leftExpander.consumerMessage);
 
-
-
         for(int row = 0; row < N; ++row)
         {
             for(int i = 0; i < 7; ++i)
