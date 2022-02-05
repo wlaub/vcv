@@ -242,5 +242,7 @@ extern Model* modelDecayTimer;
 
 extern Model* modelTiaI;
 
+extern Model* modelTiaIExpander;
+
 extern Model* modelMatI;
 

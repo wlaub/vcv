@@ -191,6 +191,16 @@
       ]
     },
     {
+      "slug": "TiaIExpander",
+      "name": "Tia I Expander",
+      "description": "Additional channels for Tia I",
+      "tags": [
+        "Switch",
+        "Utility",
+        "Expander"
+      ]
+    },
+    {
       "slug": "MatI",
       "name": "Mat I",
       "description": "Multichannel Fixed Biquad Filter Bank",

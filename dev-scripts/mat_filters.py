@@ -150,7 +150,7 @@ def plot_filters(filters, fig, ax):
     for idx, filt in enumerate(filters):
         w,h = filt.freqz(worN=f)
 
-        ax.loglog(w, np.abs(h), linewidth = 1, c = colors[idx])
+        ax.loglog(w, np.abs(h), linewidth = 1, c = colors[idx%len(colors)])
         filt.plot(ax)
 
         if haccum is None:
@@ -244,14 +244,17 @@ class PlotHandler():
         ticks = []
         mticks = []
         tick_labels = []
-        for i in range(-10,10):
+        for i in range(-10,20):
             ticks.append(32.7*2**i)
             tick_labels.append(f'C{i}')            
             for j in range(12):
                 mticks.append(32.7*2**(i+j/12))
         self.ax.set_xticks(ticks, labels=tick_labels)
         self.ax.set_xticks(mticks, labels = [], minor=True)
-        self.ax.set_xlim(1, fs/2)
+
+        ratio = (fs/2)/261.63
+
+        self.ax.set_xlim(261.63/ratio, fs/2)
     
         self.ax.axvline(20, c='k')
 

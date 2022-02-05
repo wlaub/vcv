@@ -212,6 +212,8 @@ void init(rack::Plugin *p) {
 
     p->addModel(modelTiaI);
 
+    p->addModel(modelTiaIExpander);
+
     p->addModel(modelMatI);
 
     // Any other pluginInstance initialization may go here.

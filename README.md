@@ -222,6 +222,10 @@ The right click meno provides options for configuring the crossfader CV range (u
 
 TODO: It would be nice to be able to CV control the routing, but idk how
 
+##### Tia I Expander
+
+Provides additional sets of inputs and outputs controlled by an adjacent Tia I instance.
+
 #### Mat I
 
 Multichannel Fixed Biquad Filter Bank
