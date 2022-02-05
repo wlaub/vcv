@@ -1,8 +1,7 @@
 
 # VCV 2.0 Port
 
-* vcvmon needs updating to deal with new compressed patch files
-  * patch repo sure is gonna get ugly
+* MetadataFiles screenshot function is still a little broken - doesn't render plugs and cable opacity also seems bugged.
 
 # TechTech Technologies VCV Plugins
 
