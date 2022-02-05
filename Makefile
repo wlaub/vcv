@@ -13,6 +13,12 @@ LDFLAGS +=
 # Add .cpp and .c files to the build
 SOURCES += $(wildcard src/*.cpp)
 
+include $(RACK_DIR)/arch.mk
+
+ifdef ARCH_WIN
+    LDFLAGS += -lopengl32
+endif
+
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin is automatically added.
 DISTRIBUTABLES += $(wildcard LICENSE*) res
