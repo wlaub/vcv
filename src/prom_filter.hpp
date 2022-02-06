@@ -1,4 +1,5 @@
-filt_order = 1;
+#define filt_order 1
+//filt_order = 1;
 double sos[filt_order][6] = {
     {
     0.9750000000000115,

@@ -24,7 +24,7 @@ struct Prometheus2 : Module {
 
     struct ttt::Biquad** filters;
 
-    int filt_order = 2;
+//    int filt_order = 2;
 
     float out_value[MAX_CHANNELS] = {0};
 
