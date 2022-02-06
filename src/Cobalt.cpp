@@ -1,5 +1,5 @@
 #include "TechTechTechnologies.hpp"
-
+#include <numeric>
 
 struct CobaltI : Module {
     enum ParamId {
@@ -28,12 +28,18 @@ struct CobaltI : Module {
         LIGHTS_LEN
     };
 
+    int start = -1;
+    int length = -1;
+    int total_period = -1;
+
+    double phase_accumulator = 0;
+
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
         configParam(START_PARAM, 1.f, 7.f, 1.f, "Starting Subharmonic");
         configParam(LENGTH_PARAM, 1.f, 7.f, 1.f, "Sequence Length");
         configParam(PW_PARAM, 0.f, 1.f, 0.5f, "Pulse Width");
-        configParam(PHASE_PARAM, 0.f, 1.f, 0.25f, "Starting Phase (Cycles)");
+        configParam(PHASE_PARAM, 0.f, 1.f, 0.75f, "Starting Phase (Cycles)");
 
         configParam(FREQ_PARAM, 1e-3, 600.f, 10.f, "Combined Waveform Period (s)");
         configParam(SCALE_PARAM, 0.f, 10.f, 5.f, "Scale");
@@ -47,7 +53,69 @@ struct CobaltI : Module {
         configOutput(TRIANGLE_OUTPUT, "Tiangle");
     }
 
+    int gcd(int a, int b) 
+    {
+       if (b == 0)
+       return a;
+       return gcd(b, a % b);
+    }
+
+    int lcm(int a, int b) 
+    {
+        return (a*b)/gcd(a,b);
+    }
+
+    int get_sequence_period(int s, int l)
+    {
+        if(s == start and l == length)
+        {
+            return total_period;
+        }
+        start = s;
+        length = l;
+
+        if(length == 1)
+        {
+            return start;
+        }
+
+        int value = lcm(start, start+1);
+
+        for(int i = start+1; i < start+length; ++i)
+        {
+            value = lcm(value, i);
+        }
+        return value;
+
+    }
+
     void process(const ProcessArgs& args) override {
+    
+        float deltaTime = args.sampleTime;       
+
+        int s = params[START_PARAM].getValue();
+        int l = params[LENGTH_PARAM].getValue();
+
+        total_period = get_sequence_period(s,l);
+
+        double period = params[FREQ_PARAM].getValue();
+
+        phase_accumulator += deltaTime/period;
+        if(phase_accumulator > 1)
+        {
+            phase_accumulator -= 1;
+        }
+
+        outputs[SINE_OUTPUT].setChannels(length);
+        for(int idx = start; idx < start+length; ++idx)
+        {
+            double relphase = phase_accumulator*total_period/idx;
+            relphase += params[PHASE_PARAM].getValue();
+            double x = sin(6.28*relphase);
+            outputs[SINE_OUTPUT].setVoltage(x, idx-start);
+
+        }
+
     }
 };
 
@@ -55,14 +123,14 @@ struct CobaltI : Module {
 struct CobaltIWidget : ModuleWidget {
     CobaltIWidget(CobaltI* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/CobaltI.svg")));
+        setPanel(createPanel(asset::plugin(pluginInstance, "res/Cobalt.svg")));
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-        addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(38.1, 33.78)), module, CobaltI::FREQ_PARAM));
+        addParam(createParamCentered<RoundHugeBlackKnob>(mm2px(Vec(38.1, 33.78)), module, CobaltI::FREQ_PARAM));
 
         addParam(createParamCentered<RoundBlackSnapKnob>(mm2px(Vec(15.24, 18.54)), module, CobaltI::START_PARAM));
         addParam(createParamCentered<RoundBlackSnapKnob>(mm2px(Vec(15.24, 33.78)), module, CobaltI::LENGTH_PARAM));

@@ -212,11 +212,11 @@ void init(rack::Plugin *p) {
 
     p->addModel(modelTiaI);
 
-    p->addModel(modelTiaI);
+    p->addModel(modelTiaIExpander);
 
     p->addModel(modelMatI);
 
-//    p->addModel(modelCobaltI);
+    p->addModel(modelCobaltI);
 
     // Any other pluginInstance initialization may go here.
     // As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.
