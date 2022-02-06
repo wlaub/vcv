@@ -366,8 +366,9 @@ struct MetadataFilesWidget : ModuleWidget {
                         settings::cableOpacity = inactive_opacity;
                     }
 
-                    cw->draw(args);
-                    cw->drawLayer(args, 1);
+                   cw->draw(args);
+
+//                    cw->drawLayer(args, 1);
                     cw->drawLayer(args, 2);
                     cw->drawLayer(args, 3);
 //                    cw->drawPlugs(args);

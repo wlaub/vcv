@@ -207,7 +207,14 @@
       "tags": [
         "Filter"
       ]
+    },
+    {
+      "slug": "CobaltI",
+      "name": "Cobalt I",
+      "description": "Subharmonic sequence oscillator",
+      "tags": [
+        "low-frequency oscillator"
+      ]
     }
- 
   ]
 }

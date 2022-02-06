@@ -274,6 +274,20 @@ See [`res/mati_default.json`](res/mati_default.json) for the default filter spec
 
 [`dev-scripts/tiamat.py`](dev-scripts/tiamat.py) provides some helpers for generating Mat I filter specitications from filters designed using scipy.signal.
 
+### Cobalt I
+
+Subharmonic sequence oscillator
+
+Generates waveforms with periods that are consecutive integer multiples of a fundamental period. Controls are provided for
+
+* Combined waveform period in seconds
+* Starting multiple from 1 to 7
+* Sequence length from 1 to 7
+* Waveform starting phase
+* Square wave pulse width
+* Waveform scale and offset
+
+
 ### Achilles
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)
