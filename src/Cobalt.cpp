@@ -24,6 +24,7 @@ struct CobaltI : Module {
         SQUARE_OUTPUT,
         SINE_OUTPUT,
         TRIANGLE_OUTPUT,
+        EOC_OUTPUT,
         OUTPUTS_LEN
     };
     enum LightId {
@@ -54,6 +55,7 @@ struct CobaltI : Module {
     int show_labels = 0;
 
     dsp::SchmittTrigger reset_trigger;
+    dsp::PulseGenerator eoc_pulse;
 
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -71,7 +73,8 @@ struct CobaltI : Module {
         configOutput(RAMP_OUTPUT, "Ramp");
         configOutput(SQUARE_OUTPUT, "Square");
         configOutput(SINE_OUTPUT, "Sine");
-        configOutput(TRIANGLE_OUTPUT, "Tiangle");
+        configOutput(TRIANGLE_OUTPUT, "Triangle");
+        configOutput(EOC_OUTPUT, "End of Cycle");
     }
 
     int gcd(int a, int b) 
@@ -152,6 +155,8 @@ struct CobaltI : Module {
 
         total_period = get_sequence_period(s,l);
 
+        /*  Compute period*/
+
         period = params[FREQ_PARAM].getValue();
 
         if(inputs[VOCT_INPUT].active)
@@ -159,11 +164,18 @@ struct CobaltI : Module {
             period /= pow(2, inputs[VOCT_INPUT].getVoltage());
         }
 
+        /*Update phase accumulator*/
+
+        bool eoc = false;
+
         phase_accumulator += deltaTime/period;
         if(phase_accumulator > 1)
         {
             phase_accumulator -= 1;
+            eoc = true;
         }
+
+        /* Handle Reset */
 
         float reset_val = inputs[RESET_INPUT].getVoltage();
         if(reset_mode == RMODE_TRIG)
@@ -188,7 +200,18 @@ struct CobaltI : Module {
             }
         }
 
+        /* Generate EOC */
 
+        if(eoc)
+        {
+            eoc_pulse.trigger();
+        }
+
+        bool do_eoc = eoc_pulse.process(args.sampleTime);
+
+        outputs[EOC_OUTPUT].setVoltage(do_eoc? 5 : 0);
+
+        /* Generate Waveforms*/
 
         double scale = params[SCALE_PARAM].getValue()/2;
         double offset = params[OFFSET_PARAM].getValue();
@@ -497,6 +520,9 @@ struct CobaltIWidget : ModuleWidget {
             mm2px(Vec(GRID(1.5,6))), module, CobaltI::VOCT_INPUT));
         addInput(createInputCentered<PJ301MPort>(
             mm2px(Vec(GRID(1.5,7))), module, CobaltI::RESET_INPUT));
+
+        addOutput(createOutputCentered<PJ301MPort>(
+            mm2px(Vec(GRID(2.5,6.5))), module, CobaltI::EOC_OUTPUT));
 
         addOutput(createOutputCentered<PJ301MPort>(
             mm2px(Vec(GRID(3.5,6))), module, CobaltI::RAMP_OUTPUT));
