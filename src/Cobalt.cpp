@@ -34,6 +34,8 @@ struct CobaltI : Module {
 
     double phase_accumulator = 0;
 
+    dsp::SchmittTrigger reset_trigger;
+
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
         configParam(START_PARAM, 1.f, 7.f, 1.f, "Starting Subharmonic");
@@ -42,7 +44,7 @@ struct CobaltI : Module {
         configParam(PHASE_PARAM, 0.f, 1.f, 0.75f, "Starting Phase (Cycles)");
 
         configParam(FREQ_PARAM, 1e-3, 600.f, 10.f, "Combined Waveform Period (s)");
-        configParam(SCALE_PARAM, 0.f, 10.f, 5.f, "Scale");
+        configParam(SCALE_PARAM, 0.f, 10.f, 5.f, "Scale (peak-to-peak)");
         configParam(OFFSET_PARAM, 0.f, 5.f, 2.5f, "Offset");
 
         configInput(VOCT_INPUT, "v/oct");
@@ -111,24 +113,32 @@ struct CobaltI : Module {
             period /= pow(2, inputs[VOCT_INPUT].getVoltage());
         }
 
-        //TODO: reset button
         phase_accumulator += deltaTime/period;
         if(phase_accumulator > 1)
         {
             phase_accumulator -= 1;
         }
 
-        //TODO: the other outputs
-        //TODO: scale and offset
+        //TODO: It would be nice to have the option to hold it in reset
+        if(reset_trigger.process(inputs[RESET_INPUT].getVoltage()))
+        {
+            phase_accumulator = 0;
+        }
+
+        double scale = params[SCALE_PARAM].getValue()/2;
+        double offset = params[OFFSET_PARAM].getValue();
+
         outputs[SINE_OUTPUT].setChannels(length);
         for(int idx = start; idx < start+length; ++idx)
         {
+            double trash;
             double relphase = phase_accumulator*total_period/idx;
             relphase += params[PHASE_PARAM].getValue();
+            relphase = modf(relphase, &trash);
 
             if(outputs[SINE_OUTPUT].active)
             {
-                double x = sin(6.28*relphase);
+                double x = sin(6.28*relphase)*scale+offset;
                 outputs[SINE_OUTPUT].setVoltage(x, idx-start);
             }
 
