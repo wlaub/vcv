@@ -1,5 +1,5 @@
 on:
-  pust:
+  push:
     branches: [main]
 name: Release
 env:
