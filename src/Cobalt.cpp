@@ -40,6 +40,19 @@ struct CobaltI : Module {
     int sequence_changed = 0;
     int panel_update = 0;
 
+    enum resetMode {
+        RMODE_TRIG,
+        RMODE_HOLD,
+        RMODE_ENABLE,
+        RMODE_LEN        
+    };
+
+    int reset_mode = RMODE_TRIG;
+
+    int normalize = 0;
+
+    int show_labels = 0;
+
     dsp::SchmittTrigger reset_trigger;
 
     CobaltI() {
@@ -131,12 +144,6 @@ struct CobaltI : Module {
     }
 
     void process(const ProcessArgs& args) override {
-        //TODO: some kind of 
-        //some kind of trouble
-        //up ahead
-        //it would be nice to
-        //it would be nice to have some indicator of the fastest
-        //configured frequency
 
         float deltaTime = args.sampleTime;       
 
@@ -158,15 +165,38 @@ struct CobaltI : Module {
             phase_accumulator -= 1;
         }
 
-        //TODO: It would be nice to have the option to hold it in reset
-        if(reset_trigger.process(inputs[RESET_INPUT].getVoltage()))
+        float reset_val = inputs[RESET_INPUT].getVoltage();
+        if(reset_mode == RMODE_TRIG)
         {
-            phase_accumulator = 0;
+            if(reset_trigger.process(reset_val))
+            {
+                phase_accumulator = 0;
+            }
+        }
+        else if(reset_mode == RMODE_HOLD)
+        {
+            if(reset_val > 0.5)
+            {
+                phase_accumulator = 0;
+            }
+        }
+        else if(reset_mode == RMODE_ENABLE)
+        {
+            if(reset_val < 0.5)
+            {
+                phase_accumulator = 0;
+            }
         }
 
-        //TODO: A normalize option would be nice
+
+
         double scale = params[SCALE_PARAM].getValue()/2;
         double offset = params[OFFSET_PARAM].getValue();
+        double outer_scale = 1;
+        if(normalize)
+        {
+            outer_scale = 1.f/length;
+        }
 
         outputs[SINE_OUTPUT].setChannels(length);
         outputs[RAMP_OUTPUT].setChannels(length);
@@ -183,23 +213,23 @@ struct CobaltI : Module {
 
             if(outputs[SINE_OUTPUT].active)
             {
-                x = sin(6.28*relphase)*scale+offset;
+                x = (sin(6.28*relphase)*scale+offset)*outer_scale;
                 outputs[SINE_OUTPUT].setVoltage(x, i);
             }
             if(outputs[RAMP_OUTPUT].active)
             {
-                x = ramp(relphase)*scale+offset;
+                x = (ramp(relphase)*scale+offset)*outer_scale;
                 outputs[RAMP_OUTPUT].setVoltage(x, i);
             }
             if(outputs[TRIANGLE_OUTPUT].active)
             {
-                x = triangle(relphase)*scale+offset;
+                x = (triangle(relphase)*scale+offset)*outer_scale;
                 outputs[TRIANGLE_OUTPUT].setVoltage(x, i);
             }
             if(outputs[SQUARE_OUTPUT].active)
             {
                 double pw = params[PW_PARAM].getValue();
-                x = square(relphase, pw)*scale+offset;
+                x = (square(relphase, pw)*scale+offset)*outer_scale;
                 outputs[SQUARE_OUTPUT].setVoltage(x, i);
             }
 
@@ -246,9 +276,6 @@ void draw(const DrawArgs& args) {
 #define GRIDX(x) 15.24*(x-0.5)
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
-#define XPER(i) 15.24*(4*i/MAX_LENGTH -0.5)
-
-
 
 struct CobaltIWidget : ModuleWidget {
     AlignLabel* period_labels[MAX_LENGTH];
@@ -291,12 +318,88 @@ struct CobaltIWidget : ModuleWidget {
         index_labels[i]->text = "";
     }
 
+    void clear_labels()
+    {
+        for(int i = 0; i < MAX_LENGTH; ++i)
+        {
+            clear_label(i);
+        }
+    }
+
+    void appendContextMenu(Menu* menu) override {
+            CobaltI* module = dynamic_cast<CobaltI*>(this->module);
+
+            menu->addChild(new MenuEntry);
+
+            struct NormalizeItem : MenuItem {
+                CobaltI* module;
+                void onAction(const event::Action& e) override {
+                    module->normalize = 1-module->normalize;
+                }
+            };
+            NormalizeItem* nitem = createMenuItem<NormalizeItem>("Normalize Outputs");
+            nitem->module = module;
+            nitem->rightText = CHECKMARK(module->normalize);
+            menu->addChild(nitem);
+
+            struct ShowLabelsItem : MenuItem {
+                CobaltI* module;
+                CobaltIWidget* widget;
+                void onAction(const event::Action& e) override {
+                    module->show_labels = 1-module->show_labels;
+                    if(!module->show_labels)
+                    {
+                        widget->clear_labels();
+                    }
+                }
+            };
+            ShowLabelsItem* slitem = createMenuItem<ShowLabelsItem>("Show Periods");
+            slitem->module = module;
+            slitem->widget = this;
+            slitem->rightText = CHECKMARK(module->show_labels);
+            menu->addChild(slitem);
+
+            /* Reset Modes*/
+
+            menu->addChild(createMenuLabel("Reset Mode"));
+            
+            struct ResetItem : MenuItem {
+                CobaltI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->reset_mode = mode;
+                }
+            };
+
+            std::string rmode_names[CobaltI::RMODE_LEN];
+            rmode_names[CobaltI::RMODE_TRIG] = "Trigger";
+            rmode_names[CobaltI::RMODE_HOLD] = "Hold";
+            rmode_names[CobaltI::RMODE_ENABLE] = "Enable";
+
+            int rmode_sequence[CobaltI::RMODE_LEN] = {CobaltI::RMODE_TRIG, CobaltI::RMODE_HOLD, CobaltI::RMODE_ENABLE};
+ 
+            for(int i = 0; i < CobaltI::RMODE_LEN; ++i)
+            {
+                int idx = rmode_sequence[i];
+                ResetItem* reset_item = createMenuItem<ResetItem>(rmode_names[idx]);
+                reset_item->module = module;
+                reset_item->mode = idx;
+                reset_item->rightText = CHECKMARK(module->reset_mode == idx);
+                menu->addChild(reset_item);
+            }
+
+        }
+
+
+
+
     void step() override {
         ModuleWidget::step();
         if(!module) return;
 
         CobaltI* mod = ((CobaltI*) module);
         
+        if(mod->show_labels)
         {
             for(int i = 0; i < MAX_LENGTH; ++i)
             {
@@ -340,8 +443,6 @@ struct CobaltIWidget : ModuleWidget {
                 mm2px(Vec(xpos, GRIDY(ypos))));
             index_labels[i]->alignment = Label::CENTER_ALIGNMENT;
             addChild(index_labels[i]);
-
-            set_period_label(i, i+1, 8888);
  
         }
 
