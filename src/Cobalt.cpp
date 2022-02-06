@@ -1,6 +1,8 @@
 #include "TechTechTechnologies.hpp"
 #include <numeric>
 
+#define MAX_LENGTH 7
+
 struct CobaltI : Module {
     enum ParamId {
         START_PARAM,
@@ -32,14 +34,18 @@ struct CobaltI : Module {
     int length = -1;
     int total_period = -1;
 
+    double period;
     double phase_accumulator = 0;
+
+    int sequence_changed = 0;
+    int panel_update = 0;
 
     dsp::SchmittTrigger reset_trigger;
 
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
         configParam(START_PARAM, 1.f, 7.f, 1.f, "Starting Subharmonic");
-        configParam(LENGTH_PARAM, 1.f, 7.f, 1.f, "Sequence Length");
+        configParam(LENGTH_PARAM, 1.f, MAX_LENGTH, 1.f, "Sequence Length");
         configParam(PW_PARAM, 0.f, 1.f, 0.5f, "Pulse Width");
         configParam(PHASE_PARAM, 0.f, 1.f, 0.75f, "Starting Phase (Cycles)");
 
@@ -73,6 +79,7 @@ struct CobaltI : Module {
         {
             return total_period;
         }
+        sequence_changed = 1;
         start = s;
         length = l;
 
@@ -138,7 +145,7 @@ struct CobaltI : Module {
 
         total_period = get_sequence_period(s,l);
 
-        double period = params[FREQ_PARAM].getValue();
+        period = params[FREQ_PARAM].getValue();
 
         if(inputs[VOCT_INPUT].active)
         {
@@ -204,8 +211,109 @@ struct CobaltI : Module {
     }
 };
 
+/*
+Copied from https://github.com/VCVRack/Rack/blob/05fa24a72bccf4023f5fb1b0fa7f1c26855c0926/src/ui/Label.cpp#L28
+and modified to behave as expected
+*/
+
+struct AlignLabel : Label {
+
+void draw(const DrawArgs& args) {
+	// TODO
+	// Custom font sizes do not work with right or center alignment
+	float x;
+	switch (alignment) {
+		default:
+		case LEFT_ALIGNMENT: {
+			x = 0.0;
+		} break;
+		case RIGHT_ALIGNMENT: {
+			x = -bndLabelWidth(args.vg, -1, text.c_str());
+		} break;
+		case CENTER_ALIGNMENT: {
+			x = (-bndLabelWidth(args.vg, -1, text.c_str())) / 2.0;
+		} break;
+	}
+
+	nvgTextLineHeight(args.vg, lineHeight);
+	bndIconLabelValue(args.vg, x, 0.0, box.size.x, box.size.y, -1, color, BND_LEFT, fontSize, text.c_str(), NULL);
+}
+
+};
+
+/* End of copied code */
+
+#define GRIDX(x) 15.24*(x-0.5)
+#define GRIDY(y) 15.24*(y)+3.28
+#define GRID(x,y) GRIDX(x), GRIDY(y)
+#define XPER(i) 15.24*(4*i/MAX_LENGTH -0.5)
+
+
 
 struct CobaltIWidget : ModuleWidget {
+    AlignLabel* period_labels[MAX_LENGTH];
+    AlignLabel* index_labels[MAX_LENGTH];
+
+    void set_period_label(int i, int idx, double value)
+    {
+        char text[256];
+
+        std::string suffix = "s";
+        if(value <= 1.f/20)
+        {
+            value = 1/value;
+            suffix = "Hz";
+            if(value >= 1000)
+            {
+                value/=1000;
+                suffix = "kHz";
+            }
+        }
+
+        if(value >= 10000)
+            sprintf(text, "%.0f %s", value, suffix.c_str());
+        else if(value >= 10)
+            sprintf(text, "%.4g %s", value, suffix.c_str());
+        else if (value >= 1)
+            sprintf(text, "%.3g %s", value, suffix.c_str());
+        else 
+            sprintf(text, "%.2g %s", value, suffix.c_str());
+
+        period_labels[i]->text = text;
+
+        sprintf(text, "%i", idx);
+        index_labels[i]->text = text;
+    }
+
+    void clear_label(int i)
+    {
+        period_labels[i]->text = "";
+        index_labels[i]->text = "";
+    }
+
+    void step() override {
+        ModuleWidget::step();
+        if(!module) return;
+
+        CobaltI* mod = ((CobaltI*) module);
+        
+        {
+            for(int i = 0; i < MAX_LENGTH; ++i)
+            {
+                int idx = mod->start+i;
+                if(i < mod->length)
+                {
+                    set_period_label(i, idx, mod->period/(mod->total_period/idx));
+                }
+                else
+                {
+                    clear_label(i);
+                }
+            }
+        }
+
+    } 
+
     CobaltIWidget(CobaltI* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Cobalt.svg")));
@@ -215,7 +323,27 @@ struct CobaltIWidget : ModuleWidget {
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-        #define GRID(x,y) 15.24*(x-0.5), 15.24*(y)+3.28
+
+
+        for(int i = 0; i < MAX_LENGTH; ++i)
+        {
+            float xpos = GRIDX(0.5+0.75+3.5f*(i%4)/(3));
+            float ypos = 4-.125;
+            if(i >= 4) ypos += 0.75;
+
+            period_labels[i] = createWidget<AlignLabel>(
+                mm2px(Vec(xpos, GRIDY(ypos+.25))));
+            period_labels[i]->alignment = Label::CENTER_ALIGNMENT;
+            addChild(period_labels[i]);
+
+            index_labels[i] = createWidget<AlignLabel>(
+                mm2px(Vec(xpos, GRIDY(ypos))));
+            index_labels[i]->alignment = Label::CENTER_ALIGNMENT;
+            addChild(index_labels[i]);
+
+            set_period_label(i, i+1, 8888);
+ 
+        }
 
         addParam(createParamCentered<RoundHugeBlackKnob>(
             mm2px(Vec(GRID(3,2))), module, CobaltI::FREQ_PARAM));
