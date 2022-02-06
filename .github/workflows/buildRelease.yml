@@ -1,6 +1,6 @@
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
 name: Release
 env:
   RACK_DIR: ${GITHUB_WORKSPACE}/Rack-SDK
