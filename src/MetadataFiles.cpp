@@ -3,6 +3,12 @@
 #include <stb_image_write.h>
 #include "settings.hpp"
 
+// Get the GLFW API.
+#define GLEW_STATIC
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 struct FileTypeItem : ui::MenuItem {
     enum FileTypes {
         IMAGE,
