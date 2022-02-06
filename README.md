@@ -283,10 +283,11 @@ Generates waveforms with periods that are consecutive integer multiples of a fun
 * Combined waveform period in seconds
 * Starting multiple from 1 to 7
 * Sequence length from 1 to 7
-* Waveform starting phase
+* Waveform starting/intersection phase
 * Square wave pulse width
 * Waveform scale and offset
 
+The phase control allows control of the intersection point of the generated waveforms.
 
 ### Achilles
 

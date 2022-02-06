@@ -90,7 +90,13 @@ struct CobaltI : Module {
     }
 
     void process(const ProcessArgs& args) override {
-    
+        //TODO: some kind of 
+        //some kind of trouble
+        //up ahead
+        //it would be nice to
+        //it would be nice to have some indicator of the fastest
+        //configured frequency
+
         float deltaTime = args.sampleTime;       
 
         int s = params[START_PARAM].getValue();
@@ -100,19 +106,28 @@ struct CobaltI : Module {
 
         double period = params[FREQ_PARAM].getValue();
 
+        //TODO: Use v/oct
+
+        //TODO: reset button
         phase_accumulator += deltaTime/period;
         if(phase_accumulator > 1)
         {
             phase_accumulator -= 1;
         }
 
+        //TODO: the other outputs
+        //TODO: scale and offset
         outputs[SINE_OUTPUT].setChannels(length);
         for(int idx = start; idx < start+length; ++idx)
         {
             double relphase = phase_accumulator*total_period/idx;
             relphase += params[PHASE_PARAM].getValue();
-            double x = sin(6.28*relphase);
-            outputs[SINE_OUTPUT].setVoltage(x, idx-start);
+
+            if(outputs[SINE_OUTPUT].active)
+            {
+                double x = sin(6.28*relphase);
+                outputs[SINE_OUTPUT].setVoltage(x, idx-start);
+            }
 
         }
 
