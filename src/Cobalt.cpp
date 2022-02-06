@@ -236,7 +236,7 @@ struct CobaltI : Module {
 
             if(outputs[SINE_OUTPUT].active)
             {
-                x = (sin(6.28*relphase)*scale+offset)*outer_scale;
+                x = (sin(2*M_PI*relphase)*scale+offset)*outer_scale;
                 outputs[SINE_OUTPUT].setVoltage(x, i);
             }
             if(outputs[RAMP_OUTPUT].active)
