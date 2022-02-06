@@ -12,6 +12,8 @@ curl -o release.json \
     --request GET \
     ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/releases/${GITHUB_REF#"refs/"}
 
+cat release.json
+
 UPLOAD_URL=$(jq -r .upload_url release.json)
 
 ASSET_PATH=$(ls dist/*.vcvplugin)
