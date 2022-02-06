@@ -1,14 +1,14 @@
 {
   "slug": "TechTechTechnologies",
   "name": "TechTech Technologies",
-  "version": "2.0.0",
-  "license": "",
+  "version": "2.0.2",
+  "license": "CC0-1.0",
   "brand": "TechTech Technologies",
   "author": "William Laub",
   "authorEmail": "",
   "authorUrl": "",
   "pluginUrl": "",
-  "manualUrl": "",
+  "manualUrl": "https://github.com/wlaub/vcv/blob/main/README.md",
   "sourceUrl": "https://github.com/wlaub/vcv",
   "donateUrl": "",
   "modules": [
