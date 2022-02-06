@@ -239,6 +239,35 @@ struct CobaltI : Module {
         }
 
     }
+
+    json_t* dataToJson() override {
+        json_t* rootJ = json_object();
+
+        json_object_set_new(rootJ, "reset_mode", json_integer(reset_mode));
+        json_object_set_new(rootJ, "normalize", json_integer(normalize));       
+        json_object_set_new(rootJ, "show_labels", json_integer(show_labels));
+
+        return rootJ;
+
+    } 
+
+    void dataFromJson(json_t* rootJ) override {
+
+        json_t* temp;
+
+        temp = json_object_get(rootJ, "reset_mode");
+        if(temp) reset_mode = json_integer_value(temp);
+
+        temp = json_object_get(rootJ, "normalize");
+        if(temp) normalize = json_integer_value(temp);
+
+        temp = json_object_get(rootJ, "show_labels");
+        if(temp) show_labels = json_integer_value(temp);
+
+    } 
+
+
+
 };
 
 /*
