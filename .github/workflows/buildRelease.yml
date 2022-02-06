@@ -1,0 +1,46 @@
+on:
+  release:
+    types: [published]
+name: Release
+env:
+  RACK_DIR: ${GITHUB_WORKSPACE}/Rack-SDK
+  RACK_USER_DIR: ${GITHUB_WORKSPACE}
+  RACK_SDK_VERSION: 2.0.5
+jobs:
+  buildLinux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Build Linux
+      uses: ./.github/actions/build_linux
+    - name: upload zip
+      run: sh ./.github/actions/upload_plugin_lin/script.sh ${{ secrets.GITHUB_TOKEN }}
+  buildWindows:
+    name: Build Windows
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Build Windows
+      uses: ./.github/actions/build_win
+    - name: upload zip
+      run: sh ./.github/actions/upload_plugin_win/script.sh ${{ secrets.GITHUB_TOKEN }}
+  buildOsx:
+    name: Build OSX
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@main
+    - name: install tools
+      run: brew install automake
+    - name: get Rack-SDK
+      run: curl -L https://vcvrack.com/downloads/Rack-SDK-${RACK_SDK_VERSION}-mac.zip -o rack-sdk.zip
+    - name: unzip SDK
+      run: unzip -o rack-sdk.zip
+    - name: clean up SDK
+      run: rm rack-sdk.zip
+    - name: update submodules
+      run: git submodule update --init --recursive
+    - name: make
+      run: make dist
+    - name: upload zip
+      run: sh ./.github/actions/upload_plugin_mac/script.sh ${{ secrets.GITHUB_TOKEN }}
