@@ -91,6 +91,38 @@ struct CobaltI : Module {
 
     }
 
+    double ramp(double p)
+    {
+        if(p < 0.5)
+            return (p+0.5)*2-1;
+        else
+            return (p-0.5)*2-1;
+    }
+
+    double triangle(double p)
+    {
+        if(p < 0.25)
+        {
+            return p*4;
+        }
+        else if(p < 0.75)
+        {
+            return 1-4*(p-0.25);
+        }
+        else
+        {
+            return -1+(p-0.75)*4;
+        }
+    }
+
+    double square(double p, double pw)
+    {
+        if(p < pw)
+            return 1;
+        else
+            return -1;
+    }
+
     void process(const ProcessArgs& args) override {
         //TODO: some kind of 
         //some kind of trouble
@@ -125,22 +157,47 @@ struct CobaltI : Module {
             phase_accumulator = 0;
         }
 
+        //TODO: A normalize option would be nice
         double scale = params[SCALE_PARAM].getValue()/2;
         double offset = params[OFFSET_PARAM].getValue();
 
         outputs[SINE_OUTPUT].setChannels(length);
-        for(int idx = start; idx < start+length; ++idx)
+        outputs[RAMP_OUTPUT].setChannels(length);
+        outputs[TRIANGLE_OUTPUT].setChannels(length);
+        outputs[SQUARE_OUTPUT].setChannels(length);
+        for(int i = 0; i < length; ++i)
         {
+            int idx = i + start;
             double trash;
+            double x;
             double relphase = phase_accumulator*total_period/idx;
             relphase += params[PHASE_PARAM].getValue();
             relphase = modf(relphase, &trash);
 
             if(outputs[SINE_OUTPUT].active)
             {
-                double x = sin(6.28*relphase)*scale+offset;
-                outputs[SINE_OUTPUT].setVoltage(x, idx-start);
+                x = sin(6.28*relphase)*scale+offset;
+                outputs[SINE_OUTPUT].setVoltage(x, i);
             }
+            if(outputs[RAMP_OUTPUT].active)
+            {
+                x = ramp(relphase)*scale+offset;
+                outputs[RAMP_OUTPUT].setVoltage(x, i);
+            }
+            if(outputs[TRIANGLE_OUTPUT].active)
+            {
+                x = triangle(relphase)*scale+offset;
+                outputs[TRIANGLE_OUTPUT].setVoltage(x, i);
+            }
+            if(outputs[SQUARE_OUTPUT].active)
+            {
+                double pw = params[PW_PARAM].getValue();
+                x = square(relphase, pw)*scale+offset;
+                outputs[SQUARE_OUTPUT].setVoltage(x, i);
+            }
+
+
+
 
         }
 
