@@ -1,6 +1,6 @@
 on:
   release:
-    types: [created, edited]
+    types: [published, edited, prereleased]
 name: Release
 env:
   RACK_DIR: ${GITHUB_WORKSPACE}/Rack-SDK
