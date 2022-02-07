@@ -47,29 +47,32 @@ struct TiaIExpander : Module {
 
         for(int row = 0; row < N; ++row)
         {
-            for(int i = 0; i < 7; ++i)
+            if(outputs[POLY_OUTPUT+row].active)
             {
-
-                double fade = message->faders[i];
-
-                double bot = 0;
-                double top = 0;
-                if(message->top_select[i] < 7)
+                for(int i = 0; i < 7; ++i)
                 {
-                    double top_gain = message->gains[message->top_select[i]];
-                    top = inputs[SIGNAL_INPUT+IDX(row, message->top_select[i])].getVoltage() * top_gain;
-                }
-                if(message->bot_select[i] < 7)
-                {
-                    double bot_gain = message->gains[message->bot_select[i]];
-                    bot = inputs[SIGNAL_INPUT+IDX(row, message->bot_select[i])].getVoltage() * bot_gain;
-                }
 
-                double mix = top*fade + bot*(1-fade);
-                outputs[POLY_OUTPUT+row].setVoltage(mix, i);
- 
+                    double fade = message->faders[i];
+
+                    double bot = 0;
+                    double top = 0;
+                    if(message->top_select[i] < 7)
+                    {
+                        double top_gain = message->gains[message->top_select[i]];
+                        top = inputs[SIGNAL_INPUT+IDX(row, message->top_select[i])].getVoltage() * top_gain;
+                    }
+                    if(message->bot_select[i] < 7)
+                    {
+                        double bot_gain = message->gains[message->bot_select[i]];
+                        bot = inputs[SIGNAL_INPUT+IDX(row, message->bot_select[i])].getVoltage() * bot_gain;
+                    }
+
+                    double mix = top*fade + bot*(1-fade);
+                    outputs[POLY_OUTPUT+row].setVoltage(mix, i);
+     
+                }
+                outputs[POLY_OUTPUT+row].setChannels(7);
             }
-            outputs[POLY_OUTPUT+row].setChannels(7);
         }
 
 
