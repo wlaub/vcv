@@ -491,11 +491,11 @@ struct MatIWidget : ModuleWidget {
 
         #define GRID(x,y) 15.24*(x-0.5), 15.24*(y)+3.28
 
-        #define DY (3.5f/(MAX_CHANNELS-1+2))
+        #define DY (3.25f/(MAX_CHANNELS-1+2))
 
         for(int i = 0; i < MAX_CHANNELS; ++i)
         {
-            float ydx = 1.75+i*DY;
+            float ydx = 1.4+i*DY;
             addChild(createLightCentered<SmallLight<OrangeLight>>(
                     mm2px(Vec(GRID(1-DY/2, ydx))), module, MatI::INPUT_LIGHT+i));
             addChild(createLightCentered<SmallLight<OrangeLight>>(
@@ -503,7 +503,7 @@ struct MatIWidget : ModuleWidget {
             
         }
         addChild(createLightCentered<MediumLight<RedLight>>(
-                mm2px(Vec(GRID(1, 5.33))), module, MatI::ERROR_LIGHT));
+                mm2px(Vec(GRID(1, 5))), module, MatI::ERROR_LIGHT));
  
 
         addInput(createInputCentered<PJ301MPort>(
