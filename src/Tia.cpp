@@ -492,77 +492,85 @@ struct TiaIWidget : ModuleWidget {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Tia.svg")));
 
-        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH*2.5, 0)));
+        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 3.5 * RACK_GRID_WIDTH, 0)));
+        addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH*2.5, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+        addChild(createWidget<ScrewSilver>(Vec(box.size.x - 3.5 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 
         #define GRID(x,y) 15.24*(x-0.5), 15.24*(y)+3.28
+
+        #define YTOP 5
+        #define YBOT 7
+        #define YSEL 4
+        #define YFADE 3
+        #define YGAIN 2
+        #define YIN 1
 
         for(int i = 0; i < 7; ++i)
         {
 
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(GRID(i+1, 1))), module, TiaI::SET_TOP0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, YTOP))), module, TiaI::SET_TOP0_PARAM+i));
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(GRID(i+1, 2))), module, TiaI::SET_BOT0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, YBOT))), module, TiaI::SET_BOT0_PARAM+i));
 
-            addChild(createLightCentered<MediumLight<RedLight>>(
-                    mm2px(Vec(GRID(i+1, 1.375))), module, TiaI::FADE_TOP0_LIGHT+i));
-            addChild(createLightCentered<MediumLight<RedLight>>(
-                    mm2px(Vec(GRID(i+1, 1.625))), module, TiaI::FADE_BOT0_LIGHT+i));
+            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
+                    mm2px(Vec(GRID(i+1, YTOP))), module, TiaI::SELECT_TOP0_LIGHT+3*i));
+            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
+                    mm2px(Vec(GRID(i+1, YBOT))), module, TiaI::SELECT_BOT0_LIGHT+3*i));
+
+            //1.375, 1.625
+            addChild(createLightCentered<LargeLight<OrangeLight>>(
+                    mm2px(Vec(GRID(i+1, YTOP+0.67))), module, TiaI::FADE_TOP0_LIGHT+i));
+            addChild(createLightCentered<LargeLight<OrangeLight>>(
+                    mm2px(Vec(GRID(i+1, YBOT-0.67))), module, TiaI::FADE_BOT0_LIGHT+i));
      
 
-            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
-                    mm2px(Vec(GRID(i+1, 1))), module, TiaI::SELECT_TOP0_LIGHT+3*i));
-            addChild(createLightCentered<LEDBezelLight<RedGreenBlueLight>>(
-                    mm2px(Vec(GRID(i+1, 2))), module, TiaI::SELECT_BOT0_LIGHT+3*i));
-
             addParam(createParamCentered<LEDBezel>(
-                    mm2px(Vec(GRID(i+1, 4))), module, TiaI::SELECT0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, YSEL))), module, TiaI::SELECT0_PARAM+i));
             addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                    mm2px(Vec(GRID(i+1, 4))), module, TiaI::SELECT0_LIGHT+i));
+                    mm2px(Vec(GRID(i+1, YSEL))), module, TiaI::SELECT0_LIGHT+i));
      
 
             addInput(createInputCentered<PJ301MPort>(
-                    mm2px(Vec(GRID(i+1, 5))), module, TiaI::XFADE0_INPUT+i));
+                    mm2px(Vec(GRID(i+1, YFADE))), module, TiaI::XFADE0_INPUT+i));
 
             addParam(createParamCentered<RoundBlackKnob>(
-                    mm2px(Vec(GRID(i+1, 6))), module, TiaI::GAIN0_PARAM+i));
+                    mm2px(Vec(GRID(i+1, YGAIN))), module, TiaI::GAIN0_PARAM+i));
 
 
             addInput(createInputCentered<PJ301MPort>(
-                    mm2px(Vec(GRID(i+1, 7))), module, TiaI::SIGNAL0_INPUT+i));
+                    mm2px(Vec(GRID(i+1, YIN))), module, TiaI::SIGNAL0_INPUT+i));
      
         }
 
 
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(GRID(8,1))), module, TiaI::SET_TOP_ALL_PARAM));
+                mm2px(Vec(GRID(8,YTOP))), module, TiaI::SET_TOP_ALL_PARAM));
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(GRID(8,2))), module, TiaI::SET_BOT_ALL_PARAM));
+                mm2px(Vec(GRID(8,YBOT))), module, TiaI::SET_BOT_ALL_PARAM));
 
 //        addParam(createParamCentered<CKSS>(
 //                mm2px(Vec(GRID(8,3))), module, TiaI::FADE_RANGE_PARAM));
 
         addParam(createParamCentered<LEDBezel>(
-                mm2px(Vec(GRID(8,4))), module, TiaI::SELECT_NONE_PARAM));
+                mm2px(Vec(GRID(8,YSEL))), module, TiaI::SELECT_NONE_PARAM));
 
         addChild(createLightCentered<LEDBezelLight<GreenLight>>(
-                mm2px(Vec(GRID(8,4))), module, TiaI::SELECT_NONE_LIGHT));
+                mm2px(Vec(GRID(8,YSEL))), module, TiaI::SELECT_NONE_LIGHT));
  
 
         addInput(createInputCentered<PJ301MPort>(
-                mm2px(Vec(GRID(8,5))), module, TiaI::POLY_XFADE_INPUT));
+                mm2px(Vec(GRID(8,YFADE))), module, TiaI::POLY_XFADE_INPUT));
  
 
         addParam(createParamCentered<RoundBlackKnob>(
-                mm2px(Vec(GRID(8,6))), module, TiaI::GLOBAL_GAIN_PARAM));
+                mm2px(Vec(GRID(8,YGAIN))), module, TiaI::GLOBAL_GAIN_PARAM));
 
 
         addOutput(createOutputCentered<PJ301MPort>(
-                mm2px(Vec(GRID(8,7))), module, TiaI::POLY_OUTPUT));
+                mm2px(Vec(GRID(8,YIN))), module, TiaI::POLY_OUTPUT));
  
     }
 };
