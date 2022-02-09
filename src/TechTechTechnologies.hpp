@@ -120,7 +120,7 @@ using namespace rack;
 template <typename TBase = GrayModuleLightWidget>
 struct TOrangeLight : TBase {
     TOrangeLight() {
-        this->addBaseColor(nvgRGBAf(1, .5, 0, 1));
+        this->addBaseColor(nvgRGBAf(1, .33, 0, 1));
     }
 };
 using OrangeLight = TOrangeLight<>;
