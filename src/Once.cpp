@@ -8,6 +8,30 @@ struct GateState {
     int pending = 0;
     int value = 0;
 
+    json_t* to_json()
+    {
+        json_t* result = json_object();
+        
+        json_object_set_new(result, "pending", json_integer(pending));
+        json_object_set_new(result, "value", json_integer(value));
+
+        return result;
+    }
+    
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ == 0) return;
+
+        json_t* temp;
+
+        temp = json_object_get(rootJ, "pending");
+        if(temp) pending = json_integer_value(temp);
+
+        temp = json_object_get(rootJ, "value");
+        if(temp) value = json_integer_value(temp);
+
+    }
+
 };
 
 struct Once : Module {
@@ -154,11 +178,36 @@ struct Once : Module {
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        json_object_set_new(rootJ, "enabled", json_integer(enabled));
+
+        json_t* array = json_array();
+        json_object_set_new(rootJ, "states", array);
+
+        for(int i = 0; i < N; ++i)
+        {
+            json_array_append(array, states[i].to_json());
+        }
+
         return rootJ;
 
     } 
 
     void dataFromJson(json_t* rootJ) override {
+
+        json_t* temp;
+
+        temp = json_object_get(rootJ, "enabled");
+        if(temp) enabled = json_integer_value(temp);
+
+        json_t* array = json_object_get(rootJ, "states");
+        if(array)
+        {
+            for(int i = 0; i < N; ++i)
+            {
+                temp = json_array_get(array, i);
+                states[i].from_json(temp);
+            }
+        }
 
     } 
 
