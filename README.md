@@ -287,7 +287,11 @@ TODO:
 * Multiple button modes
  * Trigger
  * Toggle
+ * anything else?
+ * passthrough (toggle/trigger on every clock while enabled?)
+* Clock polarity modes (rising, falling, both)
 * Maybe enable can substitute for the clock when the clock isn't patched?
+* More better state indicators/colors
 
 ### Cobalt I
 
