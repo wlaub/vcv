@@ -101,6 +101,80 @@ Delays?
 
 ???
 
+### Tiamat I
+
+7-Channel Chromatic Mixer
+
+Consists of two modules that can be used independently. In combination, a single complete audio spectrum is constructed out of different bands selected from multiple input signals.
+
+#### Tia I
+
+Multiplexing Crossfader
+
+Tia configures routing from its 7 signal inputs to the 7 channels of Mat's default filter configuration.
+
+7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module.
+
+The top inputs to each crossfader are selected when the crossfader CV is at its maximum value.
+
+The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum value.
+
+The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
+
+TODO: It would be nice to be able to CV control the routing, but idk how
+
+##### Tia I Expander
+
+Provides additional sets of inputs and outputs controlled by an adjacent Tia I instance.
+
+#### Mat I
+
+Multichannel Fixed Biquad Filter Bank
+
+Each channel of a polyphonic input is processed through a different cascaded biquad filter. The filters coefficients are loaded from a json file. Inputs that don't have a corresponding filter loaded will be passed unfiltered. Filters that don't have a corresponding input will process the last input channel.
+
+A polyphonic output provides the outputs of each individual filter, while a monophonic output provides a mix of all of the filter outputs without scaling.
+
+The left column of LEDs indicates the active input channels, and the right column of LEDs indicates the loaded filter channels.
+
+The red LED at the bottom of the module lights when it cannot find a set of filters matching the current sample rate or when the filters are otherwise not valid.
+
+The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7. 
+
+The filter specification has the form
+
+```
+{
+    "filters": [
+        {
+            "fs" : <sample_rate (sps)>,
+            "channels": [
+            //Channel 0 filter stages
+                [
+                    //Filter stage 0 coefficients
+                    [
+                        b0, b1, b2,
+                        a0, a1, a2
+                    ],
+                    //Filter stage 1 coefficients
+                    [
+                        b0, b1, b2,
+                        a0, a1, a2
+                    ],
+                ...
+                ],
+            ...
+            ]
+        }
+    ]
+}
+```
+
+Each individual filter specification must include a valid non-zero sample rate and an identical number of channels. The module will automatically select the set of filters with the best sample rate match to the current engine sample rate.
+
+See [`res/mati_default.json`](res/mati_default.json) for the default filter specification, which was generated using [`dev-scripts/mat_filters.py`](dev-scripts/mat_filters.py).
+
+[`dev-scripts/tiamat.py`](dev-scripts/tiamat.py) provides some helpers for generating Mat I filter specitications from filters designed using scipy.signal.
 
 ## Other Modules
 
@@ -199,80 +273,21 @@ The files metadata module, when configured for image files, can also take a scre
 
 ## WIP Modules
 
-### Tiamat I
+### Once
 
-7-Channel Chromatic Mixer
+Button press synchronizer.
 
-Consists of two modules that can be used independently. In combination, a single complete audio spectrum is constructed out of different bands selected from multiple input signals.
+Updates gate outputs from button presses only on clock edges.
 
-#### Tia I
+Click the button to toggle the corresponding gate output on the next clock edge. Click it again before the next clock edge to abort.
 
-Multiplexing Crossfader
+When the enable switch isn't activated, the module won't update the outputs.
 
-Tia configures routing from its 7 signal inputs to the 7 channels of Mat's default filter configuration.
-
-7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module.
-
-The top inputs to each crossfader are selected when the crossfader CV is at its maximum value.
-
-The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum value.
-
-The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
-
-TODO: It would be nice to be able to CV control the routing, but idk how
-
-##### Tia I Expander
-
-Provides additional sets of inputs and outputs controlled by an adjacent Tia I instance.
-
-#### Mat I
-
-Multichannel Fixed Biquad Filter Bank
-
-Each channel of a polyphonic input is processed through a different cascaded biquad filter. The filters coefficients are loaded from a json file. Inputs that don't have a corresponding filter loaded will be passed unfiltered. Filters that don't have a corresponding input will process the last input channel.
-
-A polyphonic output provides the outputs of each individual filter, while a monophonic output provides a mix of all of the filter outputs without scaling.
-
-The left column of LEDs indicates the active input channels, and the right column of LEDs indicates the loaded filter channels.
-
-The red LED at the bottom of the module lights when it cannot find a set of filters matching the current sample rate or when the filters are otherwise not valid.
-
-The default filter configuration includes a low-pass filter on channel 1, band-pass filters on channels 2-6, and a high-pass filter on channel 7. 
-
-The filter specification has the form
-
-```
-{
-    "filters": [
-        {
-            "fs" : <sample_rate (sps)>,
-            "channels": [
-            //Channel 0 filter stages
-                [
-                    //Filter stage 0 coefficients
-                    [
-                        b0, b1, b2,
-                        a0, a1, a2
-                    ],
-                    //Filter stage 1 coefficients
-                    [
-                        b0, b1, b2,
-                        a0, a1, a2
-                    ],
-                ...
-                ],
-            ...
-            ]
-        }
-    ]
-}
-```
-
-Each individual filter specification must include a valid non-zero sample rate and an identical number of channels. The module will automatically select the set of filters with the best sample rate match to the current engine sample rate.
-
-See [`res/mati_default.json`](res/mati_default.json) for the default filter specification, which was generated using [`dev-scripts/mat_filters.py`](dev-scripts/mat_filters.py).
-
-[`dev-scripts/tiamat.py`](dev-scripts/tiamat.py) provides some helpers for generating Mat I filter specitications from filters designed using scipy.signal.
+TODO:
+* Multiple button modes
+ * Trigger
+ * Toggle
+* Maybe enable can substitute for the clock when the clock isn't patched?
 
 ### Cobalt I
 
@@ -288,6 +303,8 @@ Generates waveforms with periods that are consecutive integer multiples of a fun
 * Waveform scale and offset
 
 The phase control allows control of the intersection point of the generated waveforms.
+
+Consider using it to drive the crossfaders in Tia I.
 
 ### Achilles
 
