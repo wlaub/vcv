@@ -124,8 +124,8 @@ struct Once : Module {
 
         for(int i = 0; i < N; ++i)
         {
-            configOutput(GATE_OUTPUT, "Gate");
-            configButton(BUTTON_PARAM, "Activate");
+            configOutput(GATE_OUTPUT+i, "Gate");
+            configButton(BUTTON_PARAM+i, "Activate");
         }
 
         configInput(CLK_INPUT, "Clock");
