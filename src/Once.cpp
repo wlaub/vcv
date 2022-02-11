@@ -152,18 +152,18 @@ struct Once : Module {
             {
                 if(states[i].value == 0)
                 {
-                    set_light(idx, 0, blink, 0);
+                    set_light(idx, 0, 1, 0);
                 }
                 else
                 {
-                    set_light(idx, 0, 1, blink);
+                    set_light(idx, 0, 0, 1);
                 }
             }
             else
             {
                 if(states[i].value == 1)
                 {
-                    set_light(idx, 0, 1, 0);
+                    set_light(idx, 1, 1, 1);
                 }
                 else
                 {

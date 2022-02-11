@@ -283,15 +283,21 @@ Click the button to toggle the corresponding gate output on the next clock edge.
 
 When the enable switch isn't activated, the module won't update the outputs.
 
+Button light colors:
+* Unlit: Gate low
+* Green: Pending high
+* White: Gate high
+* Blue: Pending low
+
 TODO:
 * Multiple button modes
  * Trigger
  * Toggle
  * anything else?
  * passthrough (toggle/trigger on every clock while enabled?)
+ * change enable button to mode button?
 * Clock polarity modes (rising, falling, both)
 * Maybe enable can substitute for the clock when the clock isn't patched?
-* More better state indicators/colors
 
 ### Cobalt I
 
