@@ -277,9 +277,7 @@ The files metadata module, when configured for image files, can also take a scre
 
 Button press synchronizer.
 
-Updates gate outputs from button presses only on clock edges.
-
-Click the button to toggle the corresponding gate output on the next clock edge. Click it again before the next clock edge to abort.
+Updates gate outputs from button presses only on clock edges. Maybe be rising, falling, or both edges.
 
 When the enable switch isn't activated, the module won't update the outputs.
 
@@ -289,14 +287,17 @@ Button light colors:
 * White: Gate high
 * Blue: Pending low
 
+Button Modes:
+* Toggle Gate
+ * Toggle the corresponding gate output on the next clock edge.
+* Pulse
+ * Produce a single pulse on the gate output on the next clock edge.
+* Pass Clock
+ * On the next edge, start passing the logic state of the clock to the corresponding gate output.
+* Pulse on Clock
+ * Procue a pulse on the gate output on every clock edge.
+
 TODO:
-* Multiple button modes
- * Trigger
- * Toggle
- * anything else?
- * passthrough (toggle/trigger on every clock while enabled?)
- * change enable button to mode button?
-* Clock polarity modes (rising, falling, both)
 * Maybe enable can substitute for the clock when the clock isn't patched?
 
 ### Cobalt I

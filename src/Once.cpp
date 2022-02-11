@@ -34,6 +34,55 @@ struct GateState {
 
 };
 
+
+struct ButtonMode{
+    enum Mode {
+        TOGGLE_MODE,
+        TRIGGER_MODE,
+        PASS_MODE,
+        PASS_TRIGGER_MODE,
+        MODES_LEN,
+    };
+
+    int mode = TOGGLE_MODE;
+
+    json_t* to_json()
+    {
+        return json_integer(mode);
+    }
+
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ) mode = json_integer_value(rootJ);
+    }
+
+
+
+};
+
+struct EdgeMode{
+    enum Mode {
+        RISING_MODE,
+        FALLING_MODE,
+        BOTH_MODE,
+        MODES_LEN,
+    };
+    
+    int mode = RISING_MODE;
+
+    json_t* to_json()
+    {
+        return json_integer(mode);
+    }
+
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ) mode = json_integer_value(rootJ);
+    }
+
+
+};
+
 struct Once : Module {
     enum ParamId {
         ENABLE_PARAM,
@@ -54,7 +103,8 @@ struct Once : Module {
         LIGHTS_LEN = BUTTON_LIGHT+N*3
     };
 
-    dsp::SchmittTrigger clk_trigger, en_trigger;
+    dsp::SchmittTrigger clk_trigger, nclk_trigger, en_trigger;
+    dsp::PulseGenerator clk_pulse, vis_pulse;
 
     dsp::SchmittTrigger butt_trigger[N];
     struct GateState states[N];
@@ -63,6 +113,9 @@ struct Once : Module {
 
     float blink_counter = 0;
     int blink = 0;
+
+    struct ButtonMode button_mode;
+    struct EdgeMode edge_mode;
 
     Once() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -95,6 +148,10 @@ struct Once : Module {
         {
             blink_counter -= 0.5;
             blink = 1-blink;
+            if(button_mode.mode == ButtonMode::TRIGGER_MODE)
+            {
+                vis_pulse.trigger(0.1);
+            }
         }
 
         /* Handle button presses */
@@ -116,8 +173,30 @@ struct Once : Module {
 
         /* Handle clock edges */
 
-        if(clk_trigger.process(inputs[CLK_INPUT].getVoltage()) && enabled)
+        float clk_value = inputs[CLK_INPUT].getVoltage();
+        int clk = clk_value > 0.5? 1:0;
+        int rclk = clk_trigger.process(clk_value);
+        int fclk = nclk_trigger.process(!clk_trigger.state);
+        
+        int clk_trigger_value = 0;
+        if(edge_mode.mode != EdgeMode::FALLING_MODE)
         {
+            clk_trigger_value |= rclk;
+        }
+        if(edge_mode.mode != EdgeMode::RISING_MODE)
+        {
+            clk_trigger_value |= fclk;
+        }
+
+
+        if(clk_trigger_value && enabled)
+        {
+            if(button_mode.mode == ButtonMode::PASS_TRIGGER_MODE)
+            {
+                vis_pulse.trigger(0.1);
+            }
+
+            clk_pulse.trigger();
             for(int i = 0; i < N; ++i)
             {
                 if(states[i].pending == 1)
@@ -128,17 +207,66 @@ struct Once : Module {
             }
         }
 
+        int clk_pulse_value = clk_pulse.process(args.sampleTime);
+        int vis_pulse_value = vis_pulse.process(args.sampleTime);
+
         for(int i = 0; i < N; ++i)
         {
-            outputs[GATE_OUTPUT+i].setVoltage(states[i].value*5);
-        }
+            float out_val = 0;
+            if(button_mode.mode == ButtonMode::TRIGGER_MODE)
+            {
+                if(states[i].value)
+                {
+                    out_val = clk_pulse_value;
+                }
+                if(clk_pulse_value == 0)
+                {
+                    states[i].value = 0;
+                }
+            }
+            else if(button_mode.mode == ButtonMode::PASS_TRIGGER_MODE)
+            {
+                if(states[i].value)
+                {
+                    out_val = clk_pulse_value;
+                }
+            }
+            else if(button_mode.mode == ButtonMode::PASS_MODE)
+            {
+                if(states[i].value)
+                {
+                    out_val = clk;
+                }
+            }
+            else
+            {
+                out_val = states[i].value;
+            }
 
+            outputs[GATE_OUTPUT+i].setVoltage(out_val*5);
+        }
 
         /* Handle lights */
 
         if(enabled)
         {
-            set_light(ENABLE_LIGHT, 0,1,0);
+            if(button_mode.mode ==  ButtonMode::TOGGLE_MODE)
+            {
+                set_light(ENABLE_LIGHT, 0,1,0);
+            }
+            else if(button_mode.mode ==  ButtonMode::TRIGGER_MODE)
+            {
+                set_light(ENABLE_LIGHT, 0, vis_pulse_value, 0);
+            }
+            else if(button_mode.mode ==  ButtonMode::PASS_MODE)
+            {
+                set_light(ENABLE_LIGHT, clk, clk, 1);
+            }
+            else if(button_mode.mode ==  ButtonMode::PASS_TRIGGER_MODE)
+            {
+                set_light(ENABLE_LIGHT, vis_pulse_value, vis_pulse_value, 1);
+            }
+ 
         }
         else
         {
@@ -188,6 +316,9 @@ struct Once : Module {
             json_array_append(array, states[i].to_json());
         }
 
+        json_object_set_new(rootJ, "button_mode", button_mode.to_json());
+        json_object_set_new(rootJ, "edge_mode", edge_mode.to_json());
+
         return rootJ;
 
     } 
@@ -209,6 +340,9 @@ struct Once : Module {
             }
         }
 
+        button_mode.from_json(json_object_get(rootJ, "button_mode"));
+        edge_mode.from_json(json_object_get(rootJ, "edge_mode"));
+
     } 
 
 
@@ -221,68 +355,78 @@ struct Once : Module {
 
 struct OnceWidget : ModuleWidget {
 
+    void button_mode_menu(Menu* menu, Once* module)
+    {
+            menu->addChild(createMenuLabel("Button Mode"));
+
+            struct ModeItem : MenuItem {
+                Once* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->button_mode.mode = mode;
+                }
+            };
+
+            std::string mode_names[ButtonMode::MODES_LEN];
+            mode_names[ButtonMode::TOGGLE_MODE] = "Toggle Gate";
+            mode_names[ButtonMode::TRIGGER_MODE] = "Pulse";
+            mode_names[ButtonMode::PASS_MODE] = "Pass Clock";
+            mode_names[ButtonMode::PASS_TRIGGER_MODE] = "Pulse on Clock";
+
+            int mode_sequence[ButtonMode::MODES_LEN] = {ButtonMode::TOGGLE_MODE, ButtonMode::TRIGGER_MODE, ButtonMode::PASS_MODE, ButtonMode::PASS_TRIGGER_MODE};
+ 
+            for(int i = 0; i < ButtonMode::MODES_LEN; ++i)
+            {
+                int idx = mode_sequence[i];
+                ModeItem* item = createMenuItem<ModeItem>(mode_names[idx]);
+                item->module = module;
+                item->mode = idx;
+                item->rightText = CHECKMARK(module->button_mode.mode == idx);
+                menu->addChild(item);
+            }
+ 
+    }
+
+    void edge_mode_menu(Menu* menu, Once* module)
+    {
+            menu->addChild(createMenuLabel("Clock Mode"));
+
+            struct ModeItem : MenuItem {
+                Once* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->edge_mode.mode = mode;
+                }
+            };
+
+            std::string mode_names[EdgeMode::MODES_LEN];
+            mode_names[EdgeMode::RISING_MODE] = "Rising Edge";
+            mode_names[EdgeMode::FALLING_MODE] = "Falling Edge";
+            mode_names[EdgeMode::BOTH_MODE] = "Both Edges";
+
+            int mode_sequence[EdgeMode::MODES_LEN] = {EdgeMode::RISING_MODE, EdgeMode::FALLING_MODE, EdgeMode::BOTH_MODE};
+ 
+            for(int i = 0; i < EdgeMode::MODES_LEN; ++i)
+            {
+                int idx = mode_sequence[i];
+                ModeItem* item = createMenuItem<ModeItem>(mode_names[idx]);
+                item->module = module;
+                item->mode = idx;
+                item->rightText = CHECKMARK(module->edge_mode.mode == idx);
+                menu->addChild(item);
+            }
+ 
+    }
+
+
+
     void appendContextMenu(Menu* menu) override {
             Once* module = dynamic_cast<Once*>(this->module);
 
             menu->addChild(new MenuEntry);
-/*
-            struct NormalizeItem : MenuItem {
-                Once* module;
-                void onAction(const event::Action& e) override {
-                    module->normalize = 1-module->normalize;
-                }
-            };
-            NormalizeItem* nitem = createMenuItem<NormalizeItem>("Normalize Outputs");
-            nitem->module = module;
-            nitem->rightText = CHECKMARK(module->normalize);
-            menu->addChild(nitem);
 
-            struct ShowLabelsItem : MenuItem {
-                Once* module;
-                OnceWidget* widget;
-                void onAction(const event::Action& e) override {
-                    module->show_labels = 1-module->show_labels;
-                    if(!module->show_labels)
-                    {
-                        widget->clear_labels();
-                    }
-                }
-            };
-            ShowLabelsItem* slitem = createMenuItem<ShowLabelsItem>("Show Periods");
-            slitem->module = module;
-            slitem->widget = this;
-            slitem->rightText = CHECKMARK(module->show_labels);
-            menu->addChild(slitem);
-*/
-            /* Reset Modes*/
-/*
-            menu->addChild(createMenuLabel("Reset Mode"));
-            
-            struct ResetItem : MenuItem {
-                Once* module;
-                int mode;
-                void onAction(const event::Action& e) override {
-                    module->reset_mode = mode;
-                }
-            };
-
-            std::string rmode_names[Once::RMODE_LEN];
-            rmode_names[Once::RMODE_TRIG] = "Trigger";
-            rmode_names[Once::RMODE_HOLD] = "Hold";
-            rmode_names[Once::RMODE_ENABLE] = "Enable";
-
-            int rmode_sequence[Once::RMODE_LEN] = {Once::RMODE_TRIG, Once::RMODE_HOLD, Once::RMODE_ENABLE};
- 
-            for(int i = 0; i < Once::RMODE_LEN; ++i)
-            {
-                int idx = rmode_sequence[i];
-                ResetItem* reset_item = createMenuItem<ResetItem>(rmode_names[idx]);
-                reset_item->module = module;
-                reset_item->mode = idx;
-                reset_item->rightText = CHECKMARK(module->reset_mode == idx);
-                menu->addChild(reset_item);
-            }
-*/
+            button_mode_menu(menu, module);
+            edge_mode_menu(menu, module);
         }
 
 
