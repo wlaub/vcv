@@ -290,15 +290,20 @@ Button light colors:
 Button Modes:
 * Toggle Gate
  * Toggle the corresponding gate output on the next clock edge.
+ * Enable button lights up green
 * Pulse
  * Produce a single pulse on the gate output on the next clock edge.
+ * Enable button flashes green
 * Pass Clock
  * On the next edge, start passing the logic state of the clock to the corresponding gate output.
+ * Enabled button lights up blue when clock is low and white when clock is high
 * Pulse on Clock
  * Procue a pulse on the gate output on every clock edge.
+ * Enabled button lights up blue and flashes white on clock edges
 
 TODO:
 * Maybe enable can substitute for the clock when the clock isn't patched?
+* Maybe mode indicator blinking should always synchronize to the clock?
 
 ### Cobalt I
 
