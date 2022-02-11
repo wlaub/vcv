@@ -271,6 +271,10 @@ These modules add descriptive metadata to the patch file for use by other progra
 
 The files metadata module, when configured for image files, can also take a screenshot of the entire patch. When used, the screenshot control locks out ofor 10 seconds to prevent accidental screenshot spamming. The program may hang for a couple seconds while taking a screenshot, and it's possible that there are modules that prevent the screenshot function from working correctly.
 
+### Decay Timer
+
+This is a collection of utilities for measuring decay time of an envelope and generating json measurement files.
+
 ## WIP Modules
 
 ### Once
