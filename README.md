@@ -66,11 +66,11 @@ When on of the v/oct or envelope inputs is patched with a polyphonic input, the 
 #### TODO
 
 * Make knobs have nice units
- * Frequency for base pitch
- * Volts for bias offset and cutoff knee
+  * Frequency for base pitch
+  * Volts for bias offset and cutoff knee
 * Make a version with just one pane and deprecate this one
- * An octave control and hp/lp switch might be nice (instead of some of the redundant filter ports)
- * Make a panel
+  * An octave control and hp/lp switch might be nice (instead of some of the redundant filter ports)
+  * Make a panel
 
 ### Prometheus 
 
@@ -293,17 +293,17 @@ Button light colors:
 
 Button Modes:
 * Toggle Gate
- * Toggle the corresponding gate output on the next clock edge.
- * Enable button lights up green when clock low and white when clock high
+  * Toggle the corresponding gate output on the next clock edge.
+  * Enable button lights up green when clock low and white when clock high
 * Pulse
- * Produce a single pulse on the gate output on the next clock edge.
- * Enable button lights up green and flashes white on clock edges
+  * Produce a single pulse on the gate output on the next clock edge.
+  * Enable button lights up green and flashes white on clock edges
 * Pass Clock
- * On the next edge, start passing the logic state of the clock to the corresponding gate output.
- * Enabled button lights up blue when clock is low and white when clock is high
+  * On the next edge, start passing the logic state of the clock to the corresponding gate output.
+  * Enabled button lights up blue when clock is low and white when clock is high
 * Pulse on Clock
- * Procue a pulse on the gate output on every clock edge.
- * Enabled button lights up blue and flashes white on clock edges
+  * Procue a pulse on the gate output on every clock edge.
+  * Enabled button lights up blue and flashes white on clock edges
 
 
 ### Cobalt I
