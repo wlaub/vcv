@@ -142,18 +142,14 @@ struct Once : Module {
     void process(const ProcessArgs& args) override {
 
         float deltaTime = args.sampleTime;       
-
+/*
         blink_counter += deltaTime;
         if(blink_counter > 0.5)
         {
             blink_counter -= 0.5;
             blink = 1-blink;
-            if(button_mode.mode == ButtonMode::TRIGGER_MODE)
-            {
-                vis_pulse.trigger(0.1);
-            }
         }
-
+*/
         /* Handle button presses */
 
         for(int i = 0; i < N; ++i)
@@ -191,10 +187,7 @@ struct Once : Module {
 
         if(clk_trigger_value && enabled)
         {
-            if(button_mode.mode == ButtonMode::PASS_TRIGGER_MODE)
-            {
-                vis_pulse.trigger(0.1);
-            }
+            vis_pulse.trigger(0.1);
 
             clk_pulse.trigger();
             for(int i = 0; i < N; ++i)
@@ -252,11 +245,11 @@ struct Once : Module {
         {
             if(button_mode.mode ==  ButtonMode::TOGGLE_MODE)
             {
-                set_light(ENABLE_LIGHT, 0,1,0);
+                set_light(ENABLE_LIGHT, clk,1,clk);
             }
             else if(button_mode.mode ==  ButtonMode::TRIGGER_MODE)
             {
-                set_light(ENABLE_LIGHT, 0, vis_pulse_value, 0);
+                set_light(ENABLE_LIGHT, vis_pulse_value, 1, vis_pulse_value);
             }
             else if(button_mode.mode ==  ButtonMode::PASS_MODE)
             {
