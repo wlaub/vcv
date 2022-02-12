@@ -1,7 +1,5 @@
-#include "TechTechTechnologies.hpp"
+#include "Cobalt.hpp"
 #include <numeric>
-
-#define MAX_LENGTH 7
 
 struct CobaltI : Module {
     enum ParamId {
@@ -57,6 +55,9 @@ struct CobaltI : Module {
     dsp::SchmittTrigger reset_trigger;
     dsp::PulseGenerator eoc_pulse;
 
+    struct CobaltMessage in_message;
+    struct CobaltMessage out_message;
+
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
         configParam(START_PARAM, 1.f, 7.f, 1.f, "Starting Subharmonic");
@@ -75,6 +76,12 @@ struct CobaltI : Module {
         configOutput(SINE_OUTPUT, "Sine");
         configOutput(TRIANGLE_OUTPUT, "Triangle");
         configOutput(EOC_OUTPUT, "End of Cycle");
+
+        leftExpander.producerMessage = &out_message;
+        rightExpander.producerMessage = &out_message;
+
+        leftExpander.consumerMessage = &in_message;
+        rightExpander.consumerMessage = &in_message;
     }
 
     int gcd(int a, int b) 
@@ -221,10 +228,12 @@ struct CobaltI : Module {
             outer_scale = 1.f/length;
         }
 
-        outputs[SINE_OUTPUT].setChannels(length);
-        outputs[RAMP_OUTPUT].setChannels(length);
-        outputs[TRIANGLE_OUTPUT].setChannels(length);
-        outputs[SQUARE_OUTPUT].setChannels(length);
+        out_message.scale = scale;
+        out_message.offset = offset;
+        out_message.outer_scale = outer_scale;
+        out_message.length = length;
+
+        double phases[MAX_LENGTH];
         for(int i = 0; i < length; ++i)
         {
             int idx = i + start;
@@ -233,6 +242,18 @@ struct CobaltI : Module {
             double relphase = phase_accumulator*total_period/idx;
             relphase += params[PHASE_PARAM].getValue();
             relphase = modf(relphase, &trash);
+            phases[i] = relphase;
+            out_message.phases[i] = relphase;
+        }
+
+        outputs[SINE_OUTPUT].setChannels(length);
+        outputs[RAMP_OUTPUT].setChannels(length);
+        outputs[TRIANGLE_OUTPUT].setChannels(length);
+        outputs[SQUARE_OUTPUT].setChannels(length);
+        for(int i = 0; i < length; ++i)
+        {
+            double x;
+            double relphase = phases[i];
 
             if(outputs[SINE_OUTPUT].active)
             {
@@ -255,11 +276,10 @@ struct CobaltI : Module {
                 x = (square(relphase, pw)*scale+offset)*outer_scale;
                 outputs[SQUARE_OUTPUT].setVoltage(x, i);
             }
-
-
-
-
         }
+
+        leftExpander.requestMessageFlip();
+        rightExpander.requestMessageFlip();
 
     }
 

@@ -343,13 +343,20 @@ The phase control allows control of the intersection point of the generated wave
 Consider using it to drive the crossfaders in Tia I.
 
 TODO:
-* A pause button???
+* A pause control
 * Change waveforms to reference 0-phase to min value instead of midpoint?
-* slew-limited square output?
-* asymmetric triangle output?
-* An exponentialized outputs?
-* Inverse outputs?
-* And expander for addditional outputs?
+* Colorful panel
+
+#### -60
+
+Expander adds a bunch of additional waveforms
+* Asymmetric triangle wave with symmetry control (from rising ramp to triangle to falling ramp)
+* Raised cosine wave with rolloff control (from cosine to square wave)
+* Slew-limited square wave with slope control (from trangle wave to square wave)
+* RC/exponential decay wave with decay rate control
+* Exponential converter (for making waveforms peakier)
+* 1-X converter (for reversing minimum and maximum values of waveforms)
+* Subdivision clock (integer multiple of fastest output frequency)
 
 ### Achilles
 
@@ -388,3 +395,6 @@ Open-loop delay-feedback simulated with multiple delays. Allows each "echo" to b
 
 A more versatile modulation toolkit with built-in filters.
 
+### ??? Arturo I? Kromagg I? Earth I?
+
+A nice faderbank with sliders that feel natural.
