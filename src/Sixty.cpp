@@ -116,14 +116,20 @@ struct Sixty : Module {
         }
     }
 
-
-
     double decay(double p, double pw)
     {
-        if(p < pw)
-            return 1;
+        double a = -4*(1+2*pw);
+        double o = exp(0.5*a);
+        double s = 1-o;
+        if(p < 0.5)
+        {
+
+            return 2*(1-exp(p*a))/s -1;
+        }
         else
-            return -1;
+        {
+            return 2*(exp((p-0.5)*a)-o)/s-1;
+        }
     }
 
     void process(const ProcessArgs& args) override {
