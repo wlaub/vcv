@@ -1,7 +1,9 @@
 
 # VCV 2.0 Port
 
-* MetadataFiles screenshot function is still a little broken - doesn't render plugs and cable opacity also seems bugged.
+* MetadataFiles screenshot function is still a little broken 
+  * doesn't render plugs and cable opacity also seems bugged.
+  * also doesn't clip panels to their bounds
 
 # TechTech Technologies VCV Plugins
 
@@ -121,7 +123,11 @@ The bottom inputs to each crossfader are selected when the crossfader CV is at i
 
 The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
 
-TODO: It would be nice to be able to CV control the routing, but idk how
+The Nth crossfader selects from the Nth channel of its routed inputs, so polyphonic inputs  can be used to provide different sets of signals to each crossfader. For example, different waveform outputs from Cobalt I can be routed to Tia, and the Tia output signals will have the same frequencies as the inputs but can crossfade between different waveforms.
+
+TODO: 
+* It would be nice to be able to CV control the routing, but idk how
+* Press twice to change routing immediately?
 
 ##### Tia I Expander
 
@@ -271,6 +277,9 @@ These modules add descriptive metadata to the patch file for use by other progra
 
 The files metadata module, when configured for image files, can also take a screenshot of the entire patch. When used, the screenshot control locks out ofor 10 seconds to prevent accidental screenshot spamming. The program may hang for a couple seconds while taking a screenshot, and it's possible that there are modules that prevent the screenshot function from working correctly.
 
+TODO:
+* Metadata main needs a more usable description text field. Maybe something larger.
+
 ### Decay Timer
 
 This is a collection of utilities for measuring decay time of an envelope and generating json measurement files.
@@ -305,6 +314,11 @@ Button Modes:
   * Procue a pulse on the gate output on every clock edge.
   * Enabled button lights up blue and flashes white on clock edges
 
+TODO:
+* Refactor the code so that it doesn't suck
+  * I would like to be able to reuse the logic for a multichannel version with different clocks on each button.
+  * Or maybe update this version so a polyphonic clock input applies a different clock to each button
+  * Right now the code is very, umm, terrible
 
 ### Cobalt I
 
@@ -322,6 +336,15 @@ Generates waveforms with periods that are consecutive integer multiples of a fun
 The phase control allows control of the intersection point of the generated waveforms.
 
 Consider using it to drive the crossfaders in Tia I.
+
+TODO:
+* A pause button???
+* Change waveforms to reference 0-phase to min value instead of midpoint?
+* slew-limited square output?
+* asymmetric triangle output?
+* An exponentialized outputs?
+* Inverse outputs?
+* And expander for addditional outputs?
 
 ### Achilles
 
@@ -345,11 +368,18 @@ Delays?
 
 ### Odysseus II
 
-More channels, more outputs
+More channels, more outputs. Easier to dial in.
 
 ### Output Delay Module
 
 v/oct relative to 120 bpm, clock input, stereo, external feedback access
 maybe part of Mneme? Maybe part of Athena?
 
+### Unwound Timeloop
+
+Open-loop delay-feedback simulated with multiple delays. Allows each "echo" to be processed independently. For example, it might take v/oct and envelope as an input, and the outputs could each drive a different oscillator/attenuation pair.
+
+### QMOD II
+
+A more versatile modulation toolkit with built-in filters.
 

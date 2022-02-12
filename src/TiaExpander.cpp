@@ -59,12 +59,12 @@ struct TiaIExpander : Module {
                     if(message->top_select[i] < 7)
                     {
                         double top_gain = message->gains[message->top_select[i]];
-                        top = inputs[SIGNAL_INPUT+IDX(row, message->top_select[i])].getVoltage() * top_gain;
+                        top = inputs[SIGNAL_INPUT+IDX(row, message->top_select[i])].getVoltage(i) * top_gain;
                     }
                     if(message->bot_select[i] < 7)
                     {
                         double bot_gain = message->gains[message->bot_select[i]];
-                        bot = inputs[SIGNAL_INPUT+IDX(row, message->bot_select[i])].getVoltage() * bot_gain;
+                        bot = inputs[SIGNAL_INPUT+IDX(row, message->bot_select[i])].getVoltage(i) * bot_gain;
                     }
 
                     double mix = top*fade + bot*(1-fade);

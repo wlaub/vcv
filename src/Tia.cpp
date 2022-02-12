@@ -254,12 +254,12 @@ struct TiaI : Module {
             if(top_select[i] < 7)
             {
                 double top_gain = gains[top_select[i]];//params[GAIN0_PARAM+top_select[i]].getValue();
-                top = inputs[SIGNAL0_INPUT+top_select[i]].getVoltage() * top_gain;
+                top = inputs[SIGNAL0_INPUT+top_select[i]].getVoltage(i) * top_gain;
             }
             if(bot_select[i] < 7)
             {
                 double bot_gain = gains[bot_select[i]]; //params[GAIN0_PARAM+bot_select[i]].getValue();
-                bot = inputs[SIGNAL0_INPUT+bot_select[i]].getVoltage() * bot_gain;
+                bot = inputs[SIGNAL0_INPUT+bot_select[i]].getVoltage(i) * bot_gain;
             }
 
             double mix = top*fade + bot*(1-fade);
