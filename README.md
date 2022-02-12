@@ -344,8 +344,8 @@ Consider using it to drive the crossfaders in Tia I.
 
 TODO:
 * A pause control
-* Change waveforms to reference 0-phase to min value instead of midpoint?
-* Colorful panel
+* Align square wave phase to other waveforms more better
+
 
 #### -60
 

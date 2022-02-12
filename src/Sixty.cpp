@@ -1,8 +1,6 @@
 #include "Cobalt.hpp"
 #include <numeric>
 
-
-
 struct Sixty : Module {
     enum ParamId {
         TRI_PARAM,
@@ -52,15 +50,15 @@ struct Sixty : Module {
         configOutput(CLK_OUTPUT, "Clock Subdivision");
     }
 
-    double ramp(double p)
+    double triangle(double p, double pw)
     {
-        if(p < 0.5)
-            return (p+0.5)*2-1;
+        if(p < pw)
+            return 2*p/pw-1;
         else
-            return (p-0.5)*2-1;
+            return 1-2*(p-pw)/(1-pw);
     }
 
-    double triangle(double p)
+    double trap(double p, double pw)
     {
         if(p < 0.25)
         {
@@ -76,7 +74,17 @@ struct Sixty : Module {
         }
     }
 
-    double square(double p, double pw)
+    double rc(double p, double pw)
+    {
+        if(p < pw)
+            return 1;
+        else
+            return -1;
+    }
+
+
+
+    double decay(double p, double pw)
     {
         if(p < pw)
             return 1;
@@ -86,66 +94,63 @@ struct Sixty : Module {
 
     void process(const ProcessArgs& args) override {
 
+
+
+        Expander* expander = 0;
+        if(leftExpander.module) expander = &leftExpander;
+        else if(rightExpander.module) expander = &rightExpander;
+        if(!expander) return;
+
+        if(expander->module->model != modelCobaltI) return;
+
+        CobaltMessage* message = reinterpret_cast<CobaltMessage*>(expander->module->leftExpander.consumerMessage);
+
+
         /* Generate Waveforms*/
-/*
-        double scale = params[SCALE_PARAM].getValue()/2;
-        double offset = params[OFFSET_PARAM].getValue();
-        double outer_scale = 1;
-        if(normalize)
-        {
-            outer_scale = 1.f/length;
-        }
 
-        out_message.scale = scale;
-        out_message.offset = offset;
-        out_message.outer_scale = outer_scale;
-        out_message.length = length;
+        int length = message->length;
 
-        double phases[MAX_LENGTH];
-        for(int i = 0; i < length; ++i)
-        {
-            int idx = i + start;
-            double trash;
-            double x;
-            double relphase = phase_accumulator*total_period/idx;
-            relphase += params[PHASE_PARAM].getValue();
-            relphase = modf(relphase, &trash);
-            phases[i] = relphase;
-            out_message.phases[i] = relphase;
-        }
+        double scale = message->scale;
+        double offset= message->offset;
+        double outer_scale = message->outer_scale;
+        double* phases = message->phases;
 
-        outputs[SINE_OUTPUT].setChannels(length);
-        outputs[RAMP_OUTPUT].setChannels(length);
-        outputs[TRIANGLE_OUTPUT].setChannels(length);
-        outputs[SQUARE_OUTPUT].setChannels(length);
+        outputs[TRI_OUTPUT].setChannels(length);
+        outputs[RC_OUTPUT].setChannels(length);
+        outputs[DECAY_OUTPUT].setChannels(length);
+        outputs[TRAP_OUTPUT].setChannels(length);
         for(int i = 0; i < length; ++i)
         {
             double x;
+            double pw;
             double relphase = phases[i];
 
-            if(outputs[SINE_OUTPUT].active)
+            if(outputs[TRI_OUTPUT].active)
             {
-                x = (sin(2*M_PI*relphase)*scale+offset)*outer_scale;
-                outputs[SINE_OUTPUT].setVoltage(x, i);
+                pw = params[TRI_PARAM].getValue();
+                x = (triangle(relphase, pw)*scale+offset)*outer_scale;
+                outputs[TRI_OUTPUT].setVoltage(x, i);
             }
-            if(outputs[RAMP_OUTPUT].active)
+            if(outputs[RC_OUTPUT].active)
             {
-                x = (ramp(relphase)*scale+offset)*outer_scale;
-                outputs[RAMP_OUTPUT].setVoltage(x, i);
+                pw = params[RC_PARAM].getValue();
+                x = (rc(relphase,pw)*scale+offset)*outer_scale;
+                outputs[RC_OUTPUT].setVoltage(x, i);
             }
-            if(outputs[TRIANGLE_OUTPUT].active)
+            if(outputs[TRAP_OUTPUT].active)
             {
-                x = (triangle(relphase)*scale+offset)*outer_scale;
-                outputs[TRIANGLE_OUTPUT].setVoltage(x, i);
+                pw = params[TRAP_PARAM].getValue();
+                x = (trap(relphase, pw)*scale+offset)*outer_scale;
+                outputs[TRAP_OUTPUT].setVoltage(x, i);
             }
-            if(outputs[SQUARE_OUTPUT].active)
+            if(outputs[DECAY_OUTPUT].active)
             {
-                double pw = params[PW_PARAM].getValue();
-                x = (square(relphase, pw)*scale+offset)*outer_scale;
-                outputs[SQUARE_OUTPUT].setVoltage(x, i);
+                pw = params[DECAY_PARAM].getValue();
+                x = (decay(relphase, pw)*scale+offset)*outer_scale;
+                outputs[DECAY_OUTPUT].setVoltage(x, i);
             }
         }
-*/
+
 
     }
 

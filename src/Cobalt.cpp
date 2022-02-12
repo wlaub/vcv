@@ -56,8 +56,8 @@ struct CobaltI : Module {
     dsp::SchmittTrigger reset_trigger;
     dsp::PulseGenerator eoc_pulse;
 
-    struct CobaltMessage in_message;
-    struct CobaltMessage out_message;
+    CobaltMessage in_message;
+    CobaltMessage out_message;
 
     CobaltI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -125,34 +125,27 @@ struct CobaltI : Module {
 
     double ramp(double p)
     {
-        if(p < 0.5)
-            return (p+0.5)*2-1;
-        else
-            return (p-0.5)*2-1;
+        return p*2-1;
     }
 
     double triangle(double p)
     {
-        if(p < 0.25)
+        if(p < 0.5)
         {
-            return p*4;
-        }
-        else if(p < 0.75)
-        {
-            return 1-4*(p-0.25);
+            return p*4-1;
         }
         else
         {
-            return -1+(p-0.75)*4;
+            return 1-(p-0.5)*4;
         }
     }
 
     double square(double p, double pw)
     {
         if(p < pw)
-            return 1;
-        else
             return -1;
+        else
+            return 1;
     }
 
     void process(const ProcessArgs& args) override {
@@ -230,11 +223,6 @@ struct CobaltI : Module {
             outer_scale = 1.f/length;
         }
 
-        out_message.scale = scale;
-        out_message.offset = offset;
-        out_message.outer_scale = outer_scale;
-        out_message.length = length;
-
         double phases[MAX_LENGTH];
         for(int i = 0; i < length; ++i)
         {
@@ -245,7 +233,6 @@ struct CobaltI : Module {
             relphase += params[PHASE_PARAM].getValue();
             relphase = modf(relphase, &trash);
             phases[i] = relphase;
-            out_message.phases[i] = relphase;
         }
 
         outputs[SINE_OUTPUT].setChannels(length);
@@ -259,7 +246,7 @@ struct CobaltI : Module {
 
             if(outputs[SINE_OUTPUT].active)
             {
-                x = (sin(2*M_PI*relphase)*scale+offset)*outer_scale;
+                x = (-cos(2*M_PI*relphase)*scale+offset)*outer_scale;
                 outputs[SINE_OUTPUT].setVoltage(x, i);
             }
             if(outputs[RAMP_OUTPUT].active)
@@ -280,8 +267,21 @@ struct CobaltI : Module {
             }
         }
 
+        /*Flip Messages*/
+
+        CobaltMessage* message = (reinterpret_cast<CobaltMessage*>(leftExpander.producerMessage));
+
+        message->scale = scale;
+        message->offset = offset;
+        message->outer_scale = outer_scale;
+        message->length = length;
+        for(int i = 0; i < length; ++i)
+        {
+            message->phases[i] = phases[i];
+        }
+
         leftExpander.requestMessageFlip();
-        rightExpander.requestMessageFlip();
+
 
     }
 
