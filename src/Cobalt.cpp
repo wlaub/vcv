@@ -15,6 +15,7 @@ struct CobaltI : Module {
     enum InputId {
         VOCT_INPUT,
         RESET_INPUT,
+        PAUSE_INPUT,
         INPUTS_LEN
     };
     enum OutputId {
@@ -69,6 +70,7 @@ struct CobaltI : Module {
         configParam(SCALE_PARAM, 0.f, 10.f, 5.f, "Scale (peak-to-peak)");
         configParam(OFFSET_PARAM, 0.f, 5.f, 2.5f, "Offset");
 
+        configInput(PAUSE_INPUT, "Pause");
         configInput(VOCT_INPUT, "v/oct");
         configInput(RESET_INPUT, "Reset");
         configOutput(RAMP_OUTPUT, "Ramp");
@@ -503,17 +505,19 @@ struct CobaltIWidget : ModuleWidget {
         for(int i = 0; i < MAX_LENGTH; ++i)
         {
             float xpos = GRIDX(0.5+0.75+3.5f*(i%4)/(3));
-            float ypos = 4-.125;
+            float ypos = 4-.175;
             if(i >= 4) ypos += 0.75;
 
             period_labels[i] = createWidget<AlignLabel>(
                 mm2px(Vec(xpos, GRIDY(ypos+.25))));
             period_labels[i]->alignment = Label::CENTER_ALIGNMENT;
+            period_labels[i]->color = nvgRGB(0,0,0);
             addChild(period_labels[i]);
 
             index_labels[i] = createWidget<AlignLabel>(
                 mm2px(Vec(xpos, GRIDY(ypos))));
             index_labels[i]->alignment = Label::CENTER_ALIGNMENT;
+            index_labels[i]->color = nvgRGB(0,0,0);
             addChild(index_labels[i]);
  
         }
@@ -522,27 +526,29 @@ struct CobaltIWidget : ModuleWidget {
             mm2px(Vec(GRID(3,2))), module, CobaltI::FREQ_PARAM));
 
         addParam(createParamCentered<RoundBlackSnapKnob>(
-            mm2px(Vec(GRID(1.5,1))), module, CobaltI::START_PARAM));
+            mm2px(Vec(28.181, 13.184)), module, CobaltI::START_PARAM));
         addParam(createParamCentered<RoundBlackSnapKnob>(
-            mm2px(Vec(GRID(1.5,2))), module, CobaltI::LENGTH_PARAM));
+            mm2px(Vec(15.813, 28.693)), module, CobaltI::LENGTH_PARAM));
         addParam(createParamCentered<RoundBlackKnob>(
-            mm2px(Vec(GRID(1.5,3))), module, CobaltI::PHASE_PARAM));
+            mm2px(Vec(20.227, 48.033)), module, CobaltI::PHASE_PARAM));
 
         addParam(createParamCentered<RoundBlackKnob>(
-            mm2px(Vec(GRID(4.5,1))), module, CobaltI::PW_PARAM));
+            mm2px(Vec(48.019, 13.184)), module, CobaltI::PW_PARAM));
         addParam(createParamCentered<RoundBlackKnob>(
-            mm2px(Vec(GRID(4.5,2))), module, CobaltI::SCALE_PARAM));
+            mm2px(Vec(60.387, 28.693)), module, CobaltI::SCALE_PARAM));
 
         addParam(createParamCentered<RoundBlackKnob>(
-            mm2px(Vec(GRID(4.5,3))), module, CobaltI::OFFSET_PARAM));
+            mm2px(Vec(55.973, 48.033)), module, CobaltI::OFFSET_PARAM));
 
         addInput(createInputCentered<PJ301MPort>(
             mm2px(Vec(GRID(1.5,6))), module, CobaltI::VOCT_INPUT));
         addInput(createInputCentered<PJ301MPort>(
             mm2px(Vec(GRID(1.5,7))), module, CobaltI::RESET_INPUT));
+        addInput(createInputCentered<PJ301MPort>(
+            mm2px(Vec(GRID(2.5,7))), module, CobaltI::PAUSE_INPUT));
 
         addOutput(createOutputCentered<PJ301MPort>(
-            mm2px(Vec(GRID(2.5,6.5))), module, CobaltI::EOC_OUTPUT));
+            mm2px(Vec(GRID(4.5,5))), module, CobaltI::EOC_OUTPUT));
 
         addOutput(createOutputCentered<PJ301MPort>(
             mm2px(Vec(GRID(3.5,6))), module, CobaltI::RAMP_OUTPUT));
