@@ -198,7 +198,19 @@ struct Sixty : Module {
             outputs[CLK_OUTPUT].setVoltage(10*val);
         }
 
+        if(outputs[INVERT_OUTPUT].active)
+        {
+            double off = 2*offset*outer_scale;
+            int num = inputs[INVERT_INPUT].getChannels();
 
+            outputs[INVERT_OUTPUT].setChannels(num);
+            for(int i = 0; i < num; ++i)
+            {
+                double x = inputs[INVERT_INPUT].getVoltage(i);
+                outputs[INVERT_OUTPUT].setVoltage(off-x, i);
+            }
+
+        }
 
     }
 
