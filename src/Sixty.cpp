@@ -191,9 +191,16 @@ struct Sixty : Module {
             }
         }
 
+        if(outputs[CLK_OUTPUT].active)
+        {
+            int harm = params[CLK_PARAM].getValue();
+            int val = int(floor(phases[0]*2*harm))%2;
+            outputs[CLK_OUTPUT].setVoltage(10*val);
+        }
+
+
 
     }
-
 
 
 };
