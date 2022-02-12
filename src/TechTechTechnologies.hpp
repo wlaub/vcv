@@ -248,5 +248,7 @@ extern Model* modelMatI;
 
 extern Model* modelCobaltI;
 
+extern Model* modelSixty;
+
 extern Model* modelOnce;
 

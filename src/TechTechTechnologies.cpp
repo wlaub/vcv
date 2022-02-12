@@ -218,6 +218,8 @@ void init(rack::Plugin *p) {
 
     p->addModel(modelCobaltI);
 
+    p->addModel(modelSixty);
+
     p->addModel(modelOnce);
 
     // Any other pluginInstance initialization may go here.

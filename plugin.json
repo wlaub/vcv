@@ -217,6 +217,15 @@
       ]
     },
     {
+      "slug": "Sixty",
+      "name": "-60",
+      "description": "Cobalt I expander",
+      "tags": [
+        "low-frequency oscillator",
+        "expander"
+      ]
+    },
+    {
       "slug": "Once",
       "name": "Once",
       "description": "Button press synchronizer",
