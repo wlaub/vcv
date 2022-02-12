@@ -117,17 +117,22 @@ Tia configures routing from its 7 signal inputs to the 7 channels of Mat's defau
 
 7 inputs (or 0 V) can by routed to the top or bottom of 7 independent crossfaders. Crossfader position is controlled by CV, and the crossfader outputs are provided as a single polyphonic output from the module.
 
-The top inputs to each crossfader are selected when the crossfader CV is at its maximum value.
+Routing is configured by selecting a source input from the top row of buttons and then assigning it to one side of a crossfader using the bottom two rows of buttons.
 
-The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum value.
+In smooth routing change mode:
+* The top inputs to each crossfader are selected when the crossfader CV is at its maximum value.
+* The bottom inputs to each crossfader are selected when the crossfader CV is at its minimum value.
 
-The right click meno provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
+In immediate routing change mode, assignments are applied immediately on clicking the button.
+
+Clicking a pending assignment a second time will apply the assignment immediately even in smooth mode.
+
+The right click menu provides options for configuring the crossfader CV range (unipolar/bipolar 5 V/10 V) as well as routing transition mode. In smooth mode, the input to a crossfader changes only when it doesn't contribute to the output (i.e. the crossfader is set all the way in the other direction). In immediate mode, it changes as soon as the button is pressed.
 
 The Nth crossfader selects from the Nth channel of its routed inputs, so polyphonic inputs  can be used to provide different sets of signals to each crossfader. For example, different waveform outputs from Cobalt I can be routed to Tia, and the Tia output signals will have the same frequencies as the inputs but can crossfade between different waveforms.
 
 TODO: 
 * It would be nice to be able to CV control the routing, but idk how
-* Press twice to change routing immediately?
 
 ##### Tia I Expander
 

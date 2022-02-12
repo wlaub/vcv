@@ -77,6 +77,8 @@ struct TiaI : Module {
     int top_select_pending[7] = {0,1,2,3,4,5,6};
     int bot_select_pending[7] = {7,7,7,7,7,7,7};
 
+    dsp::SchmittTrigger top_triggers[8], bot_triggers[8];
+
     float blink_counter = 0;
     int blink = 0;
 
@@ -162,16 +164,32 @@ struct TiaI : Module {
             }
         }
 
-        bool set_all_top = params[SET_TOP_ALL_PARAM].getValue() == 1;
-        bool set_all_bot = params[SET_BOT_ALL_PARAM].getValue() == 1;
+        bool top_set[8];
+        bool bot_set[8];
+        for(int i = 0; i < 8; ++i)
+        {
+            top_set[i] = top_triggers[i].process(params[SET_TOP0_PARAM+i].getValue());
+            bot_set[i] = bot_triggers[i].process(params[SET_BOT0_PARAM+i].getValue());
+        }
+
+        bool set_all_top = top_set[7];
+        bool set_all_bot = bot_set[7];
         for(int i = 0; i < 7; ++i)
         {
-            if(set_all_top || params[SET_TOP0_PARAM+i].getValue() == 1)
+            if(set_all_top || top_set[i])
             {
+                if(top_select_pending[i] == select)
+                {
+                    top_select[i] = select;
+                }
                 top_select_pending[i] = select;
             }
-            if(set_all_bot || params[SET_BOT0_PARAM+i].getValue() == 1)
+            if(set_all_bot || bot_set[i])
             {
+                if(bot_select_pending[i] == select)
+                {
+                    bot_select[i] = select;
+                }
                 bot_select_pending[i] = select;
             }
         }
