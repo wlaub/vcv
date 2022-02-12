@@ -60,26 +60,60 @@ struct Sixty : Module {
 
     double trap(double p, double pw)
     {
-        if(p < 0.25)
+        double w = (1-pw)/2;
+        double ll = 0.25-w/2;
+        double lr = ll+w;
+        double rl = 0.75-w/2;
+        double rr = rl+w;
+        if(p < ll)
         {
-            return p*4;
+            return -1;
         }
-        else if(p < 0.75)
+        else if(p < lr)
         {
-            return 1-4*(p-0.25);
+            return 2*(p-ll)/w-1;
+        }
+        else if(p < rl)
+        {
+            return 1;
+        }
+        else if(p < rr)
+        {
+            return 1-2*(p-rl)/w;
         }
         else
         {
-            return -1+(p-0.75)*4;
+            return -1;
         }
     }
 
     double rc(double p, double pw)
     {
-        if(p < pw)
-            return 1;
-        else
+        double w = (1-pw)/2;
+        double ll = 0.25-w/2;
+        double lr = ll+w;
+        double rl = 0.75-w/2;
+        double rr = rl+w;
+        if(p < ll)
+        {
             return -1;
+        }
+        else if(p < lr)
+        {
+            return -cos(M_PI*(p-ll)/w);
+        }
+        else if(p < rl)
+        {
+            return 1;
+        }
+        else if(p < rr)
+        {
+            return cos(M_PI*(p-rl)/w);
+        }
+        else
+        {
+            return -1;
+        }
     }
 
 
