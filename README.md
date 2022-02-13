@@ -343,7 +343,6 @@ The phase control allows control of the intersection point of the generated wave
 Consider using it to drive the crossfaders in Tia I.
 
 TODO:
-* A pause control
 * Align square wave phase to other waveforms more better
 
 
