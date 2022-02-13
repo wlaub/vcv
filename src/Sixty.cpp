@@ -29,6 +29,9 @@ struct Sixty : Module {
         LIGHTS_LEN
     };
 
+    const double exp_a = 2;
+    const double exp_max = exp(exp_a);
+    const double exp_min = exp(-exp_a);
 
     Sixty() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -221,13 +224,10 @@ struct Sixty : Module {
             for(int i = 0; i < num; ++i)
             {
                 double x = inputs[EXP_INPUT].getVoltage(i);
-                const double a = 2;
-                const double vmax = exp(a);
-                const double vmin = exp(-a);
                 x /= outer_scale;
                 x -= offset;
                 x /= scale;
-                x = 2*(exp(a*x)-vmin)/(vmax-vmin)-1;
+                x = 2*(exp(exp_a*x)-exp_min)/(exp_max-exp_min)-1;
                 outputs[EXP_OUTPUT].setVoltage((x*scale+offset)*outer_scale, i);
             }
 
