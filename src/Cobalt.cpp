@@ -170,11 +170,14 @@ struct CobaltI : Module {
 
         bool eoc = false;
 
-        phase_accumulator += deltaTime/period;
-        if(phase_accumulator > 1)
+        if(inputs[PAUSE_INPUT].getVoltage() < 0.5)
         {
-            phase_accumulator -= 1;
-            eoc = true;
+            phase_accumulator += deltaTime/period;
+            if(phase_accumulator > 1)
+            {
+                phase_accumulator -= 1;
+                eoc = true;
+            }
         }
 
         /* Handle Reset */
