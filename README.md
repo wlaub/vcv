@@ -358,6 +358,10 @@ Expander adds a bunch of additional waveforms
 * 1-X converter (for reversing minimum and maximum values of waveforms)
 * Subdivision clock (integer multiple of fastest output frequency)
 
+TODO:
+* Make expanders stackable (search through -60 instances to find Cobalt instance)
+* Make exponential converter factor configurable
+
 ### Achilles
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)

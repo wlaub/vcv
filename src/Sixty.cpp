@@ -212,6 +212,29 @@ struct Sixty : Module {
 
         }
 
+        if(outputs[EXP_OUTPUT].active)
+        {
+            double off = 2*offset*outer_scale;
+            int num = inputs[EXP_INPUT].getChannels();
+
+            outputs[EXP_OUTPUT].setChannels(num);
+            for(int i = 0; i < num; ++i)
+            {
+                double x = inputs[EXP_INPUT].getVoltage(i);
+                const double a = 2;
+                const double vmax = exp(a);
+                const double vmin = exp(-a);
+                x /= outer_scale;
+                x -= offset;
+                x /= scale;
+                x = 2*(exp(a*x)-vmin)/(vmax-vmin)-1;
+                outputs[EXP_OUTPUT].setVoltage((x*scale+offset)*outer_scale, i);
+            }
+
+        }
+
+
+
     }
 
 
