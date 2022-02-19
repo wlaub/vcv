@@ -353,10 +353,13 @@ void draw(const DrawArgs& args) {
 #define GRIDX(x) 15.24*(x-0.5)
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
+#define NLABELS 3
 
 struct CobaltIWidget : ModuleWidget {
-    AlignLabel* period_labels[MAX_LENGTH];
-    AlignLabel* index_labels[MAX_LENGTH];
+    AlignLabel* period_labels[NLABELS];
+    AlignLabel* index_labels[NLABELS];
+
+    
 
     void set_period_label(int i, int idx, double value)
     {
@@ -478,18 +481,15 @@ struct CobaltIWidget : ModuleWidget {
         
         if(mod->show_labels)
         {
-            for(int i = 0; i < MAX_LENGTH; ++i)
+            int idx = mod->start;
+            
+            set_period_label(0, idx, mod->period/(mod->total_period/idx));
+            if(mod->length > 1)
             {
-                int idx = mod->start+i;
-                if(i < mod->length)
-                {
-                    set_period_label(i, idx, mod->period/(mod->total_period/idx));
-                }
-                else
-                {
-                    clear_label(i);
-                }
+                idx = mod->start+1;
             }
+            set_period_label(1, idx, mod->period/(mod->total_period/idx));
+            set_period_label(2, mod->start+mod->length-1, mod->period/(mod->total_period/(mod->start+mod->length-1)));
         }
 
     } 
@@ -505,11 +505,10 @@ struct CobaltIWidget : ModuleWidget {
 
 
 
-        for(int i = 0; i < MAX_LENGTH; ++i)
+        for(int i = 0; i < NLABELS; ++i)
         {
-            float xpos = GRIDX(0.5+0.75+3.5f*(i%4)/(3));
-            float ypos = 4-.175;
-            if(i >= 4) ypos += 0.75;
+            float xpos = GRIDX(3);
+            float ypos = 4.2 - 1.125 + i*(.67);
 
             period_labels[i] = createWidget<AlignLabel>(
                 mm2px(Vec(xpos, GRIDY(ypos+.25))));
