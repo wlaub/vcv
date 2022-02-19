@@ -74,26 +74,15 @@ When on of the v/oct or envelope inputs is patched with a polyphonic input, the 
   * An octave control and hp/lp switch might be nice (instead of some of the redundant filter ports)
   * Make a panel
 
-### Prometheus 
+### Prometheus II
 
-#### I
+LFSR oscillator presented in a more conventional VCO format. Better documentation pending completion of the hardware implementation.
 
-3x up-to 16-bit LFSRs using Galois implementation
-
-* Taps inputs: Tap configuration as 0 ~ 10V CV, quantized to the selected bit depth
-  * taps1 and taps2 are xor'd together if present
-* Gate input: Ticks the LFSR on a rising edge
-* Lights: displays the state of the LFSR register
-* D output: The internal register value scaled to 0 ~ 10V
-* A output: The 0th bit of the register scaled to -5 ~ 5V
+[Hardware design documentation](https://techtech.technology/en/modular/prometheus-ii/)
 
 ### Achilles (WIP) (II?)
 
 Karplus Strong Toolkit
-
-### Pleiades (WIP) (Sequence format unstable)
-
-Tree Sequencer - this module is in active development. Please don't count on it being stable. At the time of this writing, the latest version in develop is nto compatible with the version in master.
 
 ### Mneme (WIP)
 
@@ -365,25 +354,33 @@ TODO:
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)
 
+TODO:
+* Add filter stage
+  * And also compensate filter group delay in delay stage
+
+### Mneme
+
+Delays?
+
+## Deprecated and Removed Modules
+
 ### Pleiades
 
 Unfinished Tree Sequencer
 
 Deleted because the ui was a disaster, and it was not worth the effort to port to v2
 
-### Mneme
-
-Delays?
-
-### Athena
-
-???
-
 ## Future Modules
+
+Potential future modules and their desirements.
 
 ### Odysseus II
 
 More channels, more outputs. Easier to dial in.
+
+### Athena
+
+???
 
 ### Output Delay Module
 
@@ -401,3 +398,6 @@ A more versatile modulation toolkit with built-in filters.
 ### ??? Arturo I? Kromagg I? Earth I?
 
 A nice faderbank with sliders that feel natural.
+
+
+
