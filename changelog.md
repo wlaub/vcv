@@ -1,7 +1,8 @@
 
 ### 2.3.2
 
-* Changed Cobalt I default phase offset to 0 to match phase rework
+* Fixed missing Lachesis panel
+* Changed Cobalt I default phase offset to 0 to match phase rewk
 
 ### 2.3.1
 
