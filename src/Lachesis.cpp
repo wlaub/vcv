@@ -113,6 +113,18 @@ struct LachesisI : Module {
 
     }
 
+    void reset()
+    {
+        count = 0;
+        accumulator = 0;
+        panel_update = 1;
+    }
+
+    void onReset(const ResetEvent& e) override {
+        reset();
+        Module::onReset(e);
+    }
+
     void process(const ProcessArgs& args) override {
 
         float deltaTime = args.sampleTime;       
@@ -124,9 +136,7 @@ struct LachesisI : Module {
             float reset_val = inputs[RESET_INPUT].getVoltage(c);
             if(reset_trigger[c].process(reset_val))
             {
-                count = 0;
-                accumulator = 0;
-                panel_update = 1;
+                reset();
             }
         }
 
