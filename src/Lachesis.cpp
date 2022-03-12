@@ -50,6 +50,8 @@ struct OverflowMode{
 struct LachesisI : Module {
     enum ParamId {
         INC_PARAM,
+        MIN_PARAM,
+        MAX_PARAM,
         PARAMS_LEN
     };
     enum InputId {
@@ -80,6 +82,8 @@ struct LachesisI : Module {
     LachesisI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
         configParam(INC_PARAM, -10.f, 10.f, 1.f, "CV Output Increment");
+        configParam(MIN_PARAM, -10.f, 10.f, -10.f, "CV Output Minimum");
+        configParam(MAX_PARAM, -10.f, 10.f, 10.f, "CV Output Maximum");
 
         configInput(CLOCK_INPUT, "Clock");
         configInput(RESET_INPUT, "Reset");
@@ -136,8 +140,12 @@ struct LachesisI : Module {
         }
 
 
-        float minval = -10.f;
-        float maxval = 10.f;
+        float minval = params[MIN_PARAM].getValue();
+        float maxval = params[MAX_PARAM].getValue();
+        if(minval > maxval)
+        {
+            std::swap(minval, maxval);
+        }
         float deltaval = maxval - minval;
 
         if(increment != 0)
@@ -363,7 +371,7 @@ struct LachesisIWidget : ModuleWidget {
         for(int i = 0; i < NLABELS; ++i)
         {
             float xpos = GRIDX(1);
-            float ypos = 4  + (i*2-1)*(3);
+            float ypos = 4  + (i*2-1)*(3.5);
 
             count_labels[i] = createWidget<AlignLabel>(
                 mm2px(Vec(xpos, GRIDY(ypos+.25))));
@@ -376,15 +384,23 @@ struct LachesisIWidget : ModuleWidget {
         }
 
         addParam(createParamCentered<RoundBlackKnob>(
-            mm2px(Vec(GRID(1, 5))), module, LachesisI::INC_PARAM));
+            mm2px(Vec(GRID(1, 6))), module, LachesisI::INC_PARAM));
+
+        addParam(createParamCentered<RoundBlackKnob>(
+            mm2px(Vec(GRID(1, 4))), module, LachesisI::MIN_PARAM));
+        addParam(createParamCentered<RoundBlackKnob>(
+            mm2px(Vec(GRID(1, 5))), module, LachesisI::MAX_PARAM));
+
+
+
 
         addInput(createInputCentered<PJ301MPort>(
-            mm2px(Vec(GRID(1,3))), module, LachesisI::CLOCK_INPUT));
+            mm2px(Vec(GRID(1,2))), module, LachesisI::CLOCK_INPUT));
         addInput(createInputCentered<PJ301MPort>(
-            mm2px(Vec(GRID(1,4))), module, LachesisI::RESET_INPUT));
+            mm2px(Vec(GRID(1,3))), module, LachesisI::RESET_INPUT));
 
         addOutput(createOutputCentered<PJ301MPort>(
-            mm2px(Vec(GRID(1,6))), module, LachesisI::CV_OUTPUT));
+            mm2px(Vec(GRID(1,7))), module, LachesisI::CV_OUTPUT));
     }
 };
 
