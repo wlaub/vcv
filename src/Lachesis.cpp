@@ -3,6 +3,29 @@
 
 #define MAX_CHANNELS 16
 
+struct EdgeMode{
+    enum Mode {
+        RISING_MODE,
+        FALLING_MODE,
+        BOTH_MODE,
+        MODES_LEN,
+    };
+    
+    int mode = RISING_MODE;
+
+    json_t* to_json()
+    {
+        return json_integer(mode);
+    }
+
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ) mode = json_integer_value(rootJ);
+    }
+};
+
+
+
 struct LachesisI : Module {
     enum ParamId {
         INC_PARAM,
@@ -24,10 +47,13 @@ struct LachesisI : Module {
     int count = 0;
     float accumulator = 0;
 
-    int panel_update = 0;
+    int panel_update = 1;
 
-    dsp::SchmittTrigger clock_trigger[MAX_CHANNELS];
+    dsp::SchmittTrigger rclock_trigger[MAX_CHANNELS];
+    dsp::SchmittTrigger fclock_trigger[MAX_CHANNELS];
     dsp::SchmittTrigger reset_trigger[MAX_CHANNELS];
+
+    struct EdgeMode edge_mode;
 
     LachesisI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -59,14 +85,34 @@ struct LachesisI : Module {
         /* Handle Count */
 
         int increment = 0;
+        int rising_increment = 0;
+        int falling_increment = 0;
         for(int c = 0; c < MAX_CHANNELS; ++c)
         {
             float clock_val = inputs[CLOCK_INPUT].getVoltage(c);
-            if(clock_trigger[c].process(clock_val))
+            float rclock = clock_val > 0.5 ? 10:0;
+            float fclock = clock_val < 0.5? 10:0;
+            if(rclock_trigger[c].process(rclock))
             {
-                increment = 1;
+                rising_increment = 1;
             }
+            if(fclock_trigger[c].process(fclock))
+            {
+                falling_increment = 1;
+            }
+ 
         }
+
+
+        if(edge_mode.mode != EdgeMode::FALLING_MODE)
+        {
+            increment |= rising_increment;
+        }
+        if(edge_mode.mode != EdgeMode::RISING_MODE)
+        {
+            increment |= falling_increment;
+        }
+
 
         if(increment != 0)
         {
@@ -86,6 +132,8 @@ struct LachesisI : Module {
         json_object_set_new(rootJ, "count", json_integer(count));
         json_object_set_new(rootJ, "accumulator", json_real(accumulator));       
 
+        json_object_set_new(rootJ, "edge_mode", edge_mode.to_json());
+
         return rootJ;
 
     } 
@@ -99,6 +147,8 @@ struct LachesisI : Module {
 
         temp = json_object_get(rootJ, "accumulator");
         if(temp) accumulator = json_real_value(temp);
+
+        edge_mode.from_json(json_object_get(rootJ, "edge_mode"));
 
     } 
 
@@ -160,14 +210,48 @@ struct LachesisIWidget : ModuleWidget {
         }
     }
 
-/*
+    void edge_mode_menu(Menu* menu, LachesisI* module)
+    {
+            menu->addChild(createMenuLabel("Clock Mode"));
+
+            struct ModeItem : MenuItem {
+                LachesisI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->edge_mode.mode = mode;
+                }
+            };
+
+            std::string mode_names[EdgeMode::MODES_LEN];
+            mode_names[EdgeMode::RISING_MODE] = "Rising Edge";
+            mode_names[EdgeMode::FALLING_MODE] = "Falling Edge";
+            mode_names[EdgeMode::BOTH_MODE] = "Both Edges";
+
+            int mode_sequence[EdgeMode::MODES_LEN] = {EdgeMode::RISING_MODE, EdgeMode::FALLING_MODE, EdgeMode::BOTH_MODE};
+ 
+            for(int i = 0; i < EdgeMode::MODES_LEN; ++i)
+            {
+                int idx = mode_sequence[i];
+                ModeItem* item = createMenuItem<ModeItem>(mode_names[idx]);
+                item->module = module;
+                item->mode = idx;
+                item->rightText = CHECKMARK(module->edge_mode.mode == idx);
+                menu->addChild(item);
+            }
+ 
+    }
+
+
+
     void appendContextMenu(Menu* menu) override {
             LachesisI* module = dynamic_cast<LachesisI*>(this->module);
 
             menu->addChild(new MenuEntry);
 
+            edge_mode_menu(menu, module);
+
         }
-*/
+
 
     void step() override {
         ModuleWidget::step();
