@@ -45,6 +45,27 @@ struct OverflowMode{
     }
 };
 
+struct PolyMode{
+    enum Mode {
+        OR_MODE,
+        ALL_MODE,
+        MODES_LEN,
+    };
+    
+    int mode = OR_MODE;
+
+    json_t* to_json()
+    {
+        return json_integer(mode);
+    }
+
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ) mode = json_integer_value(rootJ);
+    }
+};
+
+
 
 
 struct LachesisI : Module {
@@ -78,6 +99,7 @@ struct LachesisI : Module {
 
     struct EdgeMode edge_mode;
     struct OverflowMode over_mode;
+    struct PolyMode poly_mode;
 
     LachesisI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -120,25 +142,39 @@ struct LachesisI : Module {
             float fclock = clock_val < 0.5? 10:0;
             if(rclock_trigger[c].process(rclock))
             {
-                rising_increment = 1;
+                rising_increment += 1;
             }
             if(fclock_trigger[c].process(fclock))
             {
-                falling_increment = 1;
+                falling_increment += 1;
             }
  
         }
 
-
         if(edge_mode.mode != EdgeMode::FALLING_MODE)
         {
-            increment |= rising_increment;
+            increment += rising_increment;
         }
         if(edge_mode.mode != EdgeMode::RISING_MODE)
         {
-            increment |= falling_increment;
+            increment += falling_increment;
         }
 
+        if(increment != 0 && poly_mode.mode == PolyMode::OR_MODE)
+        {
+            increment = 1;
+        }
+
+        /*Apply Increment*/
+
+        if(increment != 0)
+        {
+            accumulator += increment * params[INC_PARAM].getValue();
+            count += increment;
+            panel_update = 1;
+        }
+
+        /* Handle wrapping*/
 
         float minval = params[MIN_PARAM].getValue();
         float maxval = params[MAX_PARAM].getValue();
@@ -148,27 +184,24 @@ struct LachesisI : Module {
         }
         float deltaval = maxval - minval;
 
-        if(increment != 0)
+
+
+        if(over_mode.mode == OverflowMode::CLAMP_MODE)
         {
-            accumulator += increment * params[INC_PARAM].getValue();
-            if(over_mode.mode == OverflowMode::CLAMP_MODE)
-            {
-                accumulator = clamp(accumulator, minval, maxval);
-            }
-            else if(over_mode.mode == OverflowMode::WRAP_MODE)
-            {
-                if(accumulator > maxval)
-                {
-                    accumulator -= deltaval;
-                }
-                if(accumulator < minval)
-                {
-                    accumulator += deltaval;
-                }
-            }
-            count += increment;
-            panel_update = 1;
+            accumulator = clamp(accumulator, minval, maxval);
         }
+        else if(over_mode.mode == OverflowMode::WRAP_MODE)
+        {
+            if(accumulator > maxval)
+            {
+                accumulator -= deltaval;
+            }
+            if(accumulator < minval)
+            {
+                accumulator += deltaval;
+            }
+        }
+
 
         outputs[CV_OUTPUT].setVoltage(accumulator);
 
@@ -182,6 +215,8 @@ struct LachesisI : Module {
 
         json_object_set_new(rootJ, "edge_mode", edge_mode.to_json());
         json_object_set_new(rootJ, "over_mode", over_mode.to_json());
+        json_object_set_new(rootJ, "poly_mode", poly_mode.to_json());
+
 
         return rootJ;
 
@@ -199,6 +234,7 @@ struct LachesisI : Module {
 
         edge_mode.from_json(json_object_get(rootJ, "edge_mode"));
         over_mode.from_json(json_object_get(rootJ, "over_mode"));
+        poly_mode.from_json(json_object_get(rootJ, "poly_mode"));
 
 
     } 
@@ -322,6 +358,37 @@ struct LachesisIWidget : ModuleWidget {
  
     }
 
+    void poly_mode_menu(Menu* menu, LachesisI* module)
+    {
+            menu->addChild(createMenuLabel("Simultaneous Trigger Mode"));
+
+            struct ModeItem : MenuItem {
+                LachesisI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->poly_mode.mode = mode;
+                }
+            };
+
+            std::string mode_names[PolyMode::MODES_LEN];
+            mode_names[PolyMode::OR_MODE] = "Increment Once";
+            mode_names[PolyMode::ALL_MODE] = "Increment Multiple";
+
+            int mode_sequence[PolyMode::MODES_LEN] = {PolyMode::OR_MODE, PolyMode::ALL_MODE};
+ 
+            for(int i = 0; i < PolyMode::MODES_LEN; ++i)
+            {
+                int idx = mode_sequence[i];
+                ModeItem* item = createMenuItem<ModeItem>(mode_names[idx]);
+                item->module = module;
+                item->mode = idx;
+                item->rightText = CHECKMARK(module->poly_mode.mode == idx);
+                menu->addChild(item);
+            }
+ 
+    }
+
+
 
 
     void appendContextMenu(Menu* menu) override {
@@ -333,6 +400,7 @@ struct LachesisIWidget : ModuleWidget {
 
             over_mode_menu(menu, module);
 
+            poly_mode_menu(menu, module);
         }
 
 
