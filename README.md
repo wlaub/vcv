@@ -176,6 +176,16 @@ See [`res/mati_default.json`](res/mati_default.json) for the default filter spec
 
 [`dev-scripts/tiamat.py`](dev-scripts/tiamat.py) provides some helpers for generating Mat I filter specitications from filters designed using scipy.signal.
 
+### Lachesis I
+
+Counter utility module
+
+Increments count and output CV on clock edges. Clock and reset inputs may be polyphonic. CV minimum, maximum, and increment values may be configured using knobs.
+Menu options include
+* Clock edge mode (rising, falling, both)
+* CV overflow modes (clamp or wrap)
+* Simultaneous edge handling (increment once or increment multiple)
+
 ## Other Modules
 
 ### Ouroboros
@@ -349,19 +359,6 @@ Expander adds a bunch of additional waveforms
 TODO:
 * Make expanders stackable (search through -60 instances to find Cobalt instance)
 * Make exponential converter factor configurable
-
-### Lachesis
-
-Counter utility module
-
-Increments count and output CV on clock edges. Clock and reset inputs may be polyphonic.
-
-Number display
-
-Clock input
-Reset input
-CV output
-Increment control
 
 ### Achilles
 

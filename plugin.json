@@ -240,7 +240,8 @@
       "description": "Counter module with count display and analog output",
       "tags": [
         "utility",
-        "digital"
+        "digital",
+        "visual"
       ]
     }
  
