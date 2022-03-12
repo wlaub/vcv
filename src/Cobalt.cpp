@@ -64,7 +64,7 @@ struct CobaltI : Module {
         configParam(START_PARAM, 1.f, 7.f, 1.f, "Starting Subharmonic");
         configParam(LENGTH_PARAM, 1.f, MAX_LENGTH, 1.f, "Sequence Length");
         configParam(PW_PARAM, 0.f, 1.f, 0.5f, "Pulse Width");
-        configParam(PHASE_PARAM, 0.f, 1.f, 0.75f, "Starting Phase (Cycles)");
+        configParam(PHASE_PARAM, 0.f, 1.f, 0.f, "Starting Phase (Cycles)");
 
         configParam(FREQ_PARAM, 1e-3, 600.f, 10.f, "Combined Waveform Period (s)");
         configParam(SCALE_PARAM, 0.f, 10.f, 5.f, "Scale (peak-to-peak)");
