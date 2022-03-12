@@ -1,7 +1,7 @@
 {
   "slug": "TechTechTechnologies",
   "name": "TechTech Technologies",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "license": "CC0-1.0",
   "brand": "TechTech Technologies",
   "author": "William Laub",
@@ -229,6 +229,15 @@
       "slug": "Once",
       "name": "Once",
       "description": "Button press synchronizer",
+      "tags": [
+        "utility",
+        "digital"
+      ]
+    },
+    {
+      "slug": "LachesisI",
+      "name": "Lachesis I",
+      "description": "Counter module with count display and analog output",
       "tags": [
         "utility",
         "digital"

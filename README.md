@@ -350,6 +350,19 @@ TODO:
 * Make expanders stackable (search through -60 instances to find Cobalt instance)
 * Make exponential converter factor configurable
 
+### Lachesis
+
+Counter utility module
+
+Increments count and output CV on clock edges. Clock and reset inputs may be polyphonic.
+
+Number display
+
+Clock input
+Reset input
+CV output
+Increment control
+
 ### Achilles
 
 Karplus Strong Toolkit (noise -> env -> delay -> filter)
@@ -398,6 +411,16 @@ A more versatile modulation toolkit with built-in filters.
 ### ??? Arturo I? Kromagg I? Earth I?
 
 A nice faderbank with sliders that feel natural.
+
+### Here are some numbers
+
+| Time | Feedback | Cutoff |
+|-|-|-|
+| 1ms * (1E4)^(0.045 + x * 0.249), x = 0 -> 1 | 0.1395 | 7.32875 kHz LP |
+| 2.5586 ms | 0.123 | 7.962143 kHz LP |
+| 4.2658 ms | 0.0225 | 2 kHz HP |
+
++3.15 V
 
 
 
