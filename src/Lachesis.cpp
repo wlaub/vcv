@@ -25,6 +25,27 @@ struct EdgeMode{
 };
 
 
+struct OverflowMode{
+    enum Mode {
+        CLAMP_MODE,
+        WRAP_MODE,
+        MODES_LEN,
+    };
+    
+    int mode = CLAMP_MODE;
+
+    json_t* to_json()
+    {
+        return json_integer(mode);
+    }
+
+    void from_json(json_t* rootJ)
+    {
+        if(rootJ) mode = json_integer_value(rootJ);
+    }
+};
+
+
 
 struct LachesisI : Module {
     enum ParamId {
@@ -54,6 +75,7 @@ struct LachesisI : Module {
     dsp::SchmittTrigger reset_trigger[MAX_CHANNELS];
 
     struct EdgeMode edge_mode;
+    struct OverflowMode over_mode;
 
     LachesisI() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -114,10 +136,28 @@ struct LachesisI : Module {
         }
 
 
+        float minval = -10.f;
+        float maxval = 10.f;
+        float deltaval = maxval - minval;
+
         if(increment != 0)
         {
             accumulator += increment * params[INC_PARAM].getValue();
-            accumulator = clamp(accumulator, -10.f, 10.f);
+            if(over_mode.mode == OverflowMode::CLAMP_MODE)
+            {
+                accumulator = clamp(accumulator, minval, maxval);
+            }
+            else if(over_mode.mode == OverflowMode::WRAP_MODE)
+            {
+                if(accumulator > maxval)
+                {
+                    accumulator -= deltaval;
+                }
+                if(accumulator < minval)
+                {
+                    accumulator += deltaval;
+                }
+            }
             count += increment;
             panel_update = 1;
         }
@@ -133,6 +173,7 @@ struct LachesisI : Module {
         json_object_set_new(rootJ, "accumulator", json_real(accumulator));       
 
         json_object_set_new(rootJ, "edge_mode", edge_mode.to_json());
+        json_object_set_new(rootJ, "over_mode", over_mode.to_json());
 
         return rootJ;
 
@@ -149,6 +190,8 @@ struct LachesisI : Module {
         if(temp) accumulator = json_real_value(temp);
 
         edge_mode.from_json(json_object_get(rootJ, "edge_mode"));
+        over_mode.from_json(json_object_get(rootJ, "over_mode"));
+
 
     } 
 
@@ -241,6 +284,36 @@ struct LachesisIWidget : ModuleWidget {
  
     }
 
+    void over_mode_menu(Menu* menu, LachesisI* module)
+    {
+            menu->addChild(createMenuLabel("Overflow Mode"));
+
+            struct ModeItem : MenuItem {
+                LachesisI* module;
+                int mode;
+                void onAction(const event::Action& e) override {
+                    module->over_mode.mode = mode;
+                }
+            };
+
+            std::string mode_names[OverflowMode::MODES_LEN];
+            mode_names[OverflowMode::CLAMP_MODE] = "Clamp";
+            mode_names[OverflowMode::WRAP_MODE] = "Wrap";
+
+            int mode_sequence[OverflowMode::MODES_LEN] = {OverflowMode::CLAMP_MODE, OverflowMode::WRAP_MODE};
+ 
+            for(int i = 0; i < OverflowMode::MODES_LEN; ++i)
+            {
+                int idx = mode_sequence[i];
+                ModeItem* item = createMenuItem<ModeItem>(mode_names[idx]);
+                item->module = module;
+                item->mode = idx;
+                item->rightText = CHECKMARK(module->over_mode.mode == idx);
+                menu->addChild(item);
+            }
+ 
+    }
+
 
 
     void appendContextMenu(Menu* menu) override {
@@ -249,6 +322,8 @@ struct LachesisIWidget : ModuleWidget {
             menu->addChild(new MenuEntry);
 
             edge_mode_menu(menu, module);
+
+            over_mode_menu(menu, module);
 
         }
 
