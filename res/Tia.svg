@@ -72,10 +72,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="86.331621"
+     inkscape:cx="-167.95409"
      inkscape:cy="87.548384"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer3"
      showgrid="true"
      inkscape:window-width="1918"
      inkscape:window-height="1060"
@@ -104,7 +104,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -157,7 +157,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Layer 3"
-     style="display:inline">
+     style="display:none">
     <rect
        style="display:inline;fill:#004d23;fill-opacity:1;stroke:none;stroke-width:0.26656035;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect2177"
@@ -211,7 +211,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer5"
-     inkscape:label="Layer 4">
+     inkscape:label="Layer 4"
+     style="display:none">
     <path
        style="fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 15.24,7.1099946 -3.81,3.8100004 3.81,3.81 3.81,-3.81 z"
@@ -286,7 +287,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="Layer 2">
+     inkscape:label="Layer 2"
+     style="display:none">
     <path
        transform="translate(0,-168.5)"
        style="display:inline;fill:none;stroke:#e6e6e6;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
