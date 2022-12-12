@@ -194,6 +194,51 @@ struct DWhiteLatch : SVGSwitch {
 
 static const float KNOB_SENSITIVITY = 0.0015f;
 
+struct PngWidget : ModuleWidget {
+
+    int png_handle = 0;
+
+    std::string png_path;
+
+    void drawLayer(const DrawArgs& args, int layer) override
+    {
+        ModuleWidget::drawLayer(args, layer);
+
+        //layers are -1 and 1
+        if (layer != -1)
+        {
+            return ;
+        }
+
+        /*
+        Based on https://community.vcvrack.com/t/is-it-possible-to-load-a-static-panel-image/16807/9
+        */
+
+        nvgSave(args.vg);
+        nvgBeginPath(args.vg);
+        if(png_handle == 0)
+        {
+            png_handle = nvgCreateImage(
+                args.vg,
+                asset::plugin(pluginInstance, png_path).c_str(),
+                0
+                );
+        }
+        float w = box.size.x;
+        float h = box.size.y;
+        NVGpaint png_paint = nvgImagePattern(args.vg, 0, 0, w,h, 0, png_handle, 1.0f);
+        nvgRect(args.vg, 0, 0, w,h);
+        nvgFillPaint(args.vg, png_paint);
+        nvgFill(args.vg);
+        nvgClosePath(args.vg);
+        nvgRestore(args.vg);
+    }
+
+
+};
+
+
+
 
 ////////////////////
 // module widgets

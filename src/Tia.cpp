@@ -438,7 +438,7 @@ struct TiaI : Module {
 };
 
 
-struct TiaIWidget : ModuleWidget {
+struct TiaIWidget : PngWidget {
 
 
     void appendContextMenu(Menu* menu) override {
@@ -505,47 +505,11 @@ struct TiaIWidget : ModuleWidget {
         }
 
 
-    void drawLayer(const DrawArgs& args, int layer) override
-    {
-        ModuleWidget::drawLayer(args, layer);
-
-        //layers are -1 and 1
-        if (layer != -1)
-        {
-            return ;
-        }
-
-        /*
-        Based on https://community.vcvrack.com/t/is-it-possible-to-load-a-static-panel-image/16807/9
-        */
-
-        nvgSave(args.vg);
-        nvgBeginPath(args.vg);
-        if(png_handle == 0)
-        {
-            png_handle = nvgCreateImage(
-                args.vg,
-                asset::plugin(pluginInstance, "res/tia.png").c_str(),
-                0
-                );
-        }
-        float w = box.size.x;
-        float h = box.size.y;
-        NVGpaint png_paint = nvgImagePattern(args.vg, 0, 0, w,h, 0, png_handle, 1.0f);
-        nvgRect(args.vg, 0, 0, w,h);
-        nvgFillPaint(args.vg, png_paint);
-        nvgFill(args.vg);
-        nvgClosePath(args.vg);
-        nvgRestore(args.vg);
-    }
-
-    int png_handle = 0;
-
     TiaIWidget(TiaI* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Tia.svg")));
 
-
+        png_path = "res/Tia_b.png";
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH*2.5, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 3.5 * RACK_GRID_WIDTH, 0)));

@@ -346,7 +346,7 @@ struct Once : Module {
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 
-struct OnceWidget : ModuleWidget {
+struct OnceWidget : PngWidget {
 
     void button_mode_menu(Menu* menu, Once* module)
     {
@@ -426,6 +426,8 @@ struct OnceWidget : ModuleWidget {
     OnceWidget(Once* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Once.svg")));
+
+        png_path = "res/once_a.png";
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

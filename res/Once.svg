@@ -174,10 +174,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="-53.110904"
+     inkscape:cx="-232.91806"
      inkscape:cy="193.81544"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      inkscape:window-width="1918"
      inkscape:window-height="1060"
@@ -220,10 +220,11 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="Layer 2">
+     inkscape:label="Layer 2"
+     style="display:none">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 15.24,-11.940004 15.24,140.46"
+       d="M 15.24,-11.940004 V 140.46"
        id="path2026"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
@@ -270,7 +271,7 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-168.5)"
-     style="display:inline">
+     style="display:none">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
