@@ -483,7 +483,7 @@ struct MatIWidget : PngWidget {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/MatI.svg")));
 
-        png_path = "res/mat_a.png";
+        png_path = "res/mat_b.png";
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

@@ -196,6 +196,8 @@ static const float KNOB_SENSITIVITY = 0.0015f;
 
 struct PngWidget : ModuleWidget {
 
+    /* 1536000013 58% 17 90 2.1-768 */
+
     int png_handle = 0;
 
     std::string png_path;
