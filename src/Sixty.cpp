@@ -244,11 +244,13 @@ struct Sixty : Module {
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 
-struct SixtyWidget : ModuleWidget {
+struct SixtyWidget : PngWidget {
 
     SixtyWidget(Sixty* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Sixty.svg")));
+
+        png_path = "res/sixty_a.png";
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

@@ -173,11 +173,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="51.701747"
-     inkscape:cy="424.35941"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="259.41204"
+     inkscape:cy="287.59206"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="false"
      inkscape:window-width="1918"
      inkscape:window-height="1060"
@@ -217,7 +217,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -228,7 +228,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer8"
-     inkscape:label="Colors">
+     inkscape:label="Colors"
+     style="display:none">
     <path
        style="display:inline;fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M -1.6499999e-6,72.5109 H 11.429997 l 3.81,3.81 3.81,-3.81 h 11.430004"
@@ -237,13 +238,13 @@
        sodipodi:nodetypes="ccccc" />
     <path
        style="display:inline;fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m -3.8754098,72.5109 15.3054068,0 3.81,-3.81 3.81,3.81 15.839951,0"
+       d="M -3.8754098,72.5109 H 11.429997 l 3.81,-3.81 3.81,3.81 h 15.839951"
        id="path2161-3-7"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
     <path
        style="display:inline;fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M -3.8085924,42.706601 H 11.429997 l 3.81,-3.81 3.81,3.81 13.970003,0"
+       d="M -3.8085924,42.706601 H 11.429997 l 3.81,-3.81 3.81,3.81 H 33.02"
        id="path2161-3-9-1"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
@@ -255,7 +256,7 @@
        sodipodi:nodetypes="ccccc" />
     <path
        style="display:inline;fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M -4.5829634,3.68406 H 11.429997 l 3.81,-3.81 3.81,3.81 15.918471,0"
+       d="M -4.5829634,3.68406 H 11.429997 l 3.81,-3.81 3.81,3.81 h 15.918471"
        id="path2161-3-9-9-9"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
@@ -340,7 +341,7 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-168.5)"
-     style="display:inline">
+     style="display:none">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'CMU Serif';-inkscape-font-specification:'CMU Serif';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
