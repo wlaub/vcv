@@ -355,7 +355,7 @@ void draw(const DrawArgs& args) {
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 #define NLABELS 3
 
-struct CobaltIWidget : ModuleWidget {
+struct CobaltIWidget : PngWidget {
     AlignLabel* period_labels[NLABELS];
     AlignLabel* index_labels[NLABELS];
 
@@ -494,9 +494,12 @@ struct CobaltIWidget : ModuleWidget {
 
     } 
 
+
     CobaltIWidget(CobaltI* module) {
         setModule(module);
         setPanel(createPanel(asset::plugin(pluginInstance, "res/Cobalt.svg")));
+
+        png_path = "res/cobalt_a.png";
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

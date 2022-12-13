@@ -72,10 +72,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="377.88878"
+     inkscape:cx="123.60307"
      inkscape:cy="265.08947"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="layer7"
      showgrid="false"
      inkscape:window-width="1918"
      inkscape:window-height="1060"
@@ -126,7 +126,8 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Layer 2"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     style="display:none">
     <rect
        style="display:inline;fill:#333333;stroke:none;stroke-width:0.26656035;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect2177"
@@ -139,7 +140,7 @@
      inkscape:groupmode="layer"
      id="layer6"
      inkscape:label="Colors"
-     style="display:inline">
+     style="display:none">
     <path
        sodipodi:type="star"
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none"
@@ -286,7 +287,7 @@
      inkscape:groupmode="layer"
      id="layer5"
      inkscape:label="Lines"
-     style="display:inline">
+     style="display:none">
     <path
        sodipodi:type="star"
        style="fill:none;fill-opacity:1;stroke:#ececec;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
@@ -786,7 +787,7 @@
      inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="Labels"
-     style="display:inline">
+     style="display:none">
     <path
        transform="translate(0,-168.5)"
        style="display:inline;fill:none;stroke:#e6e6e6;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"

@@ -200,20 +200,8 @@ struct PngWidget : ModuleWidget {
 
     std::string png_path;
 
-    void drawLayer(const DrawArgs& args, int layer) override
+    void draw(const DrawArgs& args) override
     {
-        ModuleWidget::drawLayer(args, layer);
-
-        //layers are -1 and 1
-        if (layer != -1)
-        {
-            return ;
-        }
-
-        /*
-        Based on https://community.vcvrack.com/t/is-it-possible-to-load-a-static-panel-image/16807/9
-        */
-
         nvgSave(args.vg);
         nvgBeginPath(args.vg);
         if(png_handle == 0)
@@ -232,6 +220,8 @@ struct PngWidget : ModuleWidget {
         nvgFill(args.vg);
         nvgClosePath(args.vg);
         nvgRestore(args.vg);
+
+        ModuleWidget::draw(args);
     }
 
 
