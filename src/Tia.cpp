@@ -1,6 +1,7 @@
 #include "Tia.hpp"
+#include "PngModule.hpp"
 
-struct TiaI : Module {
+struct TiaI : PngModule {
     enum ParamId {
         SET_TOP0_PARAM,
         SET_TOP1_PARAM,
@@ -438,13 +439,15 @@ struct TiaI : Module {
 };
 
 
-struct TiaIWidget : PngWidget {
+struct TiaIWidget : PngModuleWidget {
 
 
     void appendContextMenu(Menu* menu) override {
             TiaI* module = dynamic_cast<TiaI*>(this->module);
 
             menu->addChild(new MenuEntry);
+
+            panel_select_menu(menu, module);
 
             menu->addChild(createMenuLabel("Crossfade CV Range"));
             
@@ -507,9 +510,17 @@ struct TiaIWidget : PngWidget {
 
     TiaIWidget(TiaI* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/Tia.svg")));
 
         png_path = "res/Tia_b.png";
+
+        set_panels(
+            "res/Tia.svg",
+            {
+            {"Fancy", "res/tia_b.png"},
+            {"Alt 1", "res/tia_a.png"}
+            });
+
+
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH*2.5, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 3.5 * RACK_GRID_WIDTH, 0)));

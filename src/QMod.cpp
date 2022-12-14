@@ -1,8 +1,8 @@
 
 #include "TechTechTechnologies.hpp"
+#include "PngModule.hpp"
 
-
-struct QMod : Module {
+struct QMod : PngModule {
     /* +ENUMS */
     #include "QMod_enums.hpp"
     /* -ENUMS */
@@ -118,17 +118,27 @@ struct QMod : Module {
 
 
 
-struct QModWidget : ModuleWidget {
+struct QModWidget : PngModuleWidget {
+
+    void appendContextMenu(Menu* menu) override {
+            QMod* module = dynamic_cast<QMod*>(this->module);
+
+            menu->addChild(new MenuEntry);
+
+            panel_select_menu(menu, module);
+
+        }
+
+
     QModWidget(QMod *module) {
 		setModule(module);
         box.size = Vec(18.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
-        {
-            SvgPanel *panel = new SvgPanel();
-            panel->box.size = box.size;
-            panel->setBackground(SVG::load(asset::plugin(pluginInstance, "res/QMod.svg")));
-            addChild(panel);
-        }
+        set_panels(
+            "res/QMod.svg",
+            {
+            {"Fancy", "res/qmod_a.png"},
+            });
 
 
 

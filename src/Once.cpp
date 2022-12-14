@@ -1,4 +1,5 @@
 #include "TechTechTechnologies.hpp"
+#include "PngModule.hpp"
 #include <numeric>
 
 #define N 6
@@ -83,7 +84,7 @@ struct EdgeMode{
 
 };
 
-struct Once : Module {
+struct Once : PngModule {
     enum ParamId {
         ENABLE_PARAM,
         BUTTON_PARAM,
@@ -346,7 +347,7 @@ struct Once : Module {
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 
-struct OnceWidget : PngWidget {
+struct OnceWidget : PngModuleWidget {
 
     void button_mode_menu(Menu* menu, Once* module)
     {
@@ -418,6 +419,8 @@ struct OnceWidget : PngWidget {
 
             menu->addChild(new MenuEntry);
 
+            panel_select_menu(menu, module);
+
             button_mode_menu(menu, module);
             edge_mode_menu(menu, module);
         }
@@ -425,9 +428,14 @@ struct OnceWidget : PngWidget {
 
     OnceWidget(Once* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/Once.svg")));
 
-        png_path = "res/once_c.png";
+        set_panels(
+            "res/Once.svg",
+            {
+            {"Fancy", "res/once_c.png"},
+            {"Alt 1", "res/once_a.png"},
+            {"Alt 2", "res/once_b.png"}
+            });
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

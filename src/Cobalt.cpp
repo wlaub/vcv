@@ -1,7 +1,8 @@
 #include "Cobalt.hpp"
+#include "PngModule.hpp"
 #include <numeric>
 
-struct CobaltI : Module {
+struct CobaltI : PngModule {
     enum ParamId {
         START_PARAM,
         PW_PARAM,
@@ -355,7 +356,7 @@ void draw(const DrawArgs& args) {
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 #define NLABELS 3
 
-struct CobaltIWidget : PngWidget {
+struct CobaltIWidget : PngModuleWidget {
     AlignLabel* period_labels[NLABELS];
     AlignLabel* index_labels[NLABELS];
 
@@ -410,6 +411,8 @@ struct CobaltIWidget : PngWidget {
             CobaltI* module = dynamic_cast<CobaltI*>(this->module);
 
             menu->addChild(new MenuEntry);
+
+            panel_select_menu(menu, module);
 
             struct NormalizeItem : MenuItem {
                 CobaltI* module;
@@ -497,9 +500,12 @@ struct CobaltIWidget : PngWidget {
 
     CobaltIWidget(CobaltI* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/Cobalt.svg")));
 
-        png_path = "res/cobalt_a.png";
+        set_panels(
+            "res/Cobalt.svg",
+            {
+            {"Fancy", "res/cobalt_a.png"},
+            });
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

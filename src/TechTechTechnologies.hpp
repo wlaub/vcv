@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <osdialog.h>
 
+#pragma once
+
 //
 // What follows is misguided legacy macros. I am sorry.
 //
@@ -193,41 +195,6 @@ struct DWhiteLatch : SVGSwitch {
 
 
 static const float KNOB_SENSITIVITY = 0.0015f;
-
-struct PngWidget : ModuleWidget {
-
-    /* 1536000013 58% 17 90 2.1-768 */
-
-    int png_handle = 0;
-
-    std::string png_path;
-
-    void draw(const DrawArgs& args) override
-    {
-        nvgSave(args.vg);
-        nvgBeginPath(args.vg);
-        if(png_handle == 0)
-        {
-            png_handle = nvgCreateImage(
-                args.vg,
-                asset::plugin(pluginInstance, png_path).c_str(),
-                0
-                );
-        }
-        float w = box.size.x;
-        float h = box.size.y;
-        NVGpaint png_paint = nvgImagePattern(args.vg, 0, 0, w,h, 0, png_handle, 1.0f);
-        nvgRect(args.vg, 0, 0, w,h);
-        nvgFillPaint(args.vg, png_paint);
-        nvgFill(args.vg);
-        nvgClosePath(args.vg);
-        nvgRestore(args.vg);
-
-        ModuleWidget::draw(args);
-    }
-
-
-};
 
 
 

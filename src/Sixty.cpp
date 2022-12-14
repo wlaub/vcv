@@ -1,7 +1,8 @@
 #include "Cobalt.hpp"
+#include "PngModule.hpp"
 #include <numeric>
 
-struct Sixty : Module {
+struct Sixty : PngModule {
     enum ParamId {
         TRI_PARAM,
         RC_PARAM, //Raised Cosine
@@ -244,13 +245,25 @@ struct Sixty : Module {
 #define GRIDY(y) 15.24*(y)+3.28
 #define GRID(x,y) GRIDX(x), GRIDY(y)
 
-struct SixtyWidget : PngWidget {
+struct SixtyWidget : PngModuleWidget {
+
+    void appendContextMenu(Menu* menu) override {
+            Sixty* module = dynamic_cast<Sixty*>(this->module);
+
+            menu->addChild(new MenuEntry);
+
+            panel_select_menu(menu, module);
+
+        }
 
     SixtyWidget(Sixty* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/Sixty.svg")));
 
-        png_path = "res/sixty_a.png";
+        set_panels(
+            "res/Sixty.svg",
+            {
+            {"Fancy", "res/sixty_a.png"},
+            });
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

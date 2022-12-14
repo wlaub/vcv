@@ -1,10 +1,11 @@
 #include "TechTechTechnologies.hpp"
+#include "PngModule.hpp"
 
 #include <osdialog.h>
 
 #define MAX_CHANNELS 16
 
-struct MatI : Module {
+struct MatI : PngModule {
     enum ParamId {
         PARAMS_LEN
     };
@@ -65,7 +66,8 @@ struct MatI : Module {
 
     void onReset(const ResetEvent& e) override
     {
-        Module::onReset(e);
+        PngModule::onReset(e);
+
         load_default_filter();
     }
 
@@ -412,13 +414,15 @@ struct MatI : Module {
 };
 
 
-struct MatIWidget : PngWidget {
+struct MatIWidget : PngModuleWidget {
 
 
     void appendContextMenu(Menu* menu) override {
             MatI* module = dynamic_cast<MatI*>(this->module);
 
             menu->addChild(new MenuEntry);
+
+            panel_select_menu(menu, module);
 
             std::string specname = "Current Filters: ";
             if(!module->pathmem.file.empty())
@@ -481,9 +485,14 @@ struct MatIWidget : PngWidget {
 
     MatIWidget(MatI* module) {
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/MatI.svg")));
 
-        png_path = "res/mat_b.png";
+        set_panels(
+            "res/MatI.svg",
+            {
+            {"Fancy", "res/mat_b.png"},
+            {"Alt 1", "res/mat_a.png"}
+            });
+
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
