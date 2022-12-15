@@ -135,8 +135,8 @@ struct QModWidget : PngModuleWidget {
         box.size = Vec(18.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
         set_panels(
-            "res/QMod.svg",
             {
+            {"Default", "res/QMod.png"},
             {"Fancy", "res/qmod_a.png"},
             });
 

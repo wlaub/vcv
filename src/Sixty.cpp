@@ -260,8 +260,8 @@ struct SixtyWidget : PngModuleWidget {
         setModule(module);
 
         set_panels(
-            "res/Sixty.svg",
             {
+            {"Default","res/Sixty.svg"},
             {"Fancy", "res/sixty_a.png"},
             });
 

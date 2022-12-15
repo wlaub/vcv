@@ -511,11 +511,9 @@ struct TiaIWidget : PngModuleWidget {
     TiaIWidget(TiaI* module) {
         setModule(module);
 
-        png_path = "res/Tia_b.png";
-
         set_panels(
-            "res/Tia.svg",
             {
+            {"Default", "res/Tia.svg"},
             {"Fancy", "res/tia_b.png"},
             {"Alt 1", "res/tia_a.png"}
             });

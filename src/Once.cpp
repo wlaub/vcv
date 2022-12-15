@@ -430,8 +430,8 @@ struct OnceWidget : PngModuleWidget {
         setModule(module);
 
         set_panels(
-            "res/Once.svg",
             {
+            {"Default", "res/Once.svg"},
             {"Fancy", "res/once_c.png"},
             {"Alt 1", "res/once_a.png"},
             {"Alt 2", "res/once_b.png"}

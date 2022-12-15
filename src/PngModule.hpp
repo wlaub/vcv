@@ -3,9 +3,31 @@
 
 using namespace rack;
 
+enum class ImageType {SVG, PNG};
+
+typedef std::tuple<std::string, std::string> PanelInfo;
+
+struct MyPanel {
+    std::string path;
+    std::string label;
+    ImageType type;
+
+    SvgPanel* svg_panel = 0;
+    int png_handle = 0;
+
+    MyPanel(PanelInfo config);
+
+    void draw(const ModuleWidget::DrawArgs& args, float w, float h);
+
+    float get_width();
+
+};
+
+
 struct PngModule : Module {
 
-    std::string panel_path;
+    MyPanel* current_panel;
+    MyPanel* default_panel;
     bool show_panel_labels = false;
 
 };
@@ -14,22 +36,21 @@ struct PngModuleWidget : ModuleWidget {
 
     /* 1536000013 58% 17 90 2.1-768 */
     /* TODO:
-        Add function to add menu options to select panels
-            Put into a dropdown menu
-            And another for global defaults
+        save/load panel options from json
+        make defaults do anything
         save/load panel selection
     */
 
-    int png_handle = 0;
+    MyPanel* current_panel = 0;
 
-    int show_svg = 0;
-    SvgPanel* svg_panel = 0;
-    std::string png_path;
-    std::string svg_path;
-    std::vector<std::pair<std::string, std::string>> panel_options;
+    /*  TODO: make these static somehow so they don't have to be loaded from 
+        scratch all the time and so the default can be set globally.
+    */
+    MyPanel* default_panel = 0;
+    std::vector<struct MyPanel*> panel_options;
+    std::map<std::string, MyPanel*> panel_map;
 
-    void set_panels(const std::string svg_path, 
-            const std::vector<std::pair<std::string, std::string>> panels);
+    void set_panels(const std::vector<PanelInfo> panels);
 
     void draw(const DrawArgs& args) override;
 

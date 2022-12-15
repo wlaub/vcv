@@ -487,10 +487,10 @@ struct MatIWidget : PngModuleWidget {
         setModule(module);
 
         set_panels(
-            "res/MatI.svg",
             {
+            {"Default", "res/MatI.svg"},
             {"Fancy", "res/mat_b.png"},
-            {"Alt 1", "res/mat_a.png"}
+            {"Alt 1", "res/mat_a.png"},
             });
 
 
