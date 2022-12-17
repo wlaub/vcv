@@ -67,10 +67,7 @@ struct PngModuleWidget : ModuleWidget {
 
     void load_panels_from_json();
     void init_panels(std::string slug);
-    void set_panels(const std::vector<PanelInfo> panels);
     void _init_instance_panels();
-
-    void setModel(plugin::Model* model);
 
     void draw(const DrawArgs& args) override;
 

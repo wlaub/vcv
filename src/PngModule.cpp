@@ -168,14 +168,6 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
 
 PanelCacheMap PngModuleWidget::panel_cache_map;
 
-void PngModuleWidget::setModel(plugin::Model* model)
-{
-    printf("Hello!\n");
-	assert(!this->model);
-	this->model = model;    
-
-}
-
 void PngModuleWidget::_init_instance_panels()
 {
     
@@ -253,32 +245,6 @@ void PngModuleWidget::init_panels(std::string slug)
             panel_cache = PngModuleWidget::panel_cache_map.at(slug);
 
             load_panels_from_json();
-
-            if(panel_cache->width == 0)
-            {
-                panel_cache->width = 12.0f * RACK_GRID_WIDTH;
-                printf("Warning: Module %s doesn't have an svg panel. Assuming 12 HP\n", slug.c_str());
-            }
-
-
-        }
-    }
-
-    _init_instance_panels();
-
-}
-
-void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
-{
-    if(panel_cache == 0 )
-    {
-        try {
-            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
-        } catch (const std::out_of_range& e) {
-            //This is where the panel cache is created and populated for the first time
-            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
-            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
-            panel_cache->set_panels(panels) ;
 
             if(panel_cache->width == 0)
             {
