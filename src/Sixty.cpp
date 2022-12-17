@@ -259,6 +259,7 @@ struct SixtyWidget : PngModuleWidget {
     SixtyWidget(Sixty* module) {
         setModule(module);
 
+        slug = "sixty";
         set_panels(
             {
             {"Default","res/Sixty.svg"},

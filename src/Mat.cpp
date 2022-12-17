@@ -486,6 +486,7 @@ struct MatIWidget : PngModuleWidget {
     MatIWidget(MatI* module) {
         setModule(module);
 
+        slug = "mat";
         set_panels(
             {
             {"Default", "res/MatI.svg"},

@@ -501,6 +501,7 @@ struct CobaltIWidget : PngModuleWidget {
     CobaltIWidget(CobaltI* module) {
         setModule(module);
 
+        slug = "cobalt";
         set_panels(
             {
             {"Default", "res/Cobalt.svg"},

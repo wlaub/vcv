@@ -59,6 +59,8 @@ struct PngModuleWidget : ModuleWidget {
 
     MyPanel* current_panel = 0;
 
+    std::string slug = "";
+
     static PanelCacheMap panel_cache_map;
     MyPanelCache* panel_cache = 0;
 

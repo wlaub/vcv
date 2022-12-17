@@ -511,6 +511,7 @@ struct TiaIWidget : PngModuleWidget {
     TiaIWidget(TiaI* module) {
         setModule(module);
 
+        slug = "tia";
         set_panels(
             {
             {"Default", "res/Tia.svg"},

@@ -429,6 +429,8 @@ struct OnceWidget : PngModuleWidget {
     OnceWidget(Once* module) {
         setModule(module);
 
+        slug = "once";
+
         set_panels(
             {
             {"Default", "res/Once.svg"},

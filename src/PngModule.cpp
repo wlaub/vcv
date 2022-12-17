@@ -30,6 +30,7 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
     }
     else
     {
+
         if(png_handle == 0)
         {
             png_handle = nvgCreateImage(
@@ -145,29 +146,14 @@ PanelCacheMap PngModuleWidget::panel_cache_map;
 
 void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
 {
-    std::string slug;
-    if(model)
-    {
-        slug = model->slug;
-    }
-    else if(module && module->model)
-    { 
-        slug = module->model->slug;
-    }
-    else
-    {
-        return;
-    }
-
     if(panel_cache == 0 )
     {
-//        try {
-//            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
-//        } catch (const std::out_of_range& e) {
-//            //This is where the panel cache is created and populated for the first time
-//            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
-//            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
-panel_cache = new struct MyPanelCache;
+        try {
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+        } catch (const std::out_of_range& e) {
+            //This is where the panel cache is created and populated for the first time
+            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
             panel_cache->set_panels(panels) ;
 
             if(panel_cache->width == 0)
@@ -177,7 +163,7 @@ panel_cache = new struct MyPanelCache;
             }
 
 
-//        }
+        }
     }
 
     current_panel = panel_cache->default_panel;
@@ -204,7 +190,10 @@ void PngModuleWidget::draw(const DrawArgs& args)
             current_panel = mod->current_panel;
         }
     }
-    current_panel->draw(args, box.size.x, box.size.y);
+    if(current_panel)
+    {
+        current_panel->draw(args, box.size.x, box.size.y);
+    }
 
     ModuleWidget::draw(args);
 }
