@@ -118,6 +118,7 @@ struct PanelMenu : MenuItem {
         Menu* menu = new Menu;
         struct PanelItem : MenuItem {
             PngModule* module;
+            PngModuleWidget* widget;
             MyPanel* panel;
             int mode;
             void onAction(const event::Action& e) override {
@@ -128,6 +129,7 @@ struct PanelMenu : MenuItem {
                 else
                 {
                     module->panel_cache->default_panel = panel;
+                    widget->save_default_panel();
                 }
             }
         };
@@ -136,6 +138,7 @@ struct PanelMenu : MenuItem {
         {
             PanelItem* item = createMenuItem<PanelItem>(option->label);
             item->mode = mode;
+            item->widget = widget;
             item->module = (PngModule*)widget->module;
             item->panel = option;
             item->rightText = CHECKMARK(current==option);
@@ -186,20 +189,60 @@ void PngModuleWidget::_init_instance_panels()
 
 }
 
-void PngModuleWidget::load_panels_from_json()
-{/* Load the panel configuration from the json file at res/panels/<slug>.json
-    */
-    
+std::string PngModuleWidget::get_panel_json_path()
+{
     std::string json_path = asset::plugin(pluginInstance, "res/panels/") + slug + ".json";
+    return json_path;
+}
+
+void PngModuleWidget::save_default_panel()
+{
+    std::string json_path = get_panel_json_path();
 
     FILE* fp = std::fopen(json_path.c_str(), "r");
 
     json_error_t error;
     json_t* rootJ = json_loadf(fp, 0, &error);
 
+    std::fclose(fp);
+
     if(!rootJ)
     {
-        std::string message = string::f("JSON parsing error at %s %d:%d %s", error.source, error.line, error.column, error.text);
+        std::string message = string::f("Failed to load %s: %s %d:%d %s", json_path.c_str(), error.source, error.line, error.column, error.text);
+        osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+        return;
+    }
+
+    json_object_set(rootJ, "user_default", 
+            json_string(panel_cache->default_panel->label.c_str())
+            );
+
+    fp = std::fopen(json_path.c_str(), "w");
+
+    json_dumpf(rootJ, fp, JSON_INDENT(4));
+
+    std::fclose(fp);
+
+
+    
+}
+
+void PngModuleWidget::load_panels_from_json()
+{/* Load the panel configuration from the json file at res/panels/<slug>.json
+    */
+    
+    std::string json_path = get_panel_json_path();
+
+    FILE* fp = std::fopen(json_path.c_str(), "r");
+
+    json_error_t error;
+    json_t* rootJ = json_loadf(fp, 0, &error);
+
+    std::fclose(fp);
+
+    if(!rootJ)
+    {
+        std::string message = string::f("Failed to load %s: %s %d:%d %s", json_path.c_str(), error.source, error.line, error.column, error.text);
         osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
         return;
     }
@@ -223,8 +266,6 @@ void PngModuleWidget::load_panels_from_json()
     }
 
     panel_cache->find_default_panel(default_label);
-
-    std::fclose(fp);
 
 }
 

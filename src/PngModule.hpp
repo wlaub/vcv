@@ -65,6 +65,8 @@ struct PngModuleWidget : ModuleWidget {
     static PanelCacheMap panel_cache_map;
     MyPanelCache* panel_cache = 0;
 
+    std::string get_panel_json_path();
+    void save_default_panel();
     void load_panels_from_json();
     void init_panels(std::string slug);
     void _init_instance_panels();
