@@ -9,6 +9,7 @@ MyPanel::MyPanel(PanelInfo config) {
     {
         type = ImageType::SVG;
         svg_panel = createPanel(asset::plugin(pluginInstance, path));
+        width = svg_panel->box.size.x;
     }
     else
     {
@@ -18,14 +19,7 @@ MyPanel::MyPanel(PanelInfo config) {
 
 float MyPanel::get_width()
 {
-    if(type == ImageType::SVG)
-    {
-        return svg_panel->box.size.x;
-    }
-    else
-    {
-        return 12.f;
-    }
+    return width;
 }
 
 void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
@@ -60,6 +54,30 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
 }
 
 
+
+void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
+{
+    for (const PanelInfo& config : panels)
+    {
+        panel_options.push_back(new struct MyPanel(config));
+        MyPanel* new_panel = panel_options.back();
+
+        panel_map.emplace(new_panel->label, new_panel);
+        panel_map.emplace(new_panel->path, new_panel);
+
+    }
+
+    if(default_panel == 0)
+    {
+        try {
+            default_panel = panel_map.at("Default");
+        } catch (const std::out_of_range& e) {
+            default_panel = panel_options[0];
+        }
+    }
+}
+
+
 struct PanelMenu : MenuItem {
 
     PngModuleWidget* widget;
@@ -80,12 +98,12 @@ struct PanelMenu : MenuItem {
                 }
                 else
                 {
-                    module->default_panel = panel;
+                    module->panel_cache->default_panel = panel;
                 }
             }
         };
 
-        for(auto& option : widget->panel_options)
+        for(auto& option : widget->panel_cache->panel_options)
         {
             PanelItem* item = createMenuItem<PanelItem>(option->label);
             item->mode = mode;
@@ -104,7 +122,6 @@ struct PanelMenu : MenuItem {
 void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
 {
 
-
     PanelMenu* panel_menu = createMenuItem<PanelMenu>("Panel", RIGHT_ARROW);
     panel_menu->widget = this;
     panel_menu->current = current_panel;
@@ -113,37 +130,46 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
 
     panel_menu = createMenuItem<PanelMenu>("Default Panel", RIGHT_ARROW);
     panel_menu->widget = this;
-    panel_menu->current = default_panel;
+    panel_menu->current = panel_cache->default_panel;
     panel_menu->mode = 1;
     menu->addChild(panel_menu);
 
 
 }
 
+PanelCacheMap PngModuleWidget::panel_cache_map;
+
 void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
 {
-    for (const PanelInfo& config : panels)
+    std::string slug;
+    if(model)
     {
-        panel_options.push_back(new struct MyPanel(config));
-        MyPanel* new_panel = panel_options.back();
-
-        panel_map.emplace(new_panel->label, new_panel);
-        panel_map.emplace(new_panel->path, new_panel);
-
+        slug = model->slug;
+    }
+    else if(module && module->model)
+    { 
+        slug = module->model->slug;
+    }
+    else
+    {
+        return;
     }
 
-    if(default_panel == 0)
+    if(panel_cache == 0 )
     {
         try {
-            default_panel = panel_map.at("Default");
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
         } catch (const std::out_of_range& e) {
-            default_panel = panel_options[0];
+            //This is where the panel cache is created and populated for the first time
+            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+            panel_cache->set_panels(panels) ;
         }
     }
 
-    box.size.x = std::round(default_panel->get_width() / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
+    current_panel = panel_cache->default_panel;
+    box.size.x = std::round(current_panel->get_width() / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
 
-    current_panel = default_panel;
     if(!module)
     {
         return;
@@ -151,7 +177,7 @@ void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
     
     PngModule* mod = dynamic_cast<PngModule*>(this->module);
 
-    mod->default_panel = default_panel;
+    mod->panel_cache = panel_cache;
     mod->current_panel = current_panel;
 
 }
