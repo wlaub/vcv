@@ -27,6 +27,7 @@ struct MyPanel {
 
 struct MyPanelCache {
 
+    float width = 0;
     MyPanel* default_panel = 0;
     std::vector<struct MyPanel*> panel_options;
     std::map<std::string, MyPanel*> panel_map;
@@ -53,11 +54,10 @@ struct PngModuleWidget : ModuleWidget {
         make default panel a json option?
         make defaults do anything
         save/load panel selection
+        svg panels fail to render at some zoom levels?
     */
 
     MyPanel* current_panel = 0;
-
-    std::string panel_key;
 
     static PanelCacheMap panel_cache_map;
     MyPanelCache* panel_cache = 0;

@@ -65,6 +65,10 @@ void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
         panel_map.emplace(new_panel->label, new_panel);
         panel_map.emplace(new_panel->path, new_panel);
 
+        if(width == 0 && new_panel->type == ImageType::SVG)
+        {
+            width = new_panel->get_width();
+        }
     }
 
     if(default_panel == 0)
@@ -164,11 +168,19 @@ void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
             PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
             panel_cache = PngModuleWidget::panel_cache_map.at(slug);
             panel_cache->set_panels(panels) ;
+
+            if(panel_cache->width == 0)
+            {
+                panel_cache->width = 12.0f * RACK_GRID_WIDTH;
+                printf("Warning: Module %s doesn't have an svg panel. Assuming 12 HP\n", slug);
+            }
+
+
         }
     }
 
     current_panel = panel_cache->default_panel;
-    box.size.x = std::round(current_panel->get_width() / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
+    box.size.x = std::round(panel_cache->width / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
 
     if(!module)
     {
