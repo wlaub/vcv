@@ -430,7 +430,8 @@ struct OnceWidget : PngModuleWidget {
         setModule(module);
 
         slug = "once";
-
+        init_panels();
+/*
         set_panels(
             {
             {"Default", "res/Once.svg"},
@@ -439,6 +440,8 @@ struct OnceWidget : PngModuleWidget {
             {"Alt 2", "res/once_b.png"}
             });
 
+        load_panels_from_json();
+*/
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));

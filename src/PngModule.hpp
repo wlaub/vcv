@@ -33,6 +33,8 @@ struct MyPanelCache {
     std::map<std::string, MyPanel*> panel_map;
 
     void set_panels(const std::vector<PanelInfo> panels);
+    void add_panel(PanelInfo config);
+    void find_default_panel(const char* default_label=0);
 
 };
 
@@ -63,7 +65,11 @@ struct PngModuleWidget : ModuleWidget {
     static PanelCacheMap panel_cache_map;
     MyPanelCache* panel_cache = 0;
 
+    void load_panels_from_json();
+    void init_panels();
     void set_panels(const std::vector<PanelInfo> panels);
+    void _init_instance_panels();
+
     void setModel(plugin::Model* model);
 
     void draw(const DrawArgs& args) override;

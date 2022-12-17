@@ -59,32 +59,51 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
 
 }
 
-
-
-void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
+void MyPanelCache::add_panel(PanelInfo config)
 {
-    for (const PanelInfo& config : panels)
+
+    panel_options.push_back(new struct MyPanel(config));
+    MyPanel* new_panel = panel_options.back();
+
+    panel_map.emplace(new_panel->label, new_panel);
+    panel_map.emplace(new_panel->path, new_panel);
+
+    if(width == 0 && new_panel->type == ImageType::SVG)
     {
-        panel_options.push_back(new struct MyPanel(config));
-        MyPanel* new_panel = panel_options.back();
+        width = new_panel->get_width();
+    }
 
-        panel_map.emplace(new_panel->label, new_panel);
-        panel_map.emplace(new_panel->path, new_panel);
 
-        if(width == 0 && new_panel->type == ImageType::SVG)
-        {
-            width = new_panel->get_width();
-        }
+}
+
+void MyPanelCache::find_default_panel(const char* default_label)
+{/* If the default panel hasn't been set, try to guess the default panel
+    from the panels that have been loaded.
+    */
+
+    if(default_label == 0)
+    {
+        default_label = "Default";
     }
 
     if(default_panel == 0)
     {
         try {
-            default_panel = panel_map.at("Default");
+            default_panel = panel_map.at(default_label);
         } catch (const std::out_of_range& e) {
             default_panel = panel_options[0];
         }
     }
+}
+
+void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
+{
+    for (const PanelInfo& config : panels)
+    {
+        add_panel(config);
+    }
+
+    find_default_panel();
 }
 
 
@@ -157,8 +176,97 @@ void PngModuleWidget::setModel(plugin::Model* model)
 
 }
 
-//TODO: Call this from setModel or some shit since you can't have
-//access to the model in the constructor.
+void PngModuleWidget::_init_instance_panels()
+{
+    
+    current_panel = panel_cache->default_panel;
+    box.size.x = std::round(panel_cache->width / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
+
+    if(!module)
+    {
+        return;
+    }
+    
+    PngModule* mod = dynamic_cast<PngModule*>(this->module);
+
+    mod->panel_cache = panel_cache;
+    mod->current_panel = current_panel;
+
+}
+
+void PngModuleWidget::load_panels_from_json()
+{/* Load the panel configuration from the json file at res/panels/<slug>.json
+    */
+    
+    std::string json_path = asset::plugin(pluginInstance, "res/panels/") + slug + ".json";
+
+    FILE* fp = std::fopen(json_path.c_str(), "r");
+
+    json_error_t error;
+    json_t* rootJ = json_loadf(fp, 0, &error);
+
+    if(!rootJ)
+    {
+        std::string message = string::f("JSON parsing error at %s %d:%d %s", error.source, error.line, error.column, error.text);
+        osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+        return;
+    }
+    
+    json_t* panels = json_object_get(rootJ, "panels");
+    const char* default_label = json_string_value(json_object_get(rootJ, "default"));
+    const char* user_default_label = json_string_value(json_object_get(rootJ, "user_default"));
+
+    if(user_default_label != 0)
+    {
+        default_label = user_default_label;
+    }
+
+    size_t index;
+    json_t* config;
+    json_array_foreach(panels, index, config){
+        panel_cache->add_panel({
+            json_string_value(json_array_get(config, 0)),
+            json_string_value(json_array_get(config, 1))
+            });
+    }
+
+    panel_cache->find_default_panel(default_label);
+
+    std::fclose(fp);
+
+}
+
+
+void PngModuleWidget::init_panels()
+{/* Load the panel configuration from the json file at res/panels/<slug>.json
+    Create the panel cache
+    */
+
+    if(panel_cache == 0 )
+    {
+        try {
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+        } catch (const std::out_of_range& e) {
+            //This is where the panel cache is created and populated for the first time
+            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
+            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+
+            load_panels_from_json();
+
+            if(panel_cache->width == 0)
+            {
+                panel_cache->width = 12.0f * RACK_GRID_WIDTH;
+                printf("Warning: Module %s doesn't have an svg panel. Assuming 12 HP\n", slug.c_str());
+            }
+
+
+        }
+    }
+
+    _init_instance_panels();
+
+}
+
 void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
 {
     if(panel_cache == 0 )
@@ -181,18 +289,7 @@ void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
         }
     }
 
-    current_panel = panel_cache->default_panel;
-    box.size.x = std::round(panel_cache->width / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
-
-    if(!module)
-    {
-        return;
-    }
-    
-    PngModule* mod = dynamic_cast<PngModule*>(this->module);
-
-    mod->panel_cache = panel_cache;
-    mod->current_panel = current_panel;
+    _init_instance_panels();
 
 }
 
