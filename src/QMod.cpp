@@ -136,7 +136,7 @@ struct QModWidget : PngModuleWidget {
 
         set_panels(
             {
-            {"Default", "res/QMod.png"},
+            {"Default", "res/QMod.svg"},
             {"Fancy", "res/qmod_a.png"},
             });
 

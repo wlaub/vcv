@@ -54,7 +54,7 @@ struct PngModuleWidget : ModuleWidget {
         make default panel a json option?
         make defaults do anything
         save/load panel selection
-        svg panels fail to render at some zoom levels?
+        svg panels don't render at some zoom levels when shared by multiple module instances
     */
 
     MyPanel* current_panel = 0;

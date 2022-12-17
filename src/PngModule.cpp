@@ -161,22 +161,23 @@ void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
 
     if(panel_cache == 0 )
     {
-        try {
-            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
-        } catch (const std::out_of_range& e) {
-            //This is where the panel cache is created and populated for the first time
-            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
-            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+//        try {
+//            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+//        } catch (const std::out_of_range& e) {
+//            //This is where the panel cache is created and populated for the first time
+//            PngModuleWidget::panel_cache_map.emplace(slug, new struct MyPanelCache);
+//            panel_cache = PngModuleWidget::panel_cache_map.at(slug);
+panel_cache = new struct MyPanelCache;
             panel_cache->set_panels(panels) ;
 
             if(panel_cache->width == 0)
             {
                 panel_cache->width = 12.0f * RACK_GRID_WIDTH;
-                printf("Warning: Module %s doesn't have an svg panel. Assuming 12 HP\n", slug);
+                printf("Warning: Module %s doesn't have an svg panel. Assuming 12 HP\n", slug.c_str());
             }
 
 
-        }
+//        }
     }
 
     current_panel = panel_cache->default_panel;
