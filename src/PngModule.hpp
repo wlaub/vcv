@@ -12,10 +12,10 @@ struct MyPanel {
     std::string label;
     ImageType type;
 
-    SvgPanel* svg_panel = 0;
     int png_handle = 0;
+    NSVGimage* svg_handle = 0;
 
-    float width = 12.f;
+    float width = 12.f*RACK_GRID_WIDTH;
 
     MyPanel(PanelInfo config);
 
@@ -54,7 +54,6 @@ struct PngModuleWidget : ModuleWidget {
         make default panel a json option?
         make defaults do anything
         save/load panel selection
-        svg panels don't render at some zoom levels when shared by multiple module instances
     */
 
     MyPanel* current_panel = 0;
@@ -65,6 +64,7 @@ struct PngModuleWidget : ModuleWidget {
     MyPanelCache* panel_cache = 0;
 
     void set_panels(const std::vector<PanelInfo> panels);
+    void setModel(plugin::Model* model);
 
     void draw(const DrawArgs& args) override;
 

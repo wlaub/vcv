@@ -8,8 +8,12 @@ MyPanel::MyPanel(PanelInfo config) {
     if(path.find("svg") != std::string::npos)
     {
         type = ImageType::SVG;
-        svg_panel = createPanel(asset::plugin(pluginInstance, path));
-        width = svg_panel->box.size.x;
+
+        svg_handle = nsvgParseFromFile(
+                asset::plugin(pluginInstance, path).c_str(), 
+                "px", SVG_DPI);
+
+        width = svg_handle->width;
     }
     else
     {
@@ -26,7 +30,8 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
 {
     if(type == ImageType::SVG)
     {
-        svg_panel->draw(args);
+        nvgScissor(args.vg, 0,0, svg_handle->width, svg_handle->height);
+        svgDraw(args.vg, svg_handle);
     }
     else
     {
@@ -144,6 +149,16 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
 
 PanelCacheMap PngModuleWidget::panel_cache_map;
 
+void PngModuleWidget::setModel(plugin::Model* model)
+{
+    printf("Hello!\n");
+	assert(!this->model);
+	this->model = model;    
+
+}
+
+//TODO: Call this from setModel or some shit since you can't have
+//access to the model in the constructor.
 void PngModuleWidget::set_panels(const std::vector<PanelInfo> panels)
 {
     if(panel_cache == 0 )
