@@ -122,11 +122,8 @@ struct PanelMenu : MenuItem {
             MyPanel* panel;
             int mode;
             void onAction(const event::Action& e) override {
-                if(mode == 0)
-                {
-                    module->current_panel = panel;
-                }
-                else
+                module->current_panel = panel;
+                if(mode==1)
                 {
                     module->panel_cache->default_panel = panel;
                     widget->save_default_panel();
