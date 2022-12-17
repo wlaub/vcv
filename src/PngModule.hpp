@@ -41,8 +41,15 @@ struct MyPanelCache {
 struct PngModule : Module {
 
     MyPanelCache* panel_cache;
-    MyPanel* current_panel;
+    std::string current_panel_label;
+    MyPanel* current_panel = 0;
     bool show_panel_labels = false;
+
+    void save_panel(json_t* rootJ);
+    void load_panel(json_t* rootJ);
+    json_t* dataToJson() override;
+    void dataFromJson(json_t* rootJ) override;
+
 
 };
 
@@ -52,10 +59,7 @@ struct PngModuleWidget : ModuleWidget {
 
     /* 1536000013 58% 17 90 2.1-768 */
     /* TODO:
-        save/load panel options from json
-        make default panel a json option?
-        make defaults do anything
-        save/load panel selection
+        add label panel and options for toggling labels
     */
 
     MyPanel* current_panel = 0;

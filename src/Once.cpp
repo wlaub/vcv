@@ -300,6 +300,8 @@ struct Once : PngModule {
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        load_panel(rootJ);
+
         json_object_set_new(rootJ, "enabled", json_integer(enabled));
 
         json_t* array = json_array();
@@ -318,6 +320,7 @@ struct Once : PngModule {
     } 
 
     void dataFromJson(json_t* rootJ) override {
+        save_panel(rootJ);
 
         json_t* temp;
 

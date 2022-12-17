@@ -292,6 +292,8 @@ struct CobaltI : PngModule {
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        save_panel(rootJ);
+
         json_object_set_new(rootJ, "reset_mode", json_integer(reset_mode));
         json_object_set_new(rootJ, "normalize", json_integer(normalize));       
         json_object_set_new(rootJ, "show_labels", json_integer(show_labels));
@@ -303,6 +305,8 @@ struct CobaltI : PngModule {
     void dataFromJson(json_t* rootJ) override {
 
         json_t* temp;
+
+        load_panel(rootJ);
 
         temp = json_object_get(rootJ, "reset_mode");
         if(temp) reset_mode = json_integer_value(temp);

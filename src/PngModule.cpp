@@ -107,6 +107,48 @@ void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
 }
 
 
+void PngModule::save_panel(json_t* rootJ)
+{
+    if(current_panel)
+    {
+        json_object_set(rootJ, "current_panel", 
+            json_string(current_panel->label.c_str())
+            );
+    }
+    else if(current_panel_label != std::string())
+    {//Sometimes it can try to save before the panel has been set?
+        json_object_set(rootJ, "current_panel", 
+            json_string(current_panel_label.c_str())
+            );
+    }
+}
+
+void PngModule::load_panel(json_t* rootJ)
+{
+    
+    const char* loaded_label = json_string_value(json_object_get(rootJ, "current_panel"));
+    if(loaded_label)
+    {
+        current_panel_label = loaded_label;
+    }
+}
+
+json_t* PngModule::dataToJson()
+{
+    json_t* rootJ = json_object();
+    
+    save_panel(rootJ);
+
+    return rootJ;
+}
+
+void PngModule::dataFromJson(json_t* rootJ)
+{
+    load_panel(rootJ);
+}
+
+
+
 struct PanelMenu : MenuItem {
 
     PngModuleWidget* widget;
@@ -181,8 +223,21 @@ void PngModuleWidget::_init_instance_panels()
     
     PngModule* mod = dynamic_cast<PngModule*>(this->module);
 
+    if(mod->current_panel_label != std::string())
+    {
+        try {
+            current_panel = panel_cache->panel_map.at(mod->current_panel_label);
+        } catch (const std::out_of_range& e) {
+            std::string message = string::f("Failed to load panel %s", mod->current_panel_label);
+            osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+     
+        }
+    }
+
     mod->panel_cache = panel_cache;
     mod->current_panel = current_panel;
+
+
 
 }
 

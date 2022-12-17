@@ -376,6 +376,8 @@ struct TiaI : PngModule {
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        save_panel(rootJ);
+
         json_object_set_new(rootJ, "select", json_integer(select));
         
         json_t* ts = json_array();
@@ -398,6 +400,8 @@ struct TiaI : PngModule {
     } 
 
     void dataFromJson(json_t* rootJ) override {
+
+        load_panel(rootJ);
 
         json_t* temp;
 

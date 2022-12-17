@@ -171,6 +171,8 @@ struct MatI : PngModule {
     json_t* dataToJson() override {
         json_t* rootJ = json_object();
 
+        save_panel(rootJ);
+
         if(filter_count > 0)
         {
             json_object_set_new(rootJ, "filters", dump_filter_specs());
@@ -182,6 +184,8 @@ struct MatI : PngModule {
     } 
 
     void dataFromJson(json_t* rootJ) override {
+        load_panel(rootJ);
+
         json_t* spec_array = json_object_get(rootJ, "filters");
         if(!load_filter_specs(spec_array))
         {
