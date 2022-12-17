@@ -259,12 +259,7 @@ struct SixtyWidget : PngModuleWidget {
     SixtyWidget(Sixty* module) {
         setModule(module);
 
-        slug = "sixty";
-        set_panels(
-            {
-            {"Default","res/Sixty.svg"},
-            {"Fancy", "res/sixty_a.png"},
-            });
+        init_panels("Sixty");
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

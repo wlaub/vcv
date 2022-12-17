@@ -1,0 +1,10 @@
+{
+"panels": [
+    ["Default", "Once.svg"],
+    ["Fancy", "once_c.png"],
+    ["Alt 1", "once_a.png"],
+    ["Alt 2", "once_b.png"]
+    ],
+"default": "Fancy"
+
+}

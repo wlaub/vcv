@@ -3,7 +3,7 @@
 
 MyPanel::MyPanel(PanelInfo config) {
     label = std::get<0>(config);
-    path = std::get<1>(config);
+    path = "res/"+std::get<1>(config);
 
     if(path.find("svg") != std::string::npos)
     {
@@ -237,11 +237,12 @@ void PngModuleWidget::load_panels_from_json()
 }
 
 
-void PngModuleWidget::init_panels()
+void PngModuleWidget::init_panels(std::string slug)
 {/* Load the panel configuration from the json file at res/panels/<slug>.json
     Create the panel cache
     */
 
+    this->slug = slug;
     if(panel_cache == 0 )
     {
         try {

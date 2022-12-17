@@ -486,14 +486,7 @@ struct MatIWidget : PngModuleWidget {
     MatIWidget(MatI* module) {
         setModule(module);
 
-        slug = "mat";
-        set_panels(
-            {
-            {"Default", "res/MatI.svg"},
-            {"Fancy", "res/mat_b.png"},
-            {"Alt 1", "res/mat_a.png"},
-            });
-
+        init_panels("MatI");
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

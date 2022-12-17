@@ -1,0 +1,9 @@
+{
+"panels": [
+    ["Default", "Tia.svg"],
+    ["Fancy", "tia_b.png"],
+    ["Alt 1", "tia_a.png"]
+    ],
+"default": "Fancy"
+}
+

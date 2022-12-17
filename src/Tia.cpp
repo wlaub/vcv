@@ -511,14 +511,7 @@ struct TiaIWidget : PngModuleWidget {
     TiaIWidget(TiaI* module) {
         setModule(module);
 
-        slug = "tia";
-        set_panels(
-            {
-            {"Default", "res/Tia.svg"},
-            {"Fancy", "res/tia_b.png"},
-            {"Alt 1", "res/tia_a.png"}
-            });
-
+        init_panels("TiaI");
 
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH*2.5, 0)));

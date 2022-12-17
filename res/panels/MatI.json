@@ -1,0 +1,9 @@
+{
+"panels": [
+    ["Default", "MatI.svg"],
+    ["Fancy", "mat_b.png"],
+    ["Alt 1", "mat_a.png"]
+    ],
+"default": "Fancy"
+
+}

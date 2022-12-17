@@ -134,14 +134,7 @@ struct QModWidget : PngModuleWidget {
 		setModule(module);
         box.size = Vec(18.0 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT);
 
-        slug = "qmod";
-        set_panels(
-            {
-            {"Default", "res/QMod.svg"},
-            {"Fancy", "res/qmod_a.png"},
-            });
-
-
+        init_panels("QMod");
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

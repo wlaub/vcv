@@ -1,0 +1,8 @@
+{
+"panels": [
+    ["Default", "Sixty.svg"],
+    ["Fancy", "sixty_a.png"]
+    ],
+"default": "Fancy"
+}
+

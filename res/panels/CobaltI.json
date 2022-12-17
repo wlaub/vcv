@@ -1,0 +1,8 @@
+{
+"panels": [
+    ["Default", "Cobalt.svg"],
+    ["Fancy", "cobalt_a.png"]
+    ],
+"default": "Fancy"
+}
+

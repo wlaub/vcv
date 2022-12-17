@@ -501,12 +501,7 @@ struct CobaltIWidget : PngModuleWidget {
     CobaltIWidget(CobaltI* module) {
         setModule(module);
 
-        slug = "cobalt";
-        set_panels(
-            {
-            {"Default", "res/Cobalt.svg"},
-            {"Fancy", "res/cobalt_a.png"},
-            });
+        init_panels("CobaltI");
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
