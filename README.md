@@ -7,6 +7,10 @@
 
 # TechTech Technologies VCV Plugins
 
+## Panels
+
+Some modules have multiple panel art options that can be selected from the context menu by right-clicking the module. Some modules also have optional panel labels that can be enabled from the context menu.
+
 ## Green Cathedral
 
 ### Odysseus

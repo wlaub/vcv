@@ -9,6 +9,7 @@
 
 * Added optional panel labels to
   * Cobalt I
+  * Tia I
 
 ### 2.3.2
 
