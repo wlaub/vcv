@@ -44,7 +44,7 @@ struct MyPanelCache {
 
 struct PngModule : Module {
 
-    MyPanelCache* panel_cache;
+    MyPanelCache* panel_cache = 0;
     std::string current_panel_label;
     MyPanel* current_panel = 0;
     bool show_panel_labels = false;
