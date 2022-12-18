@@ -1,4 +1,8 @@
 
+### 2.4.1
+
+* Fixing build issues on github
+
 ### 2.4.0
 
 * Added configurable panel art to

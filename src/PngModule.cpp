@@ -251,7 +251,7 @@ void PngModuleWidget::_init_instance_panels()
         try {
             current_panel = panel_cache->panel_map.at(mod->current_panel_label);
         } catch (const std::out_of_range& e) {
-            std::string message = string::f("Failed to load panel %s", mod->current_panel_label);
+            std::string message = string::f("Failed to load panel %s", mod->current_panel_label.c_str());
             osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
      
         }
