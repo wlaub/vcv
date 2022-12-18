@@ -28,8 +28,10 @@ float MyPanel::get_width()
 
 void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
 {
+    nvgSave(args.vg);
     if(type == ImageType::SVG)
     {
+
         nvgScissor(args.vg, 0,0, svg_handle->width, svg_handle->height);
         svgDraw(args.vg, svg_handle);
     }
@@ -45,15 +47,16 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
             );
         }
     
-        nvgSave(args.vg);
+
         nvgBeginPath(args.vg);
         NVGpaint png_paint = nvgImagePattern(args.vg, 0, 0, w,h, 0, png_handle, 1.0f);
         nvgRect(args.vg, 0, 0, w,h);
         nvgFillPaint(args.vg, png_paint);
         nvgFill(args.vg);
         nvgClosePath(args.vg);
-        nvgRestore(args.vg);
+
     }
+    nvgRestore(args.vg);
 }
 
 void MyPanelCache::add_panel(PanelInfo config)
