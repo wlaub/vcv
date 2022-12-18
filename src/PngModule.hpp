@@ -17,7 +17,7 @@ struct MyPanel {
 
     float width = 12.f*RACK_GRID_WIDTH;
 
-    MyPanel(PanelInfo config);
+    MyPanel(std::string label, std::string path);
 
     void draw(const ModuleWidget::DrawArgs& args, float w, float h);
 
@@ -36,7 +36,7 @@ struct MyPanelCache {
     std::map<std::string, MyPanel*> panel_map;
 
     void set_panels(const std::vector<PanelInfo> panels);
-    void add_panel(PanelInfo config);
+    void add_panel(std::string label, std::string path);
     void find_default_panel(const char* default_label=0);
     void set_label_panel(const char* path = 0);
 

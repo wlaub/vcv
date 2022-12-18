@@ -1,9 +1,7 @@
 #include "PngModule.hpp"
 #include "TechTechTechnologies.hpp"
 
-MyPanel::MyPanel(PanelInfo config) {
-    label = std::get<0>(config);
-    path = "res/"+std::get<1>(config);
+MyPanel::MyPanel(std::string label, std::string path) {
 
     if(path.find("svg") != std::string::npos)
     {
@@ -59,10 +57,10 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
     nvgRestore(args.vg);
 }
 
-void MyPanelCache::add_panel(PanelInfo config)
+void MyPanelCache::add_panel(std::string label, std::string path)
 {
 
-    panel_options.push_back(new struct MyPanel(config));
+    panel_options.push_back(new struct MyPanel(label, path));
     MyPanel* new_panel = panel_options.back();
 
     panel_map.emplace(new_panel->label, new_panel);
@@ -101,7 +99,7 @@ void MyPanelCache::set_label_panel(const char* path)
         return;
     }
 
-    label_panel = new MyPanel({"",std::string(path)});
+    label_panel = new MyPanel("",std::string(path));
     
 }
 
@@ -110,7 +108,7 @@ void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
 {
     for (const PanelInfo& config : panels)
     {
-        add_panel(config);
+        add_panel(std::get<0>(config), std::get<1>(config));
     }
 
     find_default_panel();
@@ -375,10 +373,10 @@ void PngModuleWidget::load_panels_from_json()
     size_t index;
     json_t* config;
     json_array_foreach(panels, index, config){
-        panel_cache->add_panel({
+        panel_cache->add_panel(
             std::string(json_string_value(json_array_get(config, 0))),
             std::string(json_string_value(json_array_get(config, 1)))
-            });
+            );
     }
 
     panel_cache->find_default_panel(default_label);
