@@ -1,4 +1,8 @@
 
+### 2.4.2
+
+* Fixing a bug introduced by 2.4.1
+
 ### 2.4.1
 
 * Fixing build issues on github

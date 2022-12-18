@@ -2,6 +2,10 @@
 #include "TechTechTechnologies.hpp"
 
 MyPanel::MyPanel(std::string label, std::string path) {
+    path = "res/"+path;
+
+    this->label = label;
+    this->path = path;
 
     if(path.find("svg") != std::string::npos)
     {
