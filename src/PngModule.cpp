@@ -101,7 +101,7 @@ void MyPanelCache::set_label_panel(const char* path)
         return;
     }
 
-    label_panel = new MyPanel({"",path});
+    label_panel = new MyPanel({"",std::string(path)});
     
 }
 
@@ -376,8 +376,8 @@ void PngModuleWidget::load_panels_from_json()
     json_t* config;
     json_array_foreach(panels, index, config){
         panel_cache->add_panel({
-            json_string_value(json_array_get(config, 0)),
-            json_string_value(json_array_get(config, 1))
+            std::string(json_string_value(json_array_get(config, 0))),
+            std::string(json_string_value(json_array_get(config, 1)))
             });
     }
 
