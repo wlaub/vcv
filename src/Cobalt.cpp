@@ -417,6 +417,7 @@ struct CobaltIWidget : PngModuleWidget {
             menu->addChild(new MenuEntry);
 
             panel_select_menu(menu, module);
+            menu->addChild(createMenuLabel("Options"));
 
             struct NormalizeItem : MenuItem {
                 CobaltI* module;
