@@ -7,7 +7,7 @@
   * Once
   * QMod
 
-* Added toggle-able panel labels to
+* Added optional panel labels to
   * Cobalt I
 
 ### 2.3.2

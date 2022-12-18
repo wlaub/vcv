@@ -30,6 +30,8 @@ struct MyPanelCache {
     float width = 0;
     MyPanel* default_panel = 0;
     MyPanel* label_panel = 0;
+    bool show_labels = false;
+
     std::vector<struct MyPanel*> panel_options;
     std::map<std::string, MyPanel*> panel_map;
 
@@ -52,7 +54,6 @@ struct PngModule : Module {
     json_t* dataToJson() override;
     void dataFromJson(json_t* rootJ) override;
 
-
 };
 
 typedef std::map<std::string, MyPanelCache*> PanelCacheMap;
@@ -60,13 +61,6 @@ typedef std::map<std::string, MyPanelCache*> PanelCacheMap;
 struct PngModuleWidget : ModuleWidget {
 
     /* 1536000013 58% 17 90 2.1-768 */
-    /* TODO:
-        find a place to save panel defaults that isn't assets and won't get blown away all the time
-        add save/load label panel setting
-        find a solution for changing whether to show labels by default
-            perhaps a secret json key in wherever i save other defaults
-            or else just another menu option
-    */
 
     MyPanel* current_panel = 0;
 
@@ -75,8 +69,10 @@ struct PngModuleWidget : ModuleWidget {
     static PanelCacheMap panel_cache_map;
     MyPanelCache* panel_cache = 0;
 
-    std::string get_panel_json_path();
-    void save_default_panel();
+    std::string get_panel_definitions_path();
+    std::string get_panel_settings_path();
+    json_t* load_panel_settings();
+    void save_panel_settings();
     void load_panels_from_json();
     void init_panels(std::string slug);
     void _init_instance_panels();

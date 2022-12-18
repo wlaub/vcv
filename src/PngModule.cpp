@@ -173,7 +173,7 @@ struct PanelMenu : MenuItem {
                 if(mode==1)
                 {
                     module->panel_cache->default_panel = panel;
-                    widget->save_default_panel();
+                    widget->save_panel_settings();
                 }
             }
         };
@@ -216,14 +216,15 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
     }
 
     struct LabelItem: MenuItem {
-        PngModule* module;
+        PngModuleWidget* widget;
         void onAction(const event::Action& e) override {
-            module->show_panel_labels = !(module->show_panel_labels);
+            widget->panel_cache->show_labels = !(widget->panel_cache->show_labels);
+            widget->save_panel_settings();
         }
     };
     LabelItem* item = createMenuItem<LabelItem>("Show Labels");
-    item->module = (PngModule*)module;
-    item->rightText = CHECKMARK(item->module->show_panel_labels);
+    item->widget = this;
+    item->rightText = CHECKMARK(panel_cache->show_labels);
     menu->addChild(item);
 
 }
@@ -257,41 +258,73 @@ void PngModuleWidget::_init_instance_panels()
     mod->current_panel = current_panel;
 }
 
-std::string PngModuleWidget::get_panel_json_path()
+std::string PngModuleWidget::get_panel_definitions_path()
 {
     std::string json_path = asset::plugin(pluginInstance, "res/panels/") + slug + ".json";
     return json_path;
 }
 
-void PngModuleWidget::save_default_panel()
+std::string PngModuleWidget::get_panel_settings_path()
 {
-    std::string json_path = get_panel_json_path();
+    std::string json_path = asset::user("ttt_") + slug + ".json";
+    return json_path;
+}
+
+json_t* PngModuleWidget::load_panel_settings()
+{
+    std::string json_path = get_panel_settings_path();
 
     FILE* fp = std::fopen(json_path.c_str(), "r");
+    json_t* rootJ;
 
-    json_error_t error;
-    json_t* rootJ = json_loadf(fp, 0, &error);
-
-    std::fclose(fp);
-
-    if(!rootJ)
+    if(fp == 0)
     {
-        std::string message = string::f("Failed to load %s: %s %d:%d %s", json_path.c_str(), error.source, error.line, error.column, error.text);
-        osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+        rootJ = json_object();
+    }
+    else
+    {
+        json_error_t error;
+        json_t* rootJ = json_loadf(fp, 0, &error);
+
+        std::fclose(fp);
+
+        if(!rootJ)
+        {
+            std::string message = string::f("Failed to load %s: %s %d:%d %s", json_path.c_str(), error.source, error.line, error.column, error.text);
+            osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
+            return 0;
+        }
+    }
+
+    return rootJ;
+   
+}
+
+void PngModuleWidget::save_panel_settings()
+{
+    std::string json_path = get_panel_settings_path();
+
+    json_t* settings_root = load_panel_settings();
+    if(settings_root == 0)
+    {
         return;
     }
 
-    json_object_set(rootJ, "user_default", 
+    json_object_set(settings_root, "user_default", 
             json_string(panel_cache->default_panel->label.c_str())
             );
 
-    fp = std::fopen(json_path.c_str(), "w");
+    json_object_set(settings_root, "show_labels", 
+            json_boolean(panel_cache->show_labels)
+            );
 
-    json_dumpf(rootJ, fp, JSON_INDENT(4));
+    FILE* fp = std::fopen(json_path.c_str(), "w");
+
+    json_dumpf(settings_root, fp, JSON_INDENT(4));
 
     std::fclose(fp);
 
-
+    json_decref(settings_root);
     
 }
 
@@ -299,26 +332,37 @@ void PngModuleWidget::load_panels_from_json()
 {/* Load the panel configuration from the json file at res/panels/<slug>.json
     */
     
-    std::string json_path = get_panel_json_path();
+    std::string json_path = get_panel_definitions_path();
 
     FILE* fp = std::fopen(json_path.c_str(), "r");
 
     json_error_t error;
-    json_t* rootJ = json_loadf(fp, 0, &error);
+    json_t* definitions_root = json_loadf(fp, 0, &error);
 
     std::fclose(fp);
 
-    if(!rootJ)
+    if(!definitions_root)
     {
         std::string message = string::f("Failed to load %s: %s %d:%d %s", json_path.c_str(), error.source, error.line, error.column, error.text);
         osdialog_message(OSDIALOG_WARNING, OSDIALOG_OK, message.c_str());
         return;
     }
     
-    json_t* panels = json_object_get(rootJ, "panels");
-    const char* default_label = json_string_value(json_object_get(rootJ, "default"));
-    const char* user_default_label = json_string_value(json_object_get(rootJ, "user_default"));
-    const char* label_panel_path = json_string_value(json_object_get(rootJ, "labels"));
+    json_t* panels = json_object_get(definitions_root, "panels");
+    const char* default_label = json_string_value(json_object_get(definitions_root, "default"));
+    const char* label_panel_path = json_string_value(json_object_get(definitions_root, "labels"));
+
+    json_t* settings_root = load_panel_settings();
+    const char* user_default_label = 0;
+    if(settings_root != 0)
+    {
+        user_default_label = json_string_value(json_object_get(settings_root, "user_default"));
+        json_t* temp = json_object_get(settings_root, "show_labels");
+        if(temp)
+        {
+            panel_cache->show_labels = json_boolean_value(temp);
+        }
+    }
 
     if(user_default_label != 0)
     {
@@ -337,6 +381,8 @@ void PngModuleWidget::load_panels_from_json()
     panel_cache->find_default_panel(default_label);
     panel_cache->set_label_panel(label_panel_path);
 
+    json_decref(definitions_root);
+    json_decref(settings_root);
 }
 
 
@@ -385,7 +431,7 @@ void PngModuleWidget::draw(const DrawArgs& args)
     {
         current_panel->draw(args, box.size.x, box.size.y);
     }
-    if(panel_cache->label_panel && mod && mod->show_panel_labels)
+    if(panel_cache->label_panel && panel_cache->show_labels)
     {
         panel_cache->label_panel->draw(args, box.size.x, box.size.y);
     }
