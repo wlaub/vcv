@@ -4,6 +4,7 @@
     ["Fancy", "tia_b.png"],
     ["Alt 1", "tia_a.png"]
     ],
-"default": "Fancy"
+"default": "Fancy",
+"labels": "Tia_labels.svg"
 }
 
