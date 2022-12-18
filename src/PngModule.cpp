@@ -53,10 +53,7 @@ void MyPanel::draw(const ModuleWidget::DrawArgs& args, float w, float h)
         nvgFill(args.vg);
         nvgClosePath(args.vg);
         nvgRestore(args.vg);
-        
- 
     }
-
 }
 
 void MyPanelCache::add_panel(PanelInfo config)
@@ -72,8 +69,6 @@ void MyPanelCache::add_panel(PanelInfo config)
     {
         width = new_panel->get_width();
     }
-
-
 }
 
 void MyPanelCache::find_default_panel(const char* default_label)
@@ -147,8 +142,6 @@ void PngModule::dataFromJson(json_t* rootJ)
     load_panel(rootJ);
 }
 
-
-
 struct PanelMenu : MenuItem {
 
     PngModuleWidget* widget;
@@ -204,15 +197,12 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
     panel_menu->current = panel_cache->default_panel;
     panel_menu->mode = 1;
     menu->addChild(panel_menu);
-
-
 }
 
 PanelCacheMap PngModuleWidget::panel_cache_map;
 
 void PngModuleWidget::_init_instance_panels()
 {
-    
     current_panel = panel_cache->default_panel;
     box.size.x = std::round(panel_cache->width / RACK_GRID_WIDTH) * RACK_GRID_WIDTH;
 
@@ -236,9 +226,6 @@ void PngModuleWidget::_init_instance_panels()
 
     mod->panel_cache = panel_cache;
     mod->current_panel = current_panel;
-
-
-
 }
 
 std::string PngModuleWidget::get_panel_json_path()

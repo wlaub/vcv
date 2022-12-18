@@ -59,6 +59,7 @@ struct PngModuleWidget : ModuleWidget {
 
     /* 1536000013 58% 17 90 2.1-768 */
     /* TODO:
+        find a place to save panel defaults that isn't assets and won't get blown away all the time
         add label panel and options for toggling labels
     */
 
