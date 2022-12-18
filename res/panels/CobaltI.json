@@ -3,6 +3,7 @@
     ["Default", "Cobalt.svg"],
     ["Fancy", "cobalt_a.png"]
     ],
-"default": "Fancy"
+"default": "Fancy",
+"labels": "Cobalt_labels.svg"
 }
 

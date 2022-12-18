@@ -29,12 +29,14 @@ struct MyPanelCache {
 
     float width = 0;
     MyPanel* default_panel = 0;
+    MyPanel* label_panel = 0;
     std::vector<struct MyPanel*> panel_options;
     std::map<std::string, MyPanel*> panel_map;
 
     void set_panels(const std::vector<PanelInfo> panels);
     void add_panel(PanelInfo config);
     void find_default_panel(const char* default_label=0);
+    void set_label_panel(const char* path = 0);
 
 };
 

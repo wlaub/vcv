@@ -91,6 +91,18 @@ void MyPanelCache::find_default_panel(const char* default_label)
     }
 }
 
+void MyPanelCache::set_label_panel(const char* path)
+{
+    if(path == 0)
+    {
+        return;
+    }
+
+    label_panel = new MyPanel({"",path});
+    
+}
+
+
 void MyPanelCache::set_panels(const std::vector<PanelInfo> panels)
 {
     for (const PanelInfo& config : panels)
@@ -197,6 +209,23 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
     panel_menu->current = panel_cache->default_panel;
     panel_menu->mode = 1;
     menu->addChild(panel_menu);
+
+    if(panel_cache->label_panel == 0)
+    {
+        return;
+    }
+
+    struct LabelItem: MenuItem {
+        PngModule* module;
+        void onAction(const event::Action& e) override {
+            module->show_panel_labels = ~module->show_panel_labels;
+        }
+    };
+    LabelItem* item = createMenuItem<LabelItem>("Show Labels");
+    item->module = (PngModule*)module;
+    item->rightText = CHECKMARK(item->module->show_panel_labels);
+    menu->addChild(item);
+
 }
 
 PanelCacheMap PngModuleWidget::panel_cache_map;
@@ -289,6 +318,7 @@ void PngModuleWidget::load_panels_from_json()
     json_t* panels = json_object_get(rootJ, "panels");
     const char* default_label = json_string_value(json_object_get(rootJ, "default"));
     const char* user_default_label = json_string_value(json_object_get(rootJ, "user_default"));
+    const char* label_panel_path = json_string_value(json_object_get(rootJ, "labels"));
 
     if(user_default_label != 0)
     {
@@ -305,6 +335,7 @@ void PngModuleWidget::load_panels_from_json()
     }
 
     panel_cache->find_default_panel(default_label);
+    panel_cache->set_label_panel(label_panel_path);
 
 }
 
@@ -342,8 +373,9 @@ void PngModuleWidget::init_panels(std::string slug)
 
 void PngModuleWidget::draw(const DrawArgs& args)
 {
-   if(module){
-        PngModule* mod = dynamic_cast<PngModule*>(this->module);
+    PngModule* mod = 0;
+    if(module){
+        mod = dynamic_cast<PngModule*>(this->module);
         if(mod->current_panel != current_panel)
         {
             current_panel = mod->current_panel;
@@ -352,6 +384,10 @@ void PngModuleWidget::draw(const DrawArgs& args)
     if(current_panel)
     {
         current_panel->draw(args, box.size.x, box.size.y);
+    }
+    if(panel_cache->label_panel && mod && mod->show_panel_labels)
+    {
+        panel_cache->label_panel->draw(args, box.size.x, box.size.y);
     }
 
     ModuleWidget::draw(args);
