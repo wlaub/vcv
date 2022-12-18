@@ -1,4 +1,15 @@
 
+### 2.4.0
+
+* Added configurable panel art to
+  * Cobalt I and -60
+  * Tia I and Mat I
+  * Once
+  * QMod
+
+* Added toggle-able panel labels to
+  * Cobalt I
+
 ### 2.3.2
 
 * Fixed missing Lachesis panel

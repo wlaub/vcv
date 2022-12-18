@@ -218,7 +218,7 @@ void PngModuleWidget::panel_select_menu(Menu* menu, PngModule* module)
     struct LabelItem: MenuItem {
         PngModule* module;
         void onAction(const event::Action& e) override {
-            module->show_panel_labels = ~module->show_panel_labels;
+            module->show_panel_labels = !(module->show_panel_labels);
         }
     };
     LabelItem* item = createMenuItem<LabelItem>("Show Labels");

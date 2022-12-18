@@ -62,7 +62,10 @@ struct PngModuleWidget : ModuleWidget {
     /* 1536000013 58% 17 90 2.1-768 */
     /* TODO:
         find a place to save panel defaults that isn't assets and won't get blown away all the time
-        add label panel and options for toggling labels
+        add save/load label panel setting
+        find a solution for changing whether to show labels by default
+            perhaps a secret json key in wherever i save other defaults
+            or else just another menu option
     */
 
     MyPanel* current_panel = 0;
